@@ -1,0 +1,11 @@
+## MATLAB
+*.asv
+*.m~
+*.mldatx
+
+## Testing folders and files
+test/coverage/
+
+## Misc
+*.DS_Store
+*.vscode

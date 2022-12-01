@@ -1,4 +1,4 @@
-function createGroups(fileName, pathName, varargin)
+function createGroup(hdfName, pathName, varargin)
     % CREATEGROUP
     % 
     % Description:
@@ -19,8 +19,16 @@ function createGroups(fileName, pathName, varargin)
     %   h5tools.createGroup(hdfName, pathName, 'Group1')
     %   h5tools.createGroup(hdfName, pathName, 'Group1', 'Group2')
     % -------------------------------------------------------------
+    arguments
+        hdfName         char        {mustBeFile(hdfName)}
+        pathName        char
+    end
+    
+    arguments (Repeating)
+        varargin
+    end
 
-    fileID = h5tools.openFile(fileName, false);
+    fileID = h5tools.openFile(hdfName, false);
     fileIDx = onCleanup(@()H5F.close(fileID));
     for i = 1:numel(varargin)
         try

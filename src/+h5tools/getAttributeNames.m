@@ -1,4 +1,4 @@
-function names = getAttributeNames(hdfFile, pathName)
+function names = getAttributeNames(hdfName, pathName)
     % GETALLATTRIBUTENAMES
     %
     % Description:
@@ -11,17 +11,22 @@ function names = getAttributeNames(hdfFile, pathName)
     %   17Oct2022 - SSP
     % -------------------------------------------------------------
     arguments
-        hdfFile             char     {mustBeFile(hdfFile)} 
+        hdfName             char     {mustBeFile(hdfName)} 
         pathName            char
     end
 
-    fileID = H5F.open(hdfFile);
+    fileID = H5F.open(hdfName);
     fileIDx = onCleanup(@()H5F.close(fileID));
-    groupID = H5G.open(fileID, pathName);
-    groupIDx = onCleanup(@()H5G.close(groupID));
+    try
+        rootID = H5G.open(fileID, pathName);
+        rootIDx = onCleanup(@()H5G.close(rootID));
+    catch
+        rootID = H5D.open(fileID, pathName);
+        rootIDx = onCleanup(@()H5D.close(rootID));
+    end
 
     names = string.empty();
-    [~, ~, names] = H5A.iterate(groupID, 'H5_INDEX_NAME',...
+    [~, ~, names] = H5A.iterate(rootID, 'H5_INDEX_NAME',...
         'H5_ITER_NATIVE', 0, @attributeIterateFcn, names);
 end
 

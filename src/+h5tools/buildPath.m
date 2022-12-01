@@ -14,7 +14,7 @@ function path = buildPath(varargin)
     % -------------------------------------------------------------
     path = [];
     for i = 1:nargin
-        path = [path, '/', char(varargin{i})]; 
+        path = [path, '/', char(varargin{i})]; %#ok<AGROW> 
     end
 
     % Make sure leading / isn't duplicated

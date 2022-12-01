@@ -1,4 +1,4 @@
-function tf = hasAttribute(hdfFile, pathName, paramName)
+function tf = hasAttribute(hdfName, pathName, paramName)
     % HASATTRIBUTE
     %
     % Description:
@@ -8,10 +8,10 @@ function tf = hasAttribute(hdfFile, pathName, paramName)
     %   tf = hasAttribute(hdfFile, pathName, paramName)
     % -------------------------------------------------------------
     arguments
-        hdfFile             char        {mustBeFile(hdfFile)}
+        hdfName             char        {mustBeFile(hdfName)}
         pathName            char
         paramName           string
     end
     
-    attNames = h5tools.getAttributeNames(hdfFile, pathName);
+    attNames = h5tools.getAttributeNames(hdfName, pathName);
     tf = ismember(paramName, attNames);

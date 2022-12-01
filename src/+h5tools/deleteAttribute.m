@@ -1,22 +1,23 @@
-function deleteAttribute(hdfFile, pathName, name)
-    % DELETEATTRIBUTE
-    %
-    % Description:
-    %   Delete an attribute
-    %
-    % Syntax:
-    %   deleteAttribute(hdfFile, pathName, name)
-    % -------------------------------------------------------------
+function deleteAttribute(hdfName, pathName, name)
+% DELETEATTRIBUTE
+%
+% Description:
+%   Delete an attribute
+%
+% Syntax:
+%   deleteAttribute(hdfFile, pathName, name)
+% -------------------------------------------------------------------------
+
     arguments
-        hdfFile            {mustBeFile(hdfFile)} 
-        pathName            char
-        name                char
+        hdfName         char            {mustBeFile(hdfName)} 
+        pathName        char
+        name            char
     end
 
-    fileID = h5tools.openFile(hdfFile, false);
+    fileID = h5tools.openFile(hdfName, false);
     fileIDx = onCleanup(@()H5F.close(fileID));
 
-    fprintf('Deleting %s:%s attribute %s\n', hdfFile, pathName, name);
+    fprintf('Deleting %s:%s attribute %s\n', hdfName, pathName, name);
     try  % See if pathName refers to a group
         rootID = H5G.open(fileID, pathName);
         rootIDx = onCleanup(@()H5G.close(rootID));

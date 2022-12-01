@@ -1,4 +1,4 @@
-function parentPath = getPathParent(pathName)
+function parentPath = getParentPath(pathName)
     % GETPATHPARENT
     % 
     % Description:
