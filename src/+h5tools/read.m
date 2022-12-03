@@ -43,12 +43,22 @@ function out = read(hdfName, pathName, dsetName, className)
             out = logical(data);
         case 'duration'
             out = seconds(data);
-        case 'table'
+        case {'table', 'timetable'}
             out = struct2table(data);
-        case 'timetable'
-            out = struct2table(data);
-            out.Time = seconds(out.Time);
-            out = table2timetable(out);
+            colClasses = h5readatt(hdfName, fullPath, 'ColumnClass');
+            % TODO: This seems too hard, am I missing something here
+            colClasses = strsplit(colClasses, ', '); 
+            for i = 1:numel(colClasses)
+                if strcmp(colClasses{i}, 'string')                        
+                    colName = out.Properties.VariableNames{i};
+                    out.(colName) = string(out.(colName));
+                end
+            end
+
+            if strcmp(className, 'timetable')
+                out.Time = seconds(out.Time);
+                out = table2timetable(out);
+            end
         case 'enum'
             enumClass = h5readatt(hdfName, fullPath, 'EnumClass');
             try

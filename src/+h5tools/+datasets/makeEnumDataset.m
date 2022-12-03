@@ -1,4 +1,4 @@
-function makeEnumDataset(hdfName, pathName, dsetName, value)
+function makeEnumDataset(hdfName, pathName, dsetName, data)
     % MAKEENUMDATASET
     %
     % Description:
@@ -16,7 +16,9 @@ function makeEnumDataset(hdfName, pathName, dsetName, value)
         hdfName         char        {mustBeFile(hdfName)} 
         pathName        char
         dsetName        char 
-        value                       {h5tools.validators.mustBeEnum(value)} 
+        data                        {h5tools.validators.mustBeEnum(value)} 
     end
 
-    h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, char(value));
+    h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, char(data));
+    h5tools.writeatt(hdfName, h5tools.buildPath(pathName, dsetName),... 
+        'Class', 'enum', 'EnumClass', class(data));

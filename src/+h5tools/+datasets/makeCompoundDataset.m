@@ -18,10 +18,18 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
 
     % Record original class and column classes
     dataClass = class(data);
+    if istimetable(data)
+        data = timetable2table(data);
+        data.Time = seconds(data.Time);
+    end
     columnClass = [];
     colsToFix = [];
-    if istable(data)
+    if istable(data) || istimetable(data)
         for i = 1:size(data, 2)
+            if i == 1 && strcmp(dataClass, 'timetable') %#ok<STISA> 
+                columnClass = 'duration';
+                continue
+            end
             if iscellstr(data{:,i})
                 % fix for cellstr is being transposed oddly 
                 columnClass = [columnClass, ', ', 'cellstr']; %#ok<*AGROW> 
@@ -128,6 +136,7 @@ function typeID = getDataType(var)
     % -------------------------------------------------------------
     if isa(var, 'double')
         typeID = 'H5T_IEEE_F64LE';
+    %elseif isa(var, ["seconds", "minutes", "hours", "months", "days", "years"])
     elseif ismember(class(var), {'char', 'cell', 'datetime'})
         typeID = H5T.copy('H5T_C_S1');
         H5T.set_size(typeID, 'H5T_VARIABLE');
@@ -138,5 +147,9 @@ function typeID = getDataType(var)
         typeID = 'H5T_STD_I32LE';
     elseif isa(var, 'uint8')
         typeID = 'H5T_STD_U8LE';
+    else
+        assignin('base', 'var', var);
+        error('getDataType:UnrecognizedDataType',...
+            'Data type %s was not recognized for makeCompoundDataset', class(var));
     end
 end

@@ -12,7 +12,7 @@ function mustBeHdfFile(input)
     % ---------------------------------------------------------------------
     
     if istext(input)
-        if ~isFile(input) || ~endsWith(input, '.h5')
+        if ~isfile(input) || ~endsWith(input, '.h5')
             eid = 'mustBeHdfFile:InvalidFile';
             msg = 'File %s not found, input must be valid file name ending with .h5 or an H5ML.id';
             throwAsCaller(MException(eid, msg));

@@ -59,9 +59,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
     end
 
     if istimetable(data)
-        T = timetable2table(data);
-        T.Time = seconds(T.Time);
-        h5tools.datasets.makeCompoundDataset(hdfName, pathName, dsetName, T);
+        h5tools.datasets.makeCompoundDataset(hdfName, pathName, dsetName, data);
         h5tools.writeatt(hdfName, fullPath, 'Class', class(data),... 
             'Units', 'seconds');
         return
@@ -76,8 +74,6 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 
     if isenum(data)
         h5tools.datasets.makeEnumDataset(hdfName, pathName, dsetName, data);
-        h5tools.writeatt(hdfName, fullPath, 'Class', 'enum',... 
-            'EnumClass', class(data));
         return
     end
 

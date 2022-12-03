@@ -85,6 +85,5 @@ Attributes that are links to other groups/datasets have not been implemented.
 
 
 
-### Limitations
-- The compound data type writing was largely borrowed from NeurodataWithoutBorders. 
-- For more information on working with HDF5 in MATLAB, see MATLAB's documentation for their high-level support and low-level support.
+### References
+For more information on working with HDF5 in MATLAB, see MATLAB's documentation for their high-level support and low-level support.

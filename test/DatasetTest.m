@@ -70,6 +70,15 @@ classdef DatasetTest < matlab.unittest.TestCase
         end
     end
 
+    methods (Test, TestTags=["Datetime"])
+        function Datetime(testCase)
+            input = datetime('now', 'Format', 'yyyyMMdd');
+            h5tools.write(testCase.FILE, '/', 'Datetime', input);
+            output = h5tools.read(testCase.FILE, '/', 'Datetime');
+            testCase.verifyTrue(isdatetime(output));
+        end
+    end
+
     methods (Test, TestTags={'Numeric'})
         function DoubleScalar(testCase)
             input = 2;
@@ -109,12 +118,56 @@ classdef DatasetTest < matlab.unittest.TestCase
         end
     end
 
+    methods (Test, TestTags=["Table"])
+        function testTable(testCase)
+            input = table(...
+                rangeCol(1,4), {'a'; 'b'; 'c'; 'd'}, ["a", "b", "c", "d"]',...
+                'VariableNames', {'Numbers', 'Characters', 'Strings'});
+            h5tools.write(testCase.FILE, '/', 'Table', input);
+            output = h5tools.read(testCase.FILE, '/', 'Table');
+            testCase.verifyEqual(output, input);
+        end
+
+        function testTimeTable(testCase)
+            input = timetable(...
+                seconds(1:4)', {'a'; 'b'; 'c'; 'd'}, ["a", "b", "c", "d"]',...
+                'VariableNames', {'Characters', 'Strings'});
+            h5tools.write(testCase.FILE, '/', 'TimeTable', input);
+            output = h5tools.read(testCase.FILE, '/', 'TimeTable');
+            testCase.verifyEqual(output, input);
+        end
+    end
+
     methods (Test, TestTags={'Enum'})
         function EnumScalar(testCase)
             input = test.EnumClass.GROUPTWO;
             h5tools.write(testCase.FILE, '/', 'EnumScalar', input);
             output = h5tools.read(testCase.FILE, '/', 'EnumScalar');
             testCase.verifyEqual(output, input);
+        end
+
+        function EnumOffPath(testCase)
+            import matlab.unittest.constraints.Throws
+
+            % fakeEnum = 'NotAnEnum.GROUPONE';
+            h5tools.datasets.makeTextDataset(testCase.FILE, '/', 'EnumOffPath', 'GROUPONE');
+            h5tools.writeatt(testCase.FILE, '/EnumOffPath', 'Class', 'enum',... 
+                'EnumClass', 'NotAnEnum');
+            testCase.verifyWarning(...
+                @() h5tools.read(testCase.FILE, '/', 'EnumOffPath'),...
+                "read:UnknownEnumerationClass");
+        end
+
+        function EnumBadType(testCase)
+            import matlab.unittest.constraints.Throws
+            
+            % fakeEnum = 'EnumClass.GROUPFOUR';
+            h5tools.datasets.makeTextDataset(testCase.FILE, '/', 'EnumBadType', 'GROUPFOUR');
+            h5tools.writeatt(testCase.FILE, '/EnumBadType', 'Class', 'enum',... 
+                'EnumClass', class(test.EnumClass.GROUPONE));
+            testCase.verifyWarning(...
+                @() h5tools.read(testCase.FILE, '/', 'EnumBadType'),...
+                "read:UnknownEnumerationType");
         end
     end
 

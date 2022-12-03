@@ -10,8 +10,8 @@ function tf = exist(hdfName, pathName)
     %   fileName        char H5 file name OR H5ML.id
     % -------------------------------------------------------------
     arguments
-        hdfName             char            {mustBeFile(hdfName)}
-        pathName            char
+        hdfName         {h5tools.validators.mustBeHdfFile(hdfName)}
+        pathName        char
     end
 
     if isa(hdfName, 'H5ML.id')
