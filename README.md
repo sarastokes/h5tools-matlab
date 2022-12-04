@@ -83,6 +83,8 @@ Specialized MATLAB datatypes (e.g. datetime, duration, etc) cannot be written as
 
 Attributes that are links to other groups/datasets have not been implemented. 
 
+Vectors will be returned as columns.
+
 
 
 ### References

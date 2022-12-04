@@ -5,6 +5,11 @@
 
 ## Testing folders and files
 test/coverage/
+test/FileTest.h5
+test/AttributeTest.h5
+test/Dataset.h5
+test/Collection.h5
+test/GroupTest.h5
 
 ## Misc
 *.DS_Store

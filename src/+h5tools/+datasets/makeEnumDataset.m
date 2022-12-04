@@ -16,7 +16,7 @@ function makeEnumDataset(hdfName, pathName, dsetName, data)
         hdfName         char        {mustBeFile(hdfName)} 
         pathName        char
         dsetName        char 
-        data                        {h5tools.validators.mustBeEnum(value)} 
+        data                        {h5tools.validators.mustBeEnum(data)} 
     end
 
     h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, char(data));
