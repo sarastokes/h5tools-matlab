@@ -1,4 +1,4 @@
-classdef UtilityTest < matlab.unittest.TestCase
+classdef UtilityTest < matlab.unittest.TestCase 
 % UTILITYTEST
 %
 % Description:
@@ -11,24 +11,29 @@ classdef UtilityTest < matlab.unittest.TestCase
 %   runH5toolsTestSuite
 % -------------------------------------------------------------------------
 
-    methods (Test)
-        function PathDividers(testCase)
-            testPath = '/GroupOne/GroupTwo/Dataset';
-            testCase.verifyEqual(h5tools.getPathEnd(testPath), 'Dataset');
-            
-            testPath = '/GroupOne/GroupTwo/Dataset';
-            testCase.verifyEqual(h5tools.getParentPath(testPath),... 
-                '/GroupOne/GroupTwo');
+    properties
+        FILE 
+    end
+
+    methods (TestClassSetup)
+        function createFile(testCase)
+            testCase.FILE = fullfile(fileparts(mfilename("fullpath")), 'UtilityTest.h5');
+            h5tools.createFile(testCase.FILE, true);
+
+            % Add a group and a dataset
+            h5tools.createGroup(testCase.FILE, '/', 'GroupOne');
+            h5tools.write(testCase.FILE, '/GroupOne', 'DatasetOne', magic(5));
         end
+    end
 
-        function PathOrder(testCase)
-            % Single input
-            path = "/GroupOne/GroupTwo/Dataset";
-            testCase.verifyEqual(h5tools.getPathOrder(path), 3);
+    methods (Test)
 
-            % Multiple inputs
-            paths = [path; "/GroupOne"];
-            testCase.verifyEqual(h5tools.getPathOrder(paths), [3, 1]');
+    end
+
+    methods (Test)
+        function ExistGroup(testCase)
+            % Look something in a group that doesn't exist
+            testCase.verifyFalse(h5tools.exist(testCase.FILE, '/GroupFour/Dset1'));
         end
     end
 end

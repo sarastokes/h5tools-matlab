@@ -1,4 +1,4 @@
-function linkNames = collectAllSoftlinks(hdfName)
+function linkNames = collectSoftlinks(hdfName)
     % COLLECTALLSOFTLINKS
     %
     % Description:

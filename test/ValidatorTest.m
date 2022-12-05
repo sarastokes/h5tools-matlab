@@ -8,14 +8,16 @@ classdef ValidatorTest < matlab.unittest.TestCase
     methods (TestClassSetup)
         function createFiles(testCase)
             dlmwrite(testCase.TXT_FILE, eye(3));
+
+            % Create a minimum HDF5 file with a single group
             h5tools.createFile(testCase.HDF_FILE, true);
+            h5tools.createGroup(testCase.HDF_FILE, '/', 'GroupOne');
         end
     end
 
     methods (TestClassTeardown)
         function deleteFiles(testCase)
             delete(testCase.TXT_FILE);
-            delete(testCase.HDF_FILE);
         end
     end
 
@@ -34,16 +36,28 @@ classdef ValidatorTest < matlab.unittest.TestCase
                 Throws("mustBeHdfFile:InvalidFile"));
         end
 
-        function HDF5FileID(testCase)
+        function HDF5FIleInvalidInput(testCase)
             import matlab.unittest.constraints.Throws
             
             testCase.verifyThat(...
                 @() h5tools.validators.mustBeHdfFile(1),...
                 Throws("mustBeHdfFile:InvalidInput"));
+        end
 
+        function HDF5FileID(testCase)
+            import matlab.unittest.constraints.Throws
+            
+            % Passing a file ID should not error
             fileID = h5tools.openFile(testCase.HDF_FILE);
-            % Should not throw an error (TODO)
+            fileIDx = @()onCleanup(H5G.close(groupID));
             h5tools.validators.mustBeHdfFile(fileID);
+
+            % Passing a group ID should cause an error
+            groupID = H5G.open(fileID, '/GroupOne');
+            groupIDx = @()onCleanup(H5G.close(groupID));
+            testCase.verifyThat(...
+                @() h5tools.validators.mustBeHdfFile(groupID),...
+                Throws("mustBeFileID:InvalidH5MLID"));
         end
     end
 

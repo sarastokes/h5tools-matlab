@@ -9,7 +9,12 @@ classdef GroupTest < matlab.unittest.TestCase
             testFolder = fileparts(mfilename('fullpath'));
             testCase.FILE = fullfile(testFolder, 'GroupTest.h5');
             % Create the file, overwriting if it already exists
-            h5tools.createFile(testCase.FILE, true);
+            fileID = h5tools.createFile(testCase.FILE, true);
+            
+            % Test collect groups from fileID
+            fileID = h5tools.openFile(testCase.FILE);
+            fileIDx = onCleanup(@()H5F.close(fileID));
+            testCase.verifyEmpty(h5tools.collectGroups(fileID), 1);
         end
     end
 
@@ -29,6 +34,11 @@ classdef GroupTest < matlab.unittest.TestCase
             h5tools.createGroup(testCase.FILE, '/', 'GroupTwo', 'GroupThree');
             out = h5tools.collectGroups(testCase.FILE);
             testCase.verifyNumElements(out, 3);
+
+            % Check for warning when group already exists
+            testCase.verifyWarning(...
+                @() h5tools.createGroup(testCase.FILE, '/', 'GroupOne'),...
+                    "createGroup:GroupExists");
         end
 
         function DatasetToExistingGroup(testCase)

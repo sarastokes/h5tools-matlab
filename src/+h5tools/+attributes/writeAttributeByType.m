@@ -39,7 +39,7 @@ function out = getOutput(data)
     elseif isdatetime(data)
         out = datestr(data); %#ok<DATST> 
     elseif isenum(data)
-        out = [];
+        out = string(class(data)) + "." + string(data);
     elseif ismember(class(data), {'table', 'struct', 'containers.Map', 'timetable'})
         error('writeAttributeByType:InvalidInput',...
             'Structs, tables and maps cannot be written as attributes');

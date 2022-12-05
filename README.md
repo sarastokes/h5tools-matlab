@@ -70,6 +70,8 @@ See the documentation
 - ```collectAllSoftLinks``` - returns the full paths of all soft links in the HDF5 file.
 
 ### Limitations
+Most of the functions within ```h5tools-matlab``` are straightforward solutions. However, the dataset/attribute writing functions employ workarounds rather than true solutions to ensure as many MATLAB datatypes can be read and written to HDF5 files as possible.
+
 ##### Datasets
 ```struct``` and ```containers.Map```. Both of these data types mimic the natural layout of an HDF5 file (i.e they are a group containing datasets). Before writing a ```struct```/```containers.Map``` as a dataset, always consider making a new group and writing the members of the struct/map as individual datasets within that group. If you absolutely must have it as a dataset, there are two key things to know. 
 First, ```struct``` is written as a compound data type. The contents of ```containers.Map``` is written as attributes of a text dataset (a placeholder that just contains "containers.Map"). There are advantages and disadvantages to both, so consider which best suits your data. Conversion functions ```struct2map``` and ```map2struct``` are included. Second, you cannot write multi-level structs (i.e. a ```struct``` containing another ```struct```). Instead, make a new group for the secondary ```struct```.

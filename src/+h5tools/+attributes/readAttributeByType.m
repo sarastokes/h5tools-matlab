@@ -1,11 +1,11 @@
-function out = readatt(hdfName, pathName, attName)
-% READATT
+function out = readAttributeByType(hdfName, pathName, attName)
+% READATTRIBUTEBYTYPE
 %
 % Description:
 %   Read an HDF5 attribute
 %
 % Syntax:
-%   out = readatt(hdfName, pathName, attName)
+%   out = readAttributeByType(hdfName, pathName, attName)
 %
 % Input:
 %   hdfName             char
@@ -30,10 +30,11 @@ function out = readatt(hdfName, pathName, attName)
         return
     end
 
-    if ischar(data)
+    if isstring(data) && numel(data) == 1
         idx = strfind(data, '.');
-        if ~isempty(idx) %#ok<STREMP> 
-            if exist(data(1:end), 'class') == 8
+        if ~isempty(idx) 
+            iData = char(data);
+            if exist(iData(1:idx(end)), 'class') == 8
                 try
                     out = eval(data);
                     return
@@ -44,7 +45,9 @@ function out = readatt(hdfName, pathName, attName)
                 end
             end
         end
-
+    end
+    
+    if ischar(data)
         % Was it a datetime
         try
             out = datetime(data);

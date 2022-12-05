@@ -1,4 +1,15 @@
 classdef AttributeTest < matlab.unittest.TestCase 
+% ATTRIBUTETEST
+%
+% Description:
+%   Tests HDF5 operations involving attributes
+%
+% Use:
+%   results = runtests('AttributeTest');
+%
+% See also;
+%   runH5toolsTestSuite
+% -------------------------------------------------------------------------
 
     properties
         FILE 
@@ -10,7 +21,10 @@ classdef AttributeTest < matlab.unittest.TestCase
             testCase.FILE = fullfile(folder, 'AttributeTest.h5');
             h5tools.createFile(testCase.FILE, true);
 
+            % Create two groups for map and struct input testing
             h5tools.createGroup(testCase.FILE, '/', 'Map', 'Struct');
+            % Create a dataset for group vs dataset testing
+            h5tools.write(testCase.FILE, '/', 'Dataset', magic(5));
         end
     end
 
@@ -31,14 +45,34 @@ classdef AttributeTest < matlab.unittest.TestCase
             out = h5tools.getAttributeNames(testCase.FILE, '/Struct');
             testCase.verifyNumElements(out, 2);
         end
+
+        function NoInput(testCase)
+            testCase.verifyWarning(...
+                @() h5tools.writeatt(testCase.FILE, '/'),...
+                "writeatt:NoInput");
+        end
     end
 
     methods (Test, TestTags=["Deletion"])
-        function Deletion(testCase)
+        function DeletionFromGroup(testCase)
+            import matlab.unittest.constraints.Throws
+            
             h5tools.writeatt(testCase.FILE, '/', 'ToBeDeleted', "sara");
             h5tools.deleteAttribute(testCase.FILE, '/', 'ToBeDeleted');
-            % TODO: verify
-            output = h5tools.readatt(testCase.FILE, '/', 'ToBeDeleted');
+            testCase.verifyThat(...
+                @() h5tools.readatt(testCase.FILE, '/', 'ToBeDeleted'),...
+                Throws('MATLAB:imagesci:hdf5lib:libraryError'));
+        end
+
+        function DeletionFromDataset(testCase)
+            import matlab.unittest.constraints.Throws
+            
+            h5tools.writeatt(testCase.FILE, '/Dataset', 'ToBeDeleted', "sara");
+            h5tools.deleteAttribute(testCase.FILE, '/Dataset', 'ToBeDeleted');
+            testCase.verifyThat(...
+                @() h5tools.readatt(testCase.FILE, '/', 'ToBeDeleted'),...
+                Throws('MATLAB:imagesci:hdf5lib:libraryError'));
+
         end
     end
 
@@ -95,6 +129,22 @@ classdef AttributeTest < matlab.unittest.TestCase
             input = 'test';
             h5tools.writeatt(testCase.FILE, '/', 'Char', input);
             output = h5tools.readatt(testCase.FILE, '/', 'Char');
+            testCase.verifyEqual(output, input);
+        end
+    end
+
+    methods (Test, TestTags=["enum"])
+        function Enum(testCase)
+            input = test.EnumClass.GROUPONE;
+            h5tools.writeatt(testCase.FILE, '/', 'Enum', input);
+            output = h5tools.readatt(testCase.FILE, '/', 'Enum');
+            testCase.verifyEqual(output, input);
+        end
+
+        function LooksLikeEnum(testCase)
+            input = "FakeClass.GROUPONE";
+            h5tools.writeatt(testCase.FILE, '/', 'LooksLikeEnum', input);
+            output = h5tools.readatt(testCase.FILE, '/', 'LooksLikeEnum');
             testCase.verifyEqual(output, input);
         end
     end

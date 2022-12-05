@@ -38,7 +38,8 @@ function createGroup(hdfName, pathName, varargin)
             groupIDx = onCleanup(@()H5G.close(groupID));
         catch ME
             if contains(ME.message, 'name already exists')
-                % warning('aod.h5.HDF5:Group %s already exists, skipping', groupPath);
+                warning('createGroup:GroupExists',...
+                    'Group %s already exists, skipping', groupPath);
             else
                 rethrow(ME);
             end

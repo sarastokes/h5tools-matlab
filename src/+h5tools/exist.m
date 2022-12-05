@@ -23,7 +23,7 @@ function tf = exist(hdfName, pathName)
             tf = H5L.exists(fileID, pathName, 'H5P_DEFAULT');
         catch ME
             if contains(ME.message, 'component not found')
-                error('Parent group not found: %s', pathName);
+                tf = false;
             else
                 rethrow(ME);
             end

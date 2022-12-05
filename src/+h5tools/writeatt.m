@@ -60,7 +60,6 @@ function writeatt(hdfName, pathName, varargin)
     % Write the attributes
     k = attMap.keys; 
     for i = 1:numel(k)
-        fprintf('Writing %s to %s\n', k{i}, pathName);
         h5tools.attributes.writeAttributeByType(...
             hdfName, pathName, k{i}, attMap(k{i}));
     end

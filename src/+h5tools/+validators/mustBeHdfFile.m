@@ -2,13 +2,11 @@ function mustBeHdfFile(input)
     % MUSTBEHDFFILE
     %
     % Description:
-    %   Validates whether input is an HDF5 file or H5ML.id
+    %   Validates whether input is an HDF5 file or H5ML.id for a file
     %
     % Syntax:
     %   mustBeHdfFile(input)
     %
-    % Todo:
-    %   Check to see if it's possible to confirm H5ML.id is a file 
     % ---------------------------------------------------------------------
     
     if istext(input)
@@ -20,9 +18,17 @@ function mustBeHdfFile(input)
         return
     end
 
-    % If input wasn't a file name, check whether it's an identifier
-    if ~isa(input, 'H5ML.id')
-        eid = 'mustBeHdfFile:InvalidInput';
-        msg = 'Input must be a valid HDF5 file name or an H5ML.id';
-        throwAsCaller(MException(eid, msg));
+    if isa(input, 'H5ML.id')
+        objType = H5I.get_type(input);
+        if objType ~= H5ML.get_constant_value('H5I_FILE')
+            eid = 'mustBeFileID:InvalidH5MLID';
+            msg = 'H5ML.id was not a file identifier';
+            throwAsCaller(MException(eid, msg));
+        end
+        return
     end
+
+    % If input wasn't an HDF5 file name or a file H5ML.id, it's invalid
+    eid = 'mustBeHdfFile:InvalidInput';
+    msg = 'Input must be a valid HDF5 file name or a file H5ML.id';
+    throwAsCaller(MException(eid, msg));
