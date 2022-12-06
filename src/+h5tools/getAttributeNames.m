@@ -7,16 +7,30 @@ function names = getAttributeNames(hdfName, pathName)
     % Syntax:
     %   names = getAllAttributeNames(hdfFile, pathName)
     %
+    % Inputs:
+    %   hdfName         char or H5ML.id
+    %       The HDF5 file name or identifier
+    %
+    % Outputs:
+    %   names           string
+    %       The names of all attributes contained by the object
+    %
     % History:
     %   17Oct2022 - SSP
     % -------------------------------------------------------------
     arguments
-        hdfName             char     {mustBeFile(hdfName)} 
-        pathName            char
+        hdfName     char     {h5tools.validators.mustBeHdfFile(hdfName)}
+        pathName    char
     end
 
-    fileID = H5F.open(hdfName);
-    fileIDx = onCleanup(@()H5F.close(fileID));
+    if isa(hdfName, 'H5ML.id')
+        fileID = hdfName;
+    else
+        fileID = H5F.open(hdfName);
+        fileIDx = onCleanup(@()H5F.close(fileID));
+    end
+    
+    % Are the attributes associated with a dataset or a group
     try
         rootID = H5G.open(fileID, pathName);
         rootIDx = onCleanup(@()H5G.close(rootID));

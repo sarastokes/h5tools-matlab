@@ -72,7 +72,6 @@ classdef AttributeTest < matlab.unittest.TestCase
             testCase.verifyThat(...
                 @() h5tools.readatt(testCase.FILE, '/', 'ToBeDeleted'),...
                 Throws('MATLAB:imagesci:hdf5lib:libraryError'));
-
         end
     end
 

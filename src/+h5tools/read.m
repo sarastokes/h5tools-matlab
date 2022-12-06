@@ -7,7 +7,7 @@ function out = read(hdfName, pathName, dsetName, className)
 %
 % Supported data types:
 %   datetime, char, numeric, logical, table, timetable, string, duration
-%   enum, containers.Map, affine2d, imref2d, simtform2d, cfit
+%   cellstr, enum, containers.Map, affine2d, imref2d, simtform2d
 %
 % See also:
 %   h5read
@@ -43,6 +43,8 @@ function out = read(hdfName, pathName, dsetName, className)
             out = logical(data);
         case 'duration'
             out = seconds(data);
+        case 'cellstr'
+            out = cellstr(data);
         case {'table', 'timetable'}
             out = struct2table(data);
             colClasses = h5readatt(hdfName, fullPath, 'ColumnClass');

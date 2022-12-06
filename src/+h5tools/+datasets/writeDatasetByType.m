@@ -7,8 +7,10 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 %
 % Supported data types:
 %   numeric, char, string, logical, table, timetable, datetime, duration
-%   enum, struct, containers.Map(), affine2d, imref2d, simtform2d, cfit
-% See README.md for limitations
+%   cellstr, enum, struct, containers.Map, affine2d, imref2d, simtform2d
+%
+% Notes:
+%   See README.md for limitations
 % -------------------------------------------------------------------------
 
     arguments
@@ -25,6 +27,13 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
         h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data);
         h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
         return 
+    end
+
+    if iscellstr(data) %#ok<ISCLSTR> 
+        fprintf('%s is a cellstr\n', dsetName);
+        h5tools.datasets.makeStringDataset(hdfName, pathName, dsetName, string(data));
+        h5tools.writeatt(hdfName, fullPath, 'Class', 'cellstr');
+        return
     end
 
     if ischar(data)
@@ -105,17 +114,6 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
                 'Scale', data.Scale,...
                 'RotationAngle', data.RotationAngle,...
                 'Translation', data.Translation);
-        case 'cfit'
-            coeffNames = string(coeffnames(data));
-            coeffValues = [];
-            for i = 1:numel(coeffNames)
-                coeffValues = cat(2, coeffValues, data.(coeffNames(i)));
-            end
-            h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName,...
-                [fitType, ' ', fit]);
-            h5tools.writeatt(hdfName, fullPath, 'Class', class(data),...
-                'FitType', fitType,...
-                'Coefficients', coeffValues);
         otherwise
             success = false;
             warning('writeDatasetByType:UnidentifiedDataType',...

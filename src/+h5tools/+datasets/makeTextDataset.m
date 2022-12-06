@@ -1,17 +1,18 @@
 function makeTextDataset(hdfName, pathName, dsetName, txt) 
-    % MAKETEXTDATASET
-    %
-    % Description:
-    %   Create dataset for char/string data
-    %
-    % Syntax:
-    %   makeTextDataset(fileName, pathName, dsetName, txt)
-    % -------------------------------------------------------------
+% MAKETEXTDATASET
+%
+% Description:
+%   Create dataset for datasets for char
+%
+% Syntax:
+%   makeTextDataset(fileName, pathName, dsetName, txt)
+% -------------------------------------------------------------------------
+
     arguments
-        hdfName             char        {mustBeFile(hdfName)}
+        hdfName             {h5tools.validators.mustBeHdfFile(hdfName)}
         pathName            char
         dsetName            char 
-        txt
+        txt                 char
     end
 
     if isa(hdfName, 'H5ML.id')
@@ -29,19 +30,9 @@ function makeTextDataset(hdfName, pathName, dsetName, txt)
     dspaceID = H5S.create('H5S_SCALAR');
     dspaceIDx = onCleanup(@()H5S.close(dspaceID));
     
-    % Get the parent group, create if doesn't exist
-    try
-        groupID = H5G.open(fileID, pathName);
-        groupIDx = onCleanup(@()H5G.close(groupID));
-    catch ME
-        if contains(ME.message, 'doesn''t exist')
-            groupID = H5G.create(fileID, pathName,...
-                'H5P_DEFAULT', 'H5P_DEFAULT', 'H5P_DEFAULT');
-            groupIDx = onCleanup(@()H5G.close(groupID));
-        else
-            rethrow(ME);
-        end
-    end
+    % Get the parent group
+    groupID = H5G.open(fileID, pathName);
+    groupIDx = onCleanup(@()H5G.close(groupID));
 
     % Get the dataset
     try

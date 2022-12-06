@@ -32,8 +32,8 @@ classdef DatasetTest < matlab.unittest.TestCase
         end
     end
 
-    % Main MATLAB datatypes
-    methods (Test, TestTags={'Text'})
+    % MATLAB text datatypes
+    methods (Test, TestTags=["String", "Text"])
         function StringScalar(testCase)
             input = "abc";
             h5tools.write(testCase.FILE, '/', 'StringScalar', input);
@@ -47,11 +47,45 @@ classdef DatasetTest < matlab.unittest.TestCase
             output = h5tools.read(testCase.FILE, '/', 'StringArray');
             testCase.verifyEqual(output, input);
         end
+    end
 
+    methods (Test, TestTags=["Char", "Text"])
         function Char(testCase)
             input = 'abcdefghi';
             h5tools.write(testCase.FILE, '/', 'Char', input);
             output = h5tools.read(testCase.FILE, '/', 'Char');
+            testCase.verifyEqual(output, input);
+        end
+    end
+
+    methods (Test, TestTags=["CellStr", "Text"])
+        function CellstrRow(testCase)
+            input = {'abc', 'def', 'ghi'};
+            h5tools.write(testCase.FILE, '/', 'CellstrRow', input);
+            output = h5tools.read(testCase.FILE, '/', 'CellstrRow');
+            testCase.verifyEqual(output, input);
+        end
+
+        
+        function CellstrCol(testCase)
+            input = {'abc', 'def', 'ghi'}';
+            h5tools.write(testCase.FILE, '/', 'CellstrCol', input);
+            output = h5tools.read(testCase.FILE, '/', 'CellstrCol');
+            testCase.verifyEqual(output, input);
+        end
+        
+        function CellstrScalar(testCase)
+            input = {'abc'};
+            h5tools.write(testCase.FILE, '/', 'CellstrScalar', input);
+            output = h5tools.read(testCase.FILE, '/', 'CellstrScalar');
+            testCase.verifyEqual(output, input);
+        end
+        
+        
+        function Cellstr2D(testCase)
+            input = {'abc', 'def', 'ghi'; 'jkl', 'mno', 'pqr'};
+            h5tools.write(testCase.FILE, '/', 'Cellstr2D', input);
+            output = h5tools.read(testCase.FILE, '/', 'Cellstr2D');
             testCase.verifyEqual(output, input);
         end
     end
@@ -115,6 +149,15 @@ classdef DatasetTest < matlab.unittest.TestCase
             h5tools.write(testCase.FILE, '/', 'ScalarStruct', input);
             output = h5tools.read(testCase.FILE, '/', 'ScalarStruct');
             testCase.verifyEqual(output, input);
+        end
+
+        function UnequalStruct(testCase)
+            import matlab.unittest.constraints.Throws
+
+            input = struct('A', 1:3, 'B', 2);
+            testCase.verifyThat(...
+                @() h5tools.write(testCase.FILE, '/', 'UnequalStruct', input),...
+                Throws("makeCompoundDataset:DifferentFieldSizes"));
         end
     end
 
@@ -181,6 +224,7 @@ classdef DatasetTest < matlab.unittest.TestCase
     end
 
     methods (Test, TestTags=["Misc"])
+
         function Imref2d(testCase)
             input = imref2d([242, 360]);
             h5tools.write(testCase.FILE, '/', 'Imref2d', input);
@@ -203,13 +247,12 @@ classdef DatasetTest < matlab.unittest.TestCase
         end
     end
 
-    methods (Test, TestTags=["Error"])
-        function ExistingGroup(testCase)
-            % h5tools.write automatically creates a group for the dataset.
-            % Confirm it can operate well when the group exists too.
-            h5tools.createGroup(testCase.FILE, '/', 'Overwrite');
-            h5tools.write(testCase.FILE, '/', 'Overwrite', eye(3));
-            % Throws no error
+    methods (Test, TestTags=["Group"])
+        function AutoCreateGroup(testCase)
+            % Test auto creation of parent group
+            h5tools.write(testCase.FILE, '/NewGroup', 'Dataset', magic(5));
+            groupNames = h5tools.collectGroups(testCase.FILE);
+            testCase.verifyEqual(nnz(endsWith(groupNames, 'NewGroup')), 1);
         end
     end
 end

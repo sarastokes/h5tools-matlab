@@ -27,6 +27,18 @@ classdef HdfTypeTest < matlab.unittest.TestCase
             groupIDx = @()onCleanup(H5G.close(groupID));
             testCase.verifyEqual(HdfTypes.get(groupID), HdfTypes.GROUP);
 
+            dsetID = H5D.open(fileID, '/DatasetOne');
+            dsetIDx = @()onCleanup(H5D.close(dsetID));
+            testCase.verifyEqual(HdfTypes.get(dsetID), HdfTypes.DATASET);
+
+            spaceID = H5D.get_space(dsetID);
+            spaceIDx = @()onCleanup(H5S.close(spaceID));
+            testCase.verifyEqual(HdfTypes.get(spaceID), HdfTypes.DATASPACE);
+
+            typeID = H5D.get_type(dsetID);
+            typeIDx = @()onCleanup(H5T.close(typeID));
+            testCase.verifyEqual(HdfTypes.get(typeID), HdfTypes.DATATYPE);
+
             attID = H5A.open(fileID, 'AttOne');
             attIDx = @()onCleanup(H5A.close(attID));
             testCase.verifyEqual(HdfTypes.get(attID), HdfTypes.ATTR);
