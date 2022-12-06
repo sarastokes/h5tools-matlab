@@ -46,7 +46,7 @@ classdef ValidatorTest < matlab.unittest.TestCase
 
         function HDF5FileID(testCase)
             import matlab.unittest.constraints.Throws
-            
+
             % Passing a file ID should not error
             fileID = h5tools.openFile(testCase.HDF_FILE);
             fileIDx = @()onCleanup(H5G.close(groupID));
@@ -58,6 +58,20 @@ classdef ValidatorTest < matlab.unittest.TestCase
             testCase.verifyThat(...
                 @() h5tools.validators.mustBeHdfFile(groupID),...
                 Throws("mustBeFileID:InvalidH5MLID"));
+        end
+    end
+
+    methods (Test, TestTags=["mustBeHdfPath"])
+        function HdfPath(testCase)
+            import matlab.unittest.constraints.Throws
+        
+            % Should be error free
+            h5tools.validators.mustBeHdfPath(testCase.HDF_FILE, '/GroupOne');
+
+            % Should throw an error
+            testCase.verifyThat(...
+                @() h5tools.validators.mustBeHdfPath(testCase.HDF_FILE, '/GroupTwo'),...
+                Throws("HdfPath:InvalidPath"));
         end
     end
 

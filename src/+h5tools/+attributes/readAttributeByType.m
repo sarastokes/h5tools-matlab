@@ -2,7 +2,7 @@ function out = readAttributeByType(hdfName, pathName, attName)
 % READATTRIBUTEBYTYPE
 %
 % Description:
-%   Read an HDF5 attribute
+%   Read a single HDF5 attribute
 %
 % Syntax:
 %   out = readAttributeByType(hdfName, pathName, attName)
@@ -15,11 +15,12 @@ function out = readAttributeByType(hdfName, pathName, attName)
 %   attName             char
 %       Attribute name to read
 %
-%
+% See also:
+%   h5tools.readatt
 % -------------------------------------------------------------------------
     arguments 
-        hdfName         char    {mustBeFile(hdfName)}
-        pathName        char 
+        hdfName         char    {h5tools.validators.mustBeHdfFile(hdfName)} 
+        pathName        char    {h5tools.validators.mustBeHdfPath(hdfName, pathName)}
         attName         char 
     end
 
