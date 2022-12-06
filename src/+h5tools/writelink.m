@@ -1,11 +1,11 @@
-function writelink(hdfFile, targetPath, linkPath, linkName)
+function writelink(hdfFile, linkPath, linkName, targetPath)
     % WRITELINK 
     %
     % Description:
     %   Creates a soft link within HDF5 group
     %
     % Syntax:
-    %   writelink(hdfFile, targetPath, linkPath, linkName)
+    %   writelink(hdfFile, linkPath, linkName, targetPath)
     %
     % Inputs:
     %   hdfFile             char or H5ML.id
@@ -19,9 +19,9 @@ function writelink(hdfFile, targetPath, linkPath, linkName)
     % ---------------------------------------------------------------------
     arguments
         hdfFile             {mustBeFile(hdfFile)} 
-        targetPath          char
         linkPath            char
         linkName            char
+        targetPath          char
     end
 
     % Check whether the target path exists
@@ -30,9 +30,9 @@ function writelink(hdfFile, targetPath, linkPath, linkName)
             'Target path %s does not exist', targetPath);
     end
     % Check whether the link already exists
-    if h5tools.exist(hdfFile, h5tools.buildPath(linkPath, linkName))
+    if h5tools.exist(hdfFile, h5tools.util.buildPath(linkPath, linkName))
         warning('writelink:LinkExists',...
-            'Skipped existing link at %s', h5tools.buildPath(linkPath, linkName));
+            'Skipped existing link at %s', h5tools.util.buildPath(linkPath, linkName));
         return
     end
     fileID = h5tools.openFile(hdfFile, false);

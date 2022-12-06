@@ -157,4 +157,29 @@ classdef AttributeTest < matlab.unittest.TestCase
             testCase.verifyEqual(output, input);
         end
     end
+
+    methods (Test, TestTags=["invalid"])
+        function Table(testCase)
+            import matlab.unittest.constraints.Throws
+
+            input = struct("A", 1, "B", 2);
+            testCase.verifyThat(...
+                @()h5tools.writeatt(testCase.FILE, '/', 'Struct', input),...
+                Throws("writeAttributeByType:InvalidInput"));
+        end
+    end
+
+    methods (Test, TestTags=["Deletion"])
+        function Deletion(testCase)
+            % Write an attribute and confirm presence in attribute list
+            h5tools.writeatt(testCase.FILE, '/', 'ToDelete', "deleteme");
+            allAtts = h5tools.getAttributeNames(testCase.FILE, '/');
+            testCase.verifyNumElements(allAtts(endsWith(allAtts, "ToDelete")), 1);
+            
+            % Delete the attribute and confirm the attribute is gone
+            h5tools.deleteAttribute(testCase.FILE, '/', 'ToDelete');
+            allAtts = h5tools.getAttributeNames(testCase.FILE, '/');
+            testCase.verifyEmpty(allAtts(endsWith(allAtts, "ToDelete")), 1);
+        end
+    end
 end 

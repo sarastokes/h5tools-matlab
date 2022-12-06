@@ -14,7 +14,7 @@ function makeStringDataset(hdfName, pathName, dsetName, data)
         data                string
     end
 
-    fullPath = h5tools.buildPath(pathName, dsetName);
+    fullPath = h5tools.util.buildPath(pathName, dsetName);
     if ~h5tools.exist(hdfName, fullPath)
         h5create(hdfName, fullPath, size(data), 'DataType', 'string');
     end

@@ -20,7 +20,7 @@ function out = read(hdfName, pathName, dsetName, className)
         className       char                                = char.empty()
     end
 
-    fullPath = h5tools.buildPath(pathName, dsetName);
+    fullPath = h5tools.util.buildPath(pathName, dsetName);
 
     % Read the dataset
     data = h5read(hdfName, fullPath);
@@ -73,7 +73,30 @@ function out = read(hdfName, pathName, dsetName, className)
                 else
                     rethrow(ME);
                 end
+            end      
+        case 'affine2d'
+            out = affine2d(data);
+        case 'simtform2d'
+            T = h5readatt(hdfName, fullPath, 'Translation')';
+            S = h5readatt(hdfName, fullPath, 'Scale');
+            R = h5readatt(hdfName, fullPath, 'RotationAngle');
+            out = simtform2d(S, R, T);
+        case 'imref2d'
+            imageSize = h5readatt(hdfName, fullPath, 'ImageSize')';
+            pixelExtentX = h5readatt(hdfName, fullPath, 'PixelExtentInWorldX');
+            pixelExtentY = h5readatt(hdfName, fullPath, 'PixelExtentInWorldY');
+            if pixelExtentX ~= 1 || pixelExtentY ~= 1
+                out = imref2d(imageSize, pixelExtentX, PixelExtentInWorldX);
+                return
             end
+            xWorldLimits = h5readatt(hdfName, fullPath, 'XWorldLimits');
+            yWorldLimits = h5readatt(hdfName, fullPath, 'YWorldLimits');
+            if xWorldLimits(2) ~= (imageSize(2)+0.5) ...
+                    || yWorldLimits(2) ~= (imageSize(1) + 0.5)
+                out = imref2d(imageSize, xWorldLimits, yWorldLimits);
+                return
+            end
+            out = imref2d(imageSize);
         otherwise
             out = data;
     end 

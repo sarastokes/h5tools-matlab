@@ -18,7 +18,7 @@ function out = getPathOrder(pathName)
     end
 
     if ~isscalar(pathName)
-        out = arrayfun(@(x)h5tools.getPathOrder(x), pathName);
+        out = arrayfun(@(x)h5tools.util.getPathOrder(x), pathName);
         return
     end
 

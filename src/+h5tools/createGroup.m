@@ -32,7 +32,7 @@ function createGroup(hdfName, pathName, varargin)
     fileIDx = onCleanup(@()H5F.close(fileID));
     for i = 1:numel(varargin)
         try
-            groupPath = h5tools.buildPath(pathName, varargin{i});
+            groupPath = h5tools.util.buildPath(pathName, varargin{i});
             groupID = H5G.create(fileID, groupPath,...
                 'H5P_DEFAULT', 'H5P_DEFAULT', 'H5P_DEFAULT');
             groupIDx = onCleanup(@()H5G.close(groupID));

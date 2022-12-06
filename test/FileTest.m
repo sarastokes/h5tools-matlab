@@ -6,9 +6,10 @@ classdef FileTest < matlab.unittest.TestCase
     end
 
     methods (TestClassSetup)
-        function identifyTestFolder(testCase)
+        function setupFiles(testCase)
             testCase.FOLDER = fileparts(mfilename('fullpath'));
-            testCase.FILE = fullfile(testCase.FOLDER, 'FileTest.h5');
+            testCase.FILE = fullfile(testCase.FOLDER, 'File.h5');
+            disp(testCase.FILE)
             if exist(testCase.FILE, 'file')
                 delete(testCase.FILE);
             end
@@ -16,7 +17,7 @@ classdef FileTest < matlab.unittest.TestCase
     end
 
     methods (Test)
-        function createFile(testCase)
+        function makeFile(testCase)
             import matlab.unittest.constraints.Throws
 
             fileID = h5tools.createFile(testCase.FILE, false);
@@ -44,23 +45,23 @@ classdef FileTest < matlab.unittest.TestCase
         function PathOrder(testCase)
             % Single input
             path = "/GroupOne/GroupTwo/Dataset";
-            testCase.verifyEqual(h5tools.getPathOrder(path), 3);
+            testCase.verifyEqual(h5tools.util.getPathOrder(path), 3);
 
             % Multiple inputs
             paths = [path; "/GroupOne"];
-            testCase.verifyEqual(h5tools.getPathOrder(paths), [3, 1]');
+            testCase.verifyEqual(h5tools.util.getPathOrder(paths), [3, 1]');
         end
 
         function PathDividers(testCase)
             testPath = '/GroupOne/GroupTwo/Dataset';
-            testCase.verifyEqual(h5tools.getPathEnd(testPath), 'Dataset');
+            testCase.verifyEqual(h5tools.util.getPathEnd(testPath), 'Dataset');
             
             testPath = '/GroupOne/GroupTwo/Dataset';
-            testCase.verifyEqual(h5tools.getParentPath(testPath),... 
+            testCase.verifyEqual(h5tools.util.getPathParent(testPath),... 
                 '/GroupOne/GroupTwo');
 
             % Check special case: Group in root group
-            testCase.verifyEqual(h5tools.getParentPath('/GroupOne'), '/');
+            testCase.verifyEqual(h5tools.util.getPathParent('/GroupOne'), '/');
         end
     end
 end

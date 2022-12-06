@@ -1,4 +1,15 @@
 classdef LinkTest < matlab.unittest.TestCase
+% LINKTEST
+%
+% Description:
+%   Tests support for reading and writing HDF5 object references
+%
+% Use:
+%   results = runtests('LinkTest')
+%
+% See also:
+%   runH5toolsTestSuite
+% -------------------------------------------------------------------------
 
     properties 
         FILE
@@ -19,8 +30,16 @@ classdef LinkTest < matlab.unittest.TestCase
 
     methods (Test)
         function DatasetGroupLink(testCase)
-            h5tools.writelink(testCase.FILE, '/',  '/GroupTwo/DatasetTwoA', 'LinkOne');
-            testCase.verifyNumElements(h5tools.collectSoftLinks(testCase.FILE), 1);
+            h5tools.writelink(testCase.FILE, '/', 'LinkOne',... 
+                '/GroupTwo/DatasetTwoA');
+            testCase.verifyNumElements(...
+                h5tools.collectSoftlinks(testCase.FILE), 1);
+
+            % Test from file ID
+            fileID = h5tools.openFile(testCase.FILE);
+            fileIDx = onCleanup(@()H5F.close(fileID));
+            testCase.verifyNumElements(...
+                h5tools.collectSoftlinks(fileID), 1);
         end
     end
 end

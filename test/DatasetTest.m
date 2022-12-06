@@ -179,4 +179,37 @@ classdef DatasetTest < matlab.unittest.TestCase
             testCase.verifyEqual(output, input);
         end
     end
+
+    methods (Test, TestTags=["Misc"])
+        function Imref2d(testCase)
+            input = imref2d([242, 360]);
+            h5tools.write(testCase.FILE, '/', 'Imref2d', input);
+            output = h5tools.read(testCase.FILE, '/', 'Imref2d');
+            testCase.verifyEqual(output, input);
+        end
+
+        function Simtform2d(testCase)
+            input = simtform2d(3, 30, [10 20.5]);
+            h5tools.write(testCase.FILE, '/', 'Simtform2d', input);
+            output = h5tools.read(testCase.FILE, '/', 'Simtform2d');
+            testCase.verifyEqual(output, input);
+        end
+
+        function Affine2d(testCase)
+            input = affine2d(eye(3));
+            h5tools.write(testCase.FILE, '/', 'Affine2d', input);
+            output = h5tools.read(testCase.FILE, '/', 'Affine2d');
+            testCase.verifyEqual(output, input);
+        end
+    end
+
+    methods (Test, TestTags=["Error"])
+        function ExistingGroup(testCase)
+            % h5tools.write automatically creates a group for the dataset.
+            % Confirm it can operate well when the group exists too.
+            h5tools.createGroup(testCase.FILE, '/', 'Overwrite');
+            h5tools.write(testCase.FILE, '/', 'Overwrite', eye(3));
+            % Throws no error
+        end
+    end
 end

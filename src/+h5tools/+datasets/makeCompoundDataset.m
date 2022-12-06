@@ -14,7 +14,7 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
         data            {mustBeA(data, ["struct", "table", "timetable", "containers.Map"])}
     end
 
-    fullPath = h5tools.buildPath(pathName, dsetName);
+    fullPath = h5tools.util.buildPath(pathName, dsetName);
 
     % Record original class and column classes
     dataClass = class(data);

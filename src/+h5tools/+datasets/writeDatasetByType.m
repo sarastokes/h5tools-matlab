@@ -18,7 +18,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
         data
     end
 
-    fullPath = h5tools.buildPath(pathName, dsetName);
+    fullPath = h5tools.util.buildPath(pathName, dsetName);
     success = true;
 
     if isnumeric(data)
@@ -79,14 +79,16 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 
     % Miscellaneous data types. To get the necessary information written 
     % to the dataset, a combination of the dataset and/or the dataset's 
-    % attributes are used.
+    % attributes are used. These can serve as resources for users to write 
+    % additional functions for any datatypes not currently covered.
+    
     switch class(data)
         case 'affine2d'
-            h5tools.makeMatrixDataset(hdfName, pathName, dsetName, data.T);
-            h5tools.writeatt(hdfName, pathName, 'Class', class(data));        
+            h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data.T);
+            h5tools.writeatt(hdfName, fullPath, 'Class', class(data));        
         case 'imref2d'
-            HDF5.makeTextDataset(hdfName, pathName, dsetName, 'imref2d');
-            HDF5.writeatts(hdfName, fullPath, 'Class', class(data),...
+            h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, 'imref2d');
+            h5tools.writeatt(hdfName, fullPath, 'Class', class(data),...
                 'XWorldLimits', data.XWorldLimits,...
                 'YWorldLimits', data.YWorldLimits,...
                 'ImageSize', data.ImageSize,...
@@ -96,15 +98,22 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
                 'ImageExtentInWorldY', data.ImageExtentInWorldY,...
                 'YIntrinsicLimits', data.YIntrinsicLimits,...
                 'XIntrinsicLimits', data.XIntrinsicLimits);
+        case 'simtform2d'
+            h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, 'simtform2d');
+            h5tools.writeatt(hdfName, fullPath, 'Class', class(data),...
+                'Dimensionality', data.Dimensionality,...
+                'Scale', data.Scale,...
+                'RotationAngle', data.RotationAngle,...
+                'Translation', data.Translation);
         case 'cfit'
             coeffNames = string(coeffnames(data));
             coeffValues = [];
             for i = 1:numel(coeffNames)
                 coeffValues = cat(2, coeffValues, data.(coeffNames(i)));
             end
-            HDF5.makeTextDataset(hdfName, pathName, dsetName,...
+            h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName,...
                 [fitType, ' ', fit]);
-            HDF5.writeatts(hdfName, fullPath, 'Class', class(data),...
+            h5tools.writeatt(hdfName, fullPath, 'Class', class(data),...
                 'FitType', fitType,...
                 'Coefficients', coeffValues);
         otherwise

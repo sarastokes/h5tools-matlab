@@ -14,13 +14,14 @@ function makeMatrixDataset(hdfName, pathName, dsetName, data)
         data                            {mustBeNumeric(data)}
     end
 
-    fullPath = h5tools.buildPath(pathName, dsetName);
+    fullPath = h5tools.util.buildPath(pathName, dsetName);
 
-    % Create the group (if it doesn't exist already)
+    % Create the dataset (if it doesn't exist already)
     try
         h5create(hdfName, fullPath, size(data), 'Datatype', class(data));
     catch ME
-        if ~strcmp(ME.identifier, 'MATLAB:imagesci:h5create:datasetAlreadyExists')
+        % If it already exists, try to proceed with the next step
+        if ~contains(ME.message, 'already exists')
             rethrow(ME);
         end
     end                    

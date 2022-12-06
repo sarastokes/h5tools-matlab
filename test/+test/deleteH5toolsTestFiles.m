@@ -7,7 +7,7 @@ function deleteH5toolsTestFiles()
     delete(fullfile(testPath, 'AttributeTest.h5'));
     delete(fullfile(testPath, 'Collection.h5'));
     delete(fullfile(testPath, 'Dataset.h5'));
-    delete(fullfile(testPath, 'FileTest.h5'));
+    delete(fullfile(testPath, 'File.h5'));
     delete(fullfile(testPath, 'GroupTest.h5'));
     delete(fullfile(testPath, 'HdfTypeTest.h5'));
     delete(fullfile(testPath, 'LinkTest.h5'));

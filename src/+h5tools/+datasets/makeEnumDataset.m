@@ -20,5 +20,5 @@ function makeEnumDataset(hdfName, pathName, dsetName, data)
     end
 
     h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, char(data));
-    h5tools.writeatt(hdfName, h5tools.buildPath(pathName, dsetName),... 
+    h5tools.writeatt(hdfName, h5tools.util.buildPath(pathName, dsetName),... 
         'Class', 'enum', 'EnumClass', class(data));
