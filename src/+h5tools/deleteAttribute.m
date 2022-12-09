@@ -5,13 +5,25 @@ function deleteAttribute(hdfName, pathName, name)
 %   Delete an attribute
 %
 % Syntax:
-%   deleteAttribute(hdfFile, pathName, name)
+%   h5tools.deleteAttribute(hdfFile, pathName, name)
+%
+% Inputs:
+%   hdfName         char or H5ML.id
+%       The HDF5 file name or identifier
+%   pathName        char
+%       The path to the dataset or group within the HDF5 file
+%
+% Examples:
+%   h5tools.deleteAttribute('File.h5', '/GroupOne', 'AttrName')
+%
+% See also:
+%   h5tools.deleteObject
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
     arguments
-        hdfName         char            {mustBeFile(hdfName)} 
-        pathName        char
+        hdfName                         {mustBeHdfFile(hdfName)} 
+        pathName        char            {mustBeHdfPath(hdfName, pathName)}
         name            char
     end
 

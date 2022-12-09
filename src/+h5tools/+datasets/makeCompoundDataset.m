@@ -12,6 +12,7 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
+
     arguments
         hdfName         char    {mustBeFile(hdfName)} 
         pathName        char 
@@ -149,9 +150,11 @@ function typeID = getDataType(var)
     elseif ismember(class(var), {'char', 'cell', 'datetime'})
         typeID = H5T.copy('H5T_C_S1');
         H5T.set_size(typeID, 'H5T_VARIABLE');
+        H5T.set_cset(typeID, H5ML.get_constant_value('H5T_CSET_ASCII'));
     elseif isstring(var) && numel(var) == 1
         typeID = H5T.copy('H5T_C_S1');
         H5T.set_size(typeID, 'H5T_VARIABLE');
+        H5T.set_cset(typeID, H5ML.get_constant_value('H5T_CSET_UTF8'));
     elseif islogical(var)
         typeID = 'H5T_STD_I32LE';
     elseif isa(var, 'uint8')

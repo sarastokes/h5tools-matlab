@@ -98,8 +98,6 @@ classdef AttributesTest < matlab.unittest.TestCase
             testCase.verifyEqual(map2('B'), testCase.INPUT.B);
             testCase.verifyEqual(map2('C'), testCase.INPUT.C);
             testCase.verifyEqual(map2('D'), testCase.INPUT.D);
-            
-
         end
     end
 end 

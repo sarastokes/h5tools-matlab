@@ -1,23 +1,27 @@
 function names = getAttributeNames(hdfName, pathName)
-    % GETALLATTRIBUTENAMES
-    %
-    % Description:
-    %   Return all attribute names for an HDF5 dataset or group
-    %
-    % Syntax:
-    %   names = getAllAttributeNames(hdfFile, pathName)
-    %
-    % Inputs:
-    %   hdfName         char or H5ML.id
-    %       The HDF5 file name or identifier
-    %
-    % Outputs:
-    %   names           string
-    %       The names of all attributes contained by the object
-    %
-    % History:
-    %   17Oct2022 - SSP
-    % -------------------------------------------------------------
+% GETALLATTRIBUTENAMES
+%
+% Description:
+%   Return all attribute names for an HDF5 dataset or group
+%
+% Syntax:
+%   names = h5tools.getAllAttributeNames(hdfFile, pathName)
+%
+% Inputs:
+%   hdfName         char or H5ML.id
+%       The HDF5 file name or identifier
+%   pathName        char
+%       The path to the dataset or group within the HDF5 file
+%
+% Outputs:
+%   names           string
+%       The names of all attributes contained by the object
+%
+% See also:
+%   h5tools.hasAttribute, h5tools.readatt
+
+% By Sara Patterson, 2022 (h5tools-matlab)
+% -------------------------------------------------------------------------
     arguments
         hdfName              {mustBeHdfFile(hdfName)}
         pathName    char

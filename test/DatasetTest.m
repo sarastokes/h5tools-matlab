@@ -113,7 +113,7 @@ classdef DatasetTest < matlab.unittest.TestCase
         end
     end
 
-    methods (Test, TestTags={'Numeric'})
+    methods (Test, TestTags=["Numeric", "Float"])
         function DoubleScalar(testCase)
             input = 2;
             h5tools.write(testCase.FILE, '/', 'DoubleScalar', input);
@@ -142,7 +142,9 @@ classdef DatasetTest < matlab.unittest.TestCase
             output = h5tools.read(testCase.FILE, '/', 'SingleArray');
             testCase.verifyEqual(output, input);
         end
+    end
 
+    methods (Test, TestTags=["Numeric", "Integer"])
         function Uint8Scalar(testCase)
             input = uint8(1);
             h5tools.write(testCase.FILE, '/', 'UInt8', input);
@@ -171,6 +173,26 @@ classdef DatasetTest < matlab.unittest.TestCase
             testCase.verifyEqual(output, input);
         end
 
+        function UInt16Array(testCase)
+            input = uint16(magic(5));
+            h5tools.write(testCase.FILE, '/', 'UInt16Array', input);
+            output = h5tools.read(testCase.FILE, '/', 'UInt16Array');
+            testCase.verifyEqual(output, input);
+        end
+
+        function Int32Array(testCase)
+            input = int32(magic(5));
+            h5tools.write(testCase.FILE, '/', 'Int32Array', input);
+            output = h5tools.read(testCase.FILE, '/', 'Int32Array');
+            testCase.verifyEqual(output, input);
+        end
+
+        function UInt32Array(testCase)
+            input = uint32(magic(5));
+            h5tools.write(testCase.FILE, '/', 'UInt32Array', input);
+            output = h5tools.read(testCase.FILE, '/', 'UInt32Array');
+            testCase.verifyEqual(output, input);
+        end
     end
 
     methods (Test, TestTags={'Struct'})
@@ -181,13 +203,23 @@ classdef DatasetTest < matlab.unittest.TestCase
             testCase.verifyEqual(output, input);
         end
 
+        function ScalarStructMultiType(testCase)
+            input = struct('A', 1, 'B', "hello");
+            h5tools.write(testCase.FILE, '/', 'ScalarStructMulti', input);
+            output = h5tools.read(testCase.FILE, '/', 'ScalarStructMulti');
+            testCase.verifyEqual(output, input);
+        end
+
         function UnequalStruct(testCase)
             import matlab.unittest.constraints.Throws
 
             input = struct('A', 1:3, 'B', 2);
-            testCase.verifyThat(...
-                @() h5tools.write(testCase.FILE, '/', 'UnequalStruct', input),...
-                Throws("makeCompoundDataset:DifferentFieldSizes"));
+            h5tools.write(testCase.FILE, '/', 'UnequalStruct', input);
+            output = h5tools.read(testCase.FILE, '/', 'UnequalStruct');
+            testCase.verifyEqual(output, input);
+            %testCase.verifyThat(...
+            %    @() h5tools.write(testCase.FILE, '/', 'UnequalStruct', input),...
+            %    Throws("makeCompoundDataset:DifferentFieldSizes"));
         end
     end
 
@@ -221,26 +253,28 @@ classdef DatasetTest < matlab.unittest.TestCase
 
         function EnumOffPath(testCase)
             import matlab.unittest.constraints.Throws
+            import matlab.unittest.constraints.IssuesWarnings
 
             % fakeEnum = 'NotAnEnum.GROUPONE';
             h5tools.datasets.makeTextDataset(testCase.FILE, '/', 'EnumOffPath', 'GROUPONE');
             h5tools.writeatt(testCase.FILE, '/EnumOffPath', 'Class', 'enum',... 
                 'EnumClass', 'NotAnEnum');
-            testCase.verifyWarning(...
-                @() h5tools.read(testCase.FILE, '/', 'EnumOffPath'),...
-                "read:UnknownEnumerationClass");
+            testCase.verifyThat(...
+                @() h5tools.datasets.readDatasetByType(testCase.FILE, '/', 'EnumOffPath'),...
+                IssuesWarnings("read:UnknownEnumerationClass"));
         end
 
         function EnumBadType(testCase)
             import matlab.unittest.constraints.Throws
+            import matlab.unittest.constraints.IssuesWarnings
             
             % fakeEnum = 'EnumClass.GROUPFOUR';
             h5tools.datasets.makeTextDataset(testCase.FILE, '/', 'EnumBadType', 'GROUPFOUR');
             h5tools.writeatt(testCase.FILE, '/EnumBadType', 'Class', 'enum',... 
                 'EnumClass', class(test.EnumClass.GROUPONE));
-            testCase.verifyWarning(...
-                @() h5tools.read(testCase.FILE, '/', 'EnumBadType'),...
-                "read:UnknownEnumerationType");
+            testCase.verifyThat(...
+                @() h5tools.datasets.readDatasetByType(testCase.FILE, '/', 'EnumBadType'),...
+                IssuesWarnings("read:UnknownEnumerationType"));
         end
     end
 

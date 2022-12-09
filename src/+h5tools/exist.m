@@ -20,8 +20,10 @@ function tf = exist(hdfName, pathName)
 % Examples:
 %   tf = h5tools.exist('File.h5', '/GroupOne/DatasetA')
 %
-% History:
-%   08Jun2022 - SSP
+% See also:
+%   h5tools.hasAttribute
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
     arguments
         hdfName                 {mustBeHdfFile(hdfName)}

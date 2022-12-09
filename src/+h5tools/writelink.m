@@ -1,22 +1,27 @@
 function writelink(hdfFile, linkPath, linkName, targetPath)
-    % WRITELINK 
-    %
-    % Description:
-    %   Creates a soft link within HDF5 group
-    %
-    % Syntax:
-    %   writelink(hdfFile, linkPath, linkName, targetPath)
-    %
-    % Inputs:
-    %   hdfFile             char or H5ML.id
-    %       The file name of an HDF5 file or the identifier
-    %   linkPath
-    %       The HDF5 path where the link will be written
-    %   linkName
-    %       The name of the link
-    %   targetPath          char
-    %       The HDF5 path to link to
-    % ---------------------------------------------------------------------
+% WRITELINK 
+%
+% Description:
+%   Creates a soft link within HDF5 group
+%
+% Syntax:
+%   h5tools.writelink(hdfFile, linkPath, linkName, targetPath)
+%
+% Inputs:
+%   hdfFile             char or H5ML.id
+%       The file name of an HDF5 file or the identifier
+%   linkPath
+%       The HDF5 path where the link will be written
+%   linkName
+%       The name of the link
+%   targetPath          char
+%       The HDF5 path to link to
+%
+% See also:
+%   h5tools.collectSoftlinks
+
+% By Sara Patterson, 2022 (h5tools-matlab)
+% -------------------------------------------------------------------------
     arguments
         hdfFile             {mustBeFile(hdfFile)} 
         linkPath            char

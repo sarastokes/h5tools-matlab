@@ -31,16 +31,21 @@ function createGroup(hdfName, pathName, varargin)
 % -------------------------------------------------------------------------
 
     arguments
-        hdfName         char        {mustBeFile(hdfName)}
-        pathName        char
+        hdfName                 {mustBeHdfFile(hdfName)}
+        pathName        char    {mustBeHdfPath(hdfName, pathName)}
     end
     
     arguments (Repeating)
         varargin
     end
 
-    fileID = h5tools.openFile(hdfName, false);
-    fileIDx = onCleanup(@()H5F.close(fileID));
+    if isa(hdfName, 'H5ML.id')
+        fileID = hdfName;
+    else
+        fileID = h5tools.openFile(hdfName, false);
+        fileIDx = onCleanup(@()H5F.close(fileID));
+    end
+
     for i = 1:numel(varargin)
         try
             groupPath = h5tools.util.buildPath(pathName, varargin{i});

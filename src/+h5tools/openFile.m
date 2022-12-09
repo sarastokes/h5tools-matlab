@@ -5,16 +5,20 @@ function fileID = openFile(hdfName, readOnly)
 %   Convenience function for opening file for use with low-level library
 %
 % Syntax:
-%   fileID = openFile(hdfFile, readOnly)
+%   fileID = h5tools.openFile(hdfFile, readOnly)
 %
 % Inputs:
 %   hdfFile         char, HDF5 file name
 % Optional inputs:
 %   readOnly        logical, default = true
+%       Whether to open in read-only mode or allow write access too
 %
 % Output:
 %   fileID          H5ML.id
 %       Identifier for the HDF5 file
+%
+% See also:
+%   h5tools.createFile
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

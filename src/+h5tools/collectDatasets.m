@@ -25,7 +25,7 @@ function datasetNames = collectDatasets(hdfName, sortFlag)
 % -------------------------------------------------------------------------
 
     arguments
-        hdfName     char        {mustBeHdfFile(hdfName)}
+        hdfName                 {mustBeHdfFile(hdfName)}
         sortFlag    logical                                 = false 
     end
 

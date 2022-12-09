@@ -1,14 +1,14 @@
-function groupNames = collectGroups(hdfFile, sortFlag)
+function groupNames = collectGroups(hdfName, sortFlag)
 % COLLECTGROUPS
 %
 % Description:
 %   Collect all the group names in an HDF5 file
 %
 % Syntax:
-%   groupNames = collectGroups(hdfFile, sortFlag)
+%   groupNames = collectGroups(hdfName, sortFlag)
 %
 % Inputs:
-%   hdfFile         char or H5ML.id
+%   hdfName         char or H5ML.id
 %       HDF5 file name or identifier
 %   sortFlag        logical (default=false)
 %       Whether to sort the results alphabetically
@@ -24,14 +24,14 @@ function groupNames = collectGroups(hdfFile, sortFlag)
 % -------------------------------------------------------------------------
 
     arguments
-        hdfName     char        {mustBeHdfFile(hdfName)}
+        hdfName                 {mustBeHdfFile(hdfName)}
         sortFlag    logical                                 = false 
     end
 
-    if isa(hdfFile, 'H5ML.id')
-        rootID = hdfFile;
+    if isa(hdfName, 'H5ML.id')
+        rootID = hdfName;
     else
-        rootID = h5tools.openFile(hdfFile, true);
+        rootID = h5tools.openFile(hdfName, true);
         rootIDx = onCleanup(@()H5F.close(rootID));
     end
 

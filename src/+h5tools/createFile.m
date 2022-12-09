@@ -5,9 +5,9 @@ function fileID = createFile(hdfName, overwrite)
 %   Create an HDF5 file with optional overwriting of existing file
 %
 % Syntax:
-%   createFile(hdfFile)
-%   fileID = createFile(hdfFile)
-%   fileID = createFile(hdfFile, overwrite)
+%   h5tools.createFile(hdfFile)
+%   fileID = h5tools.createFile(hdfFile)
+%   fileID = h5tools.createFile(hdfFile, overwrite)
 %
 % Inputs:
 %   hdfFile            char
@@ -30,6 +30,8 @@ function fileID = createFile(hdfName, overwrite)
 %   % Create file and return identifier to use with low-level library
 %   fileID = h5tools.createFile('File.h5');
 %
+% See also:
+%   h5tools.openFile, h5create
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

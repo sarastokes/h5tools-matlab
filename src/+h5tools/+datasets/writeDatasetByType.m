@@ -26,7 +26,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 
     if isnumeric(data)
         h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data);
-        h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
+        %h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
         return 
     end
 
@@ -38,13 +38,13 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 
     if ischar(data)
         h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, data);
-        h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
+        %h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
         return 
     end
 
     if isstring(data)
         h5tools.datasets.makeStringDataset(hdfName, pathName, dsetName, data);
-        h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
+        % h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
         return
     end
 
@@ -55,13 +55,16 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
     end
 
     if isstruct(data) || istable(data) || isa(data, 'containers.Map')
-        h5tools.datasets.makeCompoundDataset(hdfName, pathName, dsetName, data);
-        h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
-        return
-    end
-
-    if isdatetime(data)
-        h5tools.datasets.makeDateDataset(hdfName, pathName, dsetName, data);
+        try
+            h5tools.datasets.makeCompoundDataset(hdfName, pathName, dsetName, data);
+            h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
+        catch ME 
+            if strcmp(ME.identifier, 'makeCompoundDataset:DifferentFieldSizes')
+                h5tools.datasets.makeMapDataset(hdfName, pathName, dsetName, data);
+            else
+                rethrow(ME);
+            end
+        end
         return
     end
 
@@ -69,6 +72,11 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
         h5tools.datasets.makeCompoundDataset(hdfName, pathName, dsetName, data);
         h5tools.writeatt(hdfName, fullPath, 'Class', class(data),... 
             'Units', 'seconds');
+        return
+    end
+
+    if isdatetime(data)
+        h5tools.datasets.makeDateDataset(hdfName, pathName, dsetName, data);
         return
     end
 
