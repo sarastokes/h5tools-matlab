@@ -15,6 +15,10 @@ function mustBeHdfPath(hdfFile, hdfPath)
 %   06Dec2022 - SSP
 % -------------------------------------------------------------------------
 
+    if strcmp(hdfPath, '/')
+        return
+    end
+    
     if ~h5tools.exist(hdfFile, hdfPath)
         eid = "HdfPath:InvalidPath";
         msg = sprintf("Path %s does not exist in %s", hdfPath, hdfFile);

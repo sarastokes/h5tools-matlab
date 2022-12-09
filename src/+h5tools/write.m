@@ -1,7 +1,20 @@
 function write(hdfName, pathName, dsetName, data)
+% WRITE
+%
+% Description:
+%   Write one or more HDF5 datasets
+%
+% Syntax:
+%   h5tools.write(hdfName, pathName, dsetName, data)
+%
+% See also:
+%   h5tools.datasets.writeDatasetByType
+
+% By Sara Patterson, 2022 (h5tools-matlab)
+% -------------------------------------------------------------------------
 
     arguments
-        hdfName         {h5tools.validators.mustBeHdfFile(hdfName)}
+        hdfName                 {mustBeFile(hdfName)}
         pathName        char 
         dsetName        char
         data 

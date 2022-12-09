@@ -1,23 +1,33 @@
-function groupNames = collectGroups(hdfFile)
-    % COLLECTGROUPS
-    %
-    % Description:
-    %   Collect all the group names in an HDF5 file
-    %
-    % Syntax:
-    %   groupNames = collectGroups(hdfFile)
-    %
-    % Inputs:
-    %   hdfFile         char or H5ML.id
-    %       HDF5 file name or identifier
-    %
-    % Outputs:
-    %   groupNames      string array
-    %       Full paths of all groups in the HDF5 file
-    %
-    % History:
-    %   16Oct2022 - SSP
-    % ---------------------------------------------------------------------
+function groupNames = collectGroups(hdfFile, sortFlag)
+% COLLECTGROUPS
+%
+% Description:
+%   Collect all the group names in an HDF5 file
+%
+% Syntax:
+%   groupNames = collectGroups(hdfFile, sortFlag)
+%
+% Inputs:
+%   hdfFile         char or H5ML.id
+%       HDF5 file name or identifier
+%   sortFlag        logical (default=false)
+%       Whether to sort the results alphabetically
+%
+% Outputs:
+%   groupNames      string array
+%       Full paths of all groups in the HDF5 file
+%
+% See also:
+%   h5tools.collectDatasets, h5tools.collectSoftlinks, h5tools.getAttributeNames
+
+% By Sara Patterson, 2022 (h5tools-matlab)
+% -------------------------------------------------------------------------
+
+    arguments
+        hdfName     char        {mustBeHdfFile(hdfName)}
+        sortFlag    logical                                 = false 
+    end
+
     if isa(hdfFile, 'H5ML.id')
         rootID = hdfFile;
     else
@@ -28,6 +38,10 @@ function groupNames = collectGroups(hdfFile)
     groupNames = string.empty();
     [~, groupNames] = H5O.visit(rootID, 'H5_INDEX_NAME',... 
         'H5_ITER_NATIVE', @groupVisitFcn, groupNames);
+    
+    if sortFlag && ~isempty(groupNames)
+        groupNames = sort(groupNames);
+    end
 end
 
 function [status, groupNames] = groupVisitFcn(rootID, name, groupNames)

@@ -47,10 +47,14 @@ function varargout = readatt(hdfName, pathName, varargin)
 %   % 4. Read all attributes, return as containers.Map
 %   out = readatt('File.h5', '/GroupOne', 'all')
 %
+% See also:
+%   h5tools.writeatt, h5readatt, h5tools.getAllAttributeNames
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
     arguments 
         hdfName         char    {mustBeFile(hdfName)}
-        pathName        char    {h5tools.validators.mustBeHdfPath(hdfName, pathName)} 
+        pathName        char    %{mustBeHdfPath(hdfName, pathName)} 
     end
 
     arguments (Repeating)

@@ -3,6 +3,15 @@ classdef SearchTest < matlab.unittest.TestCase
 %
 % Description:
 %   Test collection of all groups, datasets and links
+%
+% Examples:
+%   results = runtests('SearchTest')
+%
+% See also:
+%   runH5toolsTestSuite
+%
+% History:
+%   3Dec2022 - SSP
 % -------------------------------------------------------------------------
 
     properties

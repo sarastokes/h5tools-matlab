@@ -3,6 +3,15 @@
 *.m~
 *.mldatx
 
+## LaTeX
+*.aux 
+*.fls 
+*.toc 
+*.synctex.gz
+*.fdb_latexmk
+*.log
+*.out
+
 ## Development folder
 dev/
 

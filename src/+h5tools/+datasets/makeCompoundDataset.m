@@ -5,7 +5,12 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
 %   Adds table/struct to HDF5 file as compound
 %
 % Syntax:
-%   makeCompoundDataset(hdfName, pathName, dsetName, data);
+%   h5tools.makeCompoundDataset(hdfName, pathName, dsetName, data);
+%
+% See also:
+%   h5tools.write, h5tools.datasets.writeDatasetByType
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
     arguments
         hdfName         char    {mustBeFile(hdfName)} 
@@ -134,9 +139,13 @@ function typeID = getDataType(var)
     % Syntax:
     %   typeID = getDataType(var)
     % -------------------------------------------------------------
+    varType = class(var);
+
+    if contains(varType, 'int')
+    end
+
     if isa(var, 'double')
         typeID = 'H5T_IEEE_F64LE';
-    %elseif isa(var, ["seconds", "minutes", "hours", "months", "days", "years"])
     elseif ismember(class(var), {'char', 'cell', 'datetime'})
         typeID = H5T.copy('H5T_C_S1');
         H5T.set_size(typeID, 'H5T_VARIABLE');

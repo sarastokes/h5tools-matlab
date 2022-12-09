@@ -1,25 +1,27 @@
 function writeAttributeByType(hdfFile, hdfPath, attName, attValue)
-    % WRITEATTRIBUTEBYTYPE
-    %
-    % Description:
-    %   Ensure datatype compatibility, then write as an attribute 
-    %
-    % Syntax:
-    %   writeAttributeByType(hdfFile, hdfPath, varargin)
-    %
-    % Inputs:
-    %   hdfFile     char
-    %       HDF5 file name
-    %   hdfPath     char
-    %       Path of the dataset/group where attributes will be written
-    %   attName     char
-    %       Name of the attribute
-    %   attValue
-    %       Data to write for the attribute
-    %
-    % See also:
-    %   writeatt, kv2map
-    % -------------------------------------------------------------------------
+% WRITEATTRIBUTEBYTYPE
+%
+% Description:
+%   Ensure datatype compatibility, then write as an attribute 
+%
+% Syntax:
+%   writeAttributeByType(hdfFile, hdfPath, varargin)
+%
+% Inputs:
+%   hdfFile     char
+%       HDF5 file name
+%   hdfPath     char
+%       Path of the dataset/group where attributes will be written
+%   attName     char
+%       Name of the attribute
+%   attValue
+%       Data to write for the attribute
+%
+% See also:
+%   h5tools.writeatt, h5writeatt
+
+% By Sara Patterson, 2022 (h5tools-matlab)
+% -------------------------------------------------------------------------
 
     arguments
         hdfFile         char        {mustBeFile(hdfFile)}

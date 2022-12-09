@@ -6,8 +6,9 @@ function deleteAttribute(hdfName, pathName, name)
 %
 % Syntax:
 %   deleteAttribute(hdfFile, pathName, name)
-% -------------------------------------------------------------------------
 
+% By Sara Patterson, 2022 (h5tools-matlab)
+% -------------------------------------------------------------------------
     arguments
         hdfName         char            {mustBeFile(hdfName)} 
         pathName        char

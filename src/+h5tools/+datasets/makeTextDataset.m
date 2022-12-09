@@ -2,14 +2,19 @@ function makeTextDataset(hdfName, pathName, dsetName, txt)
 % MAKETEXTDATASET
 %
 % Description:
-%   Create dataset for datasets for char
+%   Create and write an HDF5 dataset for char
 %
 % Syntax:
 %   makeTextDataset(fileName, pathName, dsetName, txt)
+%
+% See also:
+%   h5tools.write, h5tools.datasets.writeDatasetByType
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
     arguments
-        hdfName             {h5tools.validators.mustBeHdfFile(hdfName)}
+        hdfName                     {mustBeHdfFile(hdfName)}
         pathName            char
         dsetName            char 
         txt                 char

@@ -17,13 +17,17 @@ function out = readAttributeByType(hdfName, pathName, attName)
 %
 % See also:
 %   h5tools.readatt
+%
+% History:
+%   22Aug2022 - SSP
 % -------------------------------------------------------------------------
     arguments 
-        hdfName         char    {h5tools.validators.mustBeHdfFile(hdfName)} 
-        pathName        char    {h5tools.validators.mustBeHdfPath(hdfName, pathName)}
+        hdfName         char    {mustBeHdfFile(hdfName)} 
+        pathName        char    {mustBeHdfPath(hdfName, pathName)}
         attName         char 
     end
 
+    % Begin with h5readatt and post-process as needed
     data = h5readatt(hdfName, pathName, attName);
 
     if isa(data, 'int32')

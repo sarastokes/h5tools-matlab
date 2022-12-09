@@ -1,22 +1,32 @@
-function linkNames = collectSoftlinks(hdfName)
-    % COLLECTALLSOFTLINKS
-    %
-    % Description:
-    %   Returns all soft links in an HDF5 file
-    %
-    % Syntax:
-    %   linkNames = collectAllSoftlinks(hdfName)
-    %
-    % Inputs:
-    %   hdfName         HDF file name or H5ML.id
-    %
-    % Outputs:
-    %   linkNames       string array
-    %       The full hdfPaths and names of all softlinks
-    %
-    % History:
-    %   21Nov2022 - SSP
-    % ---------------------------------------------------------------------
+function linkNames = collectSoftlinks(hdfName, sortFlag)
+% COLLECTALLSOFTLINKS
+%
+% Description:
+%   Returns all soft links in an HDF5 file
+%
+% Syntax:
+%   linkNames = h5tools.collectAllSoftlinks(hdfName, sortFlag)
+%
+% Inputs:
+%   hdfName         HDF file name or H5ML.id
+%       The name of the HDF5 file, or the file identifier
+%   sortFlag        logical (default=false)
+%       Whether to sort the results alphabetically
+%
+% Outputs:
+%   linkNames       string array
+%       The full hdfPaths and names of all softlinks
+%
+% See also:
+%   h5tools.collectDatasets, h5tools.collectGroups, h5tools.getAttributeNames
+
+% By Sara Patterson, 2022 (h5tools-matlab)
+% -------------------------------------------------------------------------
+
+    arguments
+        hdfName     char        {mustBeHdfFile(hdfName)}
+        sortFlag    logical                                 = false 
+    end
     
     if isa(hdfName, 'H5ML.id')
         rootID = hdfName;
@@ -28,6 +38,10 @@ function linkNames = collectSoftlinks(hdfName)
     linkNames = string.empty();
     [~, linkNames] = H5L.visit(rootID, 'H5_INDEX_NAME',...
         'H5_ITER_NATIVE', @softlinkVisitFcn, linkNames);
+
+    if sortFlag && ~isempty(linkNames)
+        linkNames = sort(linkNames);
+    end
 end
 
 function [status, dataOut] = softlinkVisitFcn(groupID, name, dataIn)

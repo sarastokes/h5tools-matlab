@@ -134,6 +134,14 @@ classdef DatasetTest < matlab.unittest.TestCase
             output = h5tools.read(testCase.FILE, '/', 'Double3D');
             testCase.verifyEqual(output, input);
         end
+        
+        function SingleArray(testCase)
+            input = single(magic(5));
+            %input = double(magic(5));
+            h5tools.write(testCase.FILE, '/', 'SingleArray', input);
+            output = h5tools.read(testCase.FILE, '/', 'SingleArray');
+            testCase.verifyEqual(output, input);
+        end
 
         function Uint8Scalar(testCase)
             input = uint8(1);
@@ -141,6 +149,28 @@ classdef DatasetTest < matlab.unittest.TestCase
             output = h5tools.read(testCase.FILE, '/', 'UInt8');
             testCase.verifyEqual(output, input);
         end
+
+        function Uint8Array(testCase)
+            input = uint8(magic(5));
+            h5tools.write(testCase.FILE, '/', 'UInt8Array', input);
+            output = h5tools.read(testCase.FILE, '/', 'UInt8Array');
+            testCase.verifyEqual(output, input);
+        end
+
+        function Int8Array(testCase)
+            input = int8(magic(5));
+            h5tools.write(testCase.FILE, '/', 'Int8Array', input);
+            output = h5tools.read(testCase.FILE, '/', 'Int8Array');
+            testCase.verifyEqual(output, input);
+        end
+        
+        function Int16Array(testCase)
+            input = int16(magic(5));
+            h5tools.write(testCase.FILE, '/', 'Int16Array', input);
+            output = h5tools.read(testCase.FILE, '/', 'Int16Array');
+            testCase.verifyEqual(output, input);
+        end
+
     end
 
     methods (Test, TestTags={'Struct'})

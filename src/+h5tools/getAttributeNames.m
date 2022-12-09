@@ -19,7 +19,7 @@ function names = getAttributeNames(hdfName, pathName)
     %   17Oct2022 - SSP
     % -------------------------------------------------------------
     arguments
-        hdfName     char     {h5tools.validators.mustBeHdfFile(hdfName)}
+        hdfName              {mustBeHdfFile(hdfName)}
         pathName    char
     end
 

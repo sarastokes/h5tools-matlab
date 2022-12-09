@@ -27,12 +27,12 @@ classdef ValidatorTest < matlab.unittest.TestCase
 
             % A file that isn't HDF5
             testCase.verifyThat(...
-                @() h5tools.validators.mustBeHdfFile(testCase.TXT_FILE),...
+                @() mustBeHdfFile(testCase.TXT_FILE),...
                 Throws("mustBeHdfFile:InvalidFile"));
             
             % A file that doesn't exist
             testCase.verifyThat(...
-                @() h5tools.validators.mustBeHdfFile('NotAFile.h5'),...
+                @() mustBeHdfFile('NotAFile.h5'),...
                 Throws("mustBeHdfFile:InvalidFile"));
         end
 
@@ -40,7 +40,7 @@ classdef ValidatorTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.Throws
             
             testCase.verifyThat(...
-                @() h5tools.validators.mustBeHdfFile(1),...
+                @() mustBeHdfFile(1),...
                 Throws("mustBeHdfFile:InvalidInput"));
         end
 
@@ -50,13 +50,13 @@ classdef ValidatorTest < matlab.unittest.TestCase
             % Passing a file ID should not error
             fileID = h5tools.openFile(testCase.HDF_FILE);
             fileIDx = @()onCleanup(H5G.close(groupID));
-            h5tools.validators.mustBeHdfFile(fileID);
+            mustBeHdfFile(fileID);
 
             % Passing a group ID should cause an error
             groupID = H5G.open(fileID, '/GroupOne');
             groupIDx = @()onCleanup(H5G.close(groupID));
             testCase.verifyThat(...
-                @() h5tools.validators.mustBeHdfFile(groupID),...
+                @() mustBeHdfFile(groupID),...
                 Throws("mustBeFileID:InvalidH5MLID"));
         end
     end
@@ -66,11 +66,11 @@ classdef ValidatorTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.Throws
         
             % Should be error free
-            h5tools.validators.mustBeHdfPath(testCase.HDF_FILE, '/GroupOne');
+            mustBeHdfPath(testCase.HDF_FILE, '/GroupOne');
 
             % Should throw an error
             testCase.verifyThat(...
-                @() h5tools.validators.mustBeHdfPath(testCase.HDF_FILE, '/GroupTwo'),...
+                @() mustBeHdfPath(testCase.HDF_FILE, '/GroupTwo'),...
                 Throws("HdfPath:InvalidPath"));
         end
     end
@@ -80,11 +80,11 @@ classdef ValidatorTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.Throws
 
             testCase.verifyThat(...
-                @() h5tools.validators.mustBeEnum(1),...
+                @() mustBeEnum(1),...
                 Throws("mustBeEnum:InvalidInput"));
             
             % Should not throw an error (TODO)
-            h5tools.validators.mustBeEnum(test.EnumClass.GROUPONE);
+            mustBeEnum(test.EnumClass.GROUPONE);
         end
     end
 end 
