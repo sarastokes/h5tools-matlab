@@ -157,8 +157,24 @@ function typeID = getDataType(var)
         H5T.set_cset(typeID, H5ML.get_constant_value('H5T_CSET_UTF8'));
     elseif islogical(var)
         typeID = 'H5T_STD_I32LE';
+    elseif isa(var, 'int8')
+        typeID = 'H5T_STD_I8LE';
     elseif isa(var, 'uint8')
         typeID = 'H5T_STD_U8LE';
+    elseif isa(var, 'int16')
+        typeID = 'H5T_STD_I16LE';
+    elseif isa(var, 'uint16')
+        typeID = 'H5T_STD_U16LE';
+    elseif isa(var, 'int32')
+        typeID = 'H5T_STD_I32LE';
+    elseif isa(var, 'uint32')
+        typeID = 'H5T_STD_U32LE';
+    elseif isa(var, 'int64')
+        typeID = 'H5T_STD_I64LE';
+    elseif isa(var, 'uint64')
+        typeID = 'H5T_STD_U64LE';
+    elseif isa(var, 'single')
+        typeID = 'H5T_IEEE_F32LE';
     else
         assignin('base', 'var', var);
         error('getDataType:UnrecognizedDataType',...

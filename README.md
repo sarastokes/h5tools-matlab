@@ -36,8 +36,8 @@ h5tools.write('Test.h5', '/', 'Dataset1', 1:3, 'Dataset2', "hello world");
 
 The upside of handling dataset creating behind the scenes is that it is tricky (especially for non-numeric types) and the average user may have no reason to delve into the details of HDF5 dataset creation. The downside is that you lose the control of specifying your dataspace and dataset (particularly access to filtering, compression, etc.). If you do have special requirements for the created dataset, try MATLAB's built-in functions or the low-level library. 
 
-How does h5tools-matlab implement the previously unsupported datatypes and ensure they are read back into MATLAB from HDF5 identically? First, once you understand HDF5 dataspaces (```H5S```), you'll find more types are supported than you initially thought, which is why dataset creation is bundled in with writing. Second, truly unsupported types are made possible by writing attributes to the dataset that identify the intended MATLAB data type and any additional information needed to recreate the intended data type when reading the dataset into MATLAB. 
-> Disclaimer: Using attributes to support new datatypes is a workaround rather than a true solution. That being said... it does work (with some limitations described below).
+How does h5tools-matlab implement the previously unsupported datatypes and ensure they are read back into MATLAB from HDF5 identically? The full implementation is described in the "docs" folder. First, once you understand HDF5 dataspaces (```H5S```), you'll find more types are supported than you initially thought, which is why dataset creation is bundled in with writing. Second, truly unsupported types are made possible by writing attributes to the dataset that identify the intended MATLAB data type and any additional information needed to recreate the intended data type when reading the dataset into MATLAB. 
+> Disclaimer: Using attributes to support new datatypes is a workaround rather than a true solution. That being said... it does work (with some limitations described in the documentation).
 
 
 ### Reading dataset(s) 
@@ -139,30 +139,6 @@ See the documentation for full information on how to use these. All take the HDF
 - ```fileID = h5tools.openFile(hdfFile, readOnly)``` - if you need to work with the low-level library, this function will return the file identifier. If the 2nd input is true (default), it will be opened as read-only. To modify the file, set to false. 
 
 The ```h5tools.util``` package contains some small functions for working with HDF5 paths (```getPathEnd```, ```buildPath```). In addition, ```h5tools.util.HdfTypes``` mimics the enumeration used for object types in the low-level library (but does not require using ```H5ML.get_constant_value()``` to interpret) and can parse ```H5ML.id``` inputs.
-
-## Limitations
-Most of the functions within ```h5tools-matlab``` are straightforward solutions. However, some of the dataset/attribute writing functions employ tricks rather than true solutions to ensure as many MATLAB datatypes can be read and written to HDF5 files as possible. For those situations, keep the following limitations in mind:
-
-### Datasets
-1. ```struct``` and ```containers.Map```. Both of these data types mimic the natural layout of an HDF5 file (i.e they are a group containing datasets), so there are naturally difficulties writing them to a single dataset. Before writing a ```struct```/```containers.Map``` as a dataset, always consider making a new group and writing the members of the struct/map as individual datasets within that group. If you absolutely must have it as a dataset, a few key points:
-   -  ```struct``` is written as a dataset with HDF5's compound data type (like ```table``` and ```timetable```). The datatypes of each field will be recorded in the attributes to facilitate reading the data back in appropriately. But, the struct must behave like a table, in that each field should have the same number of elements.
-   -  The contents of ```containers.Map``` is written as attributes of a placeholder text dataset. The advantage here is that each field can have a different number of elements. The disadvantage is that the attributes can't have attributes so the attribute limitations discussed below apply.
-   -  There are advantages and disadvantages to both, so consider which best suits your data. Conversion functions ```struct2map``` and ```map2struct``` are included in the "util" folder. A good rule of thumb for ```struct```, ```containers.Map``` and ```table``` is to always double check when writing one containing new datatypes and ensure it's being read back in as you expect.
-
-2. Multi-level structs (i.e. a ```struct``` containing another ```struct```) are not supported. Instead, make a new group for the secondary ```struct```.
-
-3. Enumerated types can be read back into MATLAB appropriately, but only if the class containing the enumeration is on your search path. If the class can't be found, they will be read back in as ```char```. 
-4. There are also several features that MATLAB's built-in functions already handle well and are not currently supported in h5tools-matlab, such as reading subsets of numeric datasets, using filters and working with remote locations. 
-
-### Attributes
-A number of the specialized data types above are supported by attaching attributes to the dataset with the necessary additional information to allow MATLAB to read them appropriately. Attributes can't have attributes, so the datatype support is naturally more limited. 
-1. The standard numeric datatypes, string, char and logical are fully supported. As above, reading ```enum``` is only supported if the class is on your search path.
-2. Specialized MATLAB datatypes (e.g. datetime, duration, etc) cannot be written as HDF5 attributes and read identically back into MATLAB. If possible, ```h5tools.writeatt``` will try to convert your information to a form that can be written. For example, ```datetime``` will converted with ```datestr()``` and written as ```string```. The information at least exists in your file, but when you read that attribute back into MATLAB from the HDF5 file, it come back as a ```string```. When you write a ```datetime``` as a dataset, ```h5tools.write``` adds an attribute specifying the class and the datetime format, so that ```h5tools.read``` can convert it back to ```datetime```. This won't work for attributes as they can't have their own attributes. 
-Other attributes that can be written but not identically read back include ```duration``` (converted to ```double```) and ```cellstr``` (converted to ```string```).
-1. Attributes that are links to other groups/datasets have not been implemented. 
-2. Row vectors will be returned as columns. I haven't had a chance to figure out why this is or whether there's a fix.
-
-If you try to write an attribute that without write support, you'll get an error. If you write one without read support, a warning will be sent to the command line specifying the path within the HDF5 file, attribute name and datatype, so that you are aware. 
 
 ### References
 For more information on working with HDF5 in MATLAB, see their [documentation](https://www.mathworks.com/help/matlab/hdf5-files.html) which provides information on the high-level functions and low-level HDF5 Package Library.

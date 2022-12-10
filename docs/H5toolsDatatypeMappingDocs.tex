@@ -150,7 +150,7 @@
 			\item \underline{Preprocessing:} The index of each enumerated type value within the full list of enumerated types is converted to \texttt{uint8}. 
 			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with the values of each member in the enumeration as \hdftype{H5T\_STD\_I32LE}. While enumerated types supported in HDF5, accompanying information is required to identify the class containing the enumeration when read back into MATLAB. This information is written as two attributes: \myatt{Class=enum} and \myatt{EnumClass}{MATLAB class} name containing enumeration (including namespaces, if applicable).
 			\item \underline{Postprocessing:} A string array of the enumeration members is read from the dataset through the datatype library (\texttt{H5T}), ordered by their enumeration value. If the associated class is not found on MATLAB's path, the data will be read back in as a string array using the format \texttt{x.y} where \texttt{x} is the class name in the attributes and \texttt{y} is the enumeration name. If the class is found on MATLAB's path, the string will be evaluated (\texttt{eval}). If the enumerated type was not written with h5tools and as no class name attribute, the string array will just contain the enumeration names. %with the class name in the attributes \texttt{char}.
-			\item \underline{Implementation:} 
+			\item \underline{Implementation:} \texttt{h5tools.datasets.makeEnumDataset}, \texttt{h5tools.datasets.readEnumDataset}.
 			\item \underline{Limitations:} 
 		\end{itemize}
 		
@@ -160,7 +160,7 @@
 			\item \underline{Preprocessing:} Conversion to \texttt{uint8}.
 			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with two members (0=FALSE, 1=TRUE). 
 			\item \underline{Postprocessing:} If an enumerated type dataset is read in and has two enumerated types matching those above, the values it will be treated as \texttt{logical}. The enumerated values will be converted from \texttt{uint8} to \texttt{logical}. 
-			\item \underline{Implementation:} 
+			\item \underline{Implementation:} \texttt{h5tools.datasets.makeLogicalDataset}, \texttt{h5tools.datasets.readEnumDataset}.
 			\item \underline{Limitations:} N/A
 		\end{itemize}
 		
@@ -170,8 +170,8 @@
 			\item \underline{Preprocessing:} 
 			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_COMPOUND}} with two attributes: \myatt{Class}{table}, \myatt{ColumnClasses}{[class1, class2,...]} of data in each column
 			\item \underline{Postprocessing:} 
-			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeCompoundDataset}
-			\item \underline{Limitations:} 
+			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeCompoundDataset}, \myfcn{h5tools.datasets.readCompoundDataset}
+			\item \underline{Limitations:} Currently only numeric datatypes, string and char are supported.
 		\end{itemize}
 		
 
@@ -180,18 +180,18 @@
             \item \underline{Preprocessing:} The number of elements in each field will be calculated to determine the strategy used to write the information to the HDF5 file. 
             \item \underline{Persistence:} If the number of elements in each field is the same, \hdftype{H5T\_COMPOUND} is used, as described above, but with the identifying attribute \myatt{Class}{struct}. 
             \item \underline{Postprocessing:} See above for compound data type. If mapped to attributes instead, the attributes and their values will be assigned to the fields of a \texttt{struct}, omitting the Class attribute. 
-            \item \underline{Implementation:} \myfcn{h5tools.datasets.makeStructDataset}
-            \item \underline{Limitations:} 
+            \item \underline{Implementation:} \myfcn{h5tools.datasets.makeStructDataset}, \myfcn{h5tools.datasets.makeMapDataset}
+            \item \underline{Limitations:} As described above, the number of elements in each field must be the same. Multi-level structs (e.g. a \texttt{struct} where one or more of the fields are \texttt{struct}. The limitations of \texttt{table} also apply.
         \end{itemize}
 	
         \subsection{Containers.Map}
         \noindent \texttt{Containers.Map} is treated similarly to \texttt{struct}.
         \noindent\begin{itemize}
-            \item \underline{Preprocessing:} Conversion to \texttt{struct}
+            \item \underline{Preprocessing:} Conversion to \texttt{struct} with \myfcn{map2struct}.
             \item \underline{Persistence:} See \texttt{struct}. Only difference is the identifying attribute \myatt{Class}{containers.Map}. 
             \item \underline{Postprocessing:} If necessary, conversion with \myfcn{struct2map}. 
-            \item \underline{Implementation:}
-            \item \underline{Limitations:} 
+            \item \underline{Implementation:} \myfcn{h5tools.datasets.makeStructDataset}, \myfcn{h5tools.datasets.makeMapDataset}
+            \item \underline{Limitations:} See \texttt{struct} and \texttt{table}.
         \end{itemize}
 
     \section{Attributes}
@@ -199,6 +199,36 @@
         
     \section{Soft Links}
     	\noindent Soft links are comparable to ``shortcuts'' within a file system. Currently, h5tools supports writing a dataset that is a soft link to another dataset or group within the HDF5 file (\myfcn{h5tools.writelink}). Arrays of soft links and soft link attributes are not currently supported, but will be added in the near future. 
+
+	\section{Limitations}
+		\noindent 
+		Most of the functions within h5tools are straightforward solutions. However, some of the dataset/attribute writing functions employ tricks rather than true solutions to ensure as many MATLAB datatypes can be read and written to HDF5 files as possible. For those situations, keep the following limitations in mind:
+
+		\subsection{Datasets}
+		\begin{enumerate}
+			\item \texttt{struct} and \texttt{containers.Map}. Both of these data types mimic the natural layout of an HDF5 file (i.e they are a group containing datasets), so there are naturally difficulties writing them to a single dataset. Before writing a \texttt{struct}/\texttt{containers.Map} as a dataset, always consider making a new group and writing the members of the struct/map as individual datasets within that group. If you absolutely must have it as a dataset, a few key points:
+			\begin{itemize}
+				\item \texttt{struct} is written as a dataset with HDF5's compound data type (like \texttt{table} and \texttt{timetable}). The datatypes of each field will be recorded in the attributes to facilitate reading the data back in appropriately. But, the struct must behave like a table, in that each field should have the same number of elements.
+				\item The contents of \texttt{containers.Map} is written as attributes of a placeholder text dataset. The advantage here is that each field can have a different number of elements. The disadvantage is that the attributes can't have attributes so the attribute limitations discussed below apply.
+				\item There are advantages and disadvantages to both, so consider which best suits your data. Conversion functions \myfcn{struct2map} and \myfcn{struct2map} are included in the "util" folder. A good rule of thumb for \texttt{struct}, \texttt{containers.Map} and \texttt{table} is to always double check when writing one containing new datatypes and ensure it's being read back in as you expect.
+			\end{itemize}
+
+			\item Multi-level structs (i.e. a \texttt{struct} containing another \texttt{struct}) are not supported. Instead, make a new group for the secondary \texttt{struct}.
+			\item Enumerated types can be read back into MATLAB appropriately, but only if the class containing the enumeration is on your search path. If the class can't be found, they will be read back in as \texttt{string}. 
+			\item There are also several features that MATLAB's built-in functions already handle well and are not currently supported in h5tools, such as reading subsets of numeric datasets, using filters and working with remote locations. 
+		\end{enumerate}
+
+		\subsection{Attributes}
+		\noindent A number of the specialized data types above are supported by attaching attributes to the dataset with the necessary additional information to allow MATLAB to read them appropriately. Attributes can't have attributes, so the datatype support is naturally more limited. 
+		\begin{enumerate}
+			\item The standard numeric datatypes, string, char and logical are fully supported. As above, reading \texttt{enum} is only supported if the class is on your search path.
+			\item Specialized MATLAB datatypes (e.g. datetime, duration, etc) cannot be written as HDF5 attributes and read identically back into MATLAB. If possible, \myfcn{h5tools.writeatt} will try to convert your information to a form that can be written. For example, \texttt{datetime} will converted with \matfcn{datestr} and written as \texttt{string}. The information at least exists in your file, but when you read that attribute back into MATLAB from the HDF5 file, it come back as a \texttt{string}. When you write a \texttt{datetime} as a dataset, \myfcn{h5tools.write} adds an attribute specifying the class and the datetime format, so that \myfcn{h5tools.read} can convert it back to \texttt{datetime}. This won't work for attributes as they can't have their own attributes. 
+			Other attributes that can be written but not identically read back include \texttt{duration} (converted to \texttt{double}) and \texttt{cellstr} (converted to \texttt{string}).
+			\item Attributes that are links to other groups/datasets have not been implemented. 
+			\item Row vectors will be returned as columns. I haven't had a chance to figure out why this is or whether there's a fix.
+		\end{enumerate}
+
+		If you try to write an attribute without write support, you'll get an error. If you write one without read support, a warning will be sent to the command line specifying the path within the HDF5 file, attribute name and datatype, so that you are aware. 
 
     \section{Reference}
     \noindent Mapping of numeric datatypes to HDF5:\\$\quad$\vspace{-1ex}\\
@@ -210,6 +240,7 @@
         \texttt{double} & \texttt{H5T\_FLOAT} & \texttt{H5T\_IEEE\_F64LE}\\
         \texttt{single} & \texttt{H5T\_FLOAT} & \texttt{H5T\_IEEE\_F32LE}\\
         \texttt{uint8} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U8LE}\\
+        \texttt{int8} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I8LE}\\
         \hline
     \end{tabular}
     \end{center}

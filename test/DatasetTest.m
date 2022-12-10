@@ -97,7 +97,7 @@ classdef DatasetTest < matlab.unittest.TestCase
                 testCase.FILE, '/', 'LogicalFalse'));
 
             h5tools.datasets.makeLogicalDataset(testCase.FILE, '/', 'LogicalTrue', 1);
-            testCase.verifyFalse(h5tools.datasets.readEnumDataset(...
+            testCase.verifyTrue(h5tools.datasets.readEnumDataset(...
                 testCase.FILE, '/', 'LogicalTrue'));
         end
 
@@ -198,6 +198,20 @@ classdef DatasetTest < matlab.unittest.TestCase
             output = h5tools.read(testCase.FILE, '/', 'UInt32Array');
             testCase.verifyEqual(output, input);
         end
+
+        function Int64Array(testCase)
+            input = int64(magic(5));
+            h5tools.write(testCase.FILE, '/', 'Int64Array', input);
+            output = h5tools.read(testCase.FILE, '/', 'Int64Array');
+            testCase.verifyEqual(output, input);
+        end
+
+        function UInt64Array(testCase)
+            input = uint64(magic(5));
+            h5tools.write(testCase.FILE, '/', 'UInt64Array', input);
+            output = h5tools.read(testCase.FILE, '/', 'UInt64Array');
+            testCase.verifyEqual(output, input);
+        end
     end
 
     methods (Test, TestTags={'Struct'})
@@ -218,21 +232,18 @@ classdef DatasetTest < matlab.unittest.TestCase
         function UnequalStruct(testCase)
             import matlab.unittest.constraints.Throws
 
-            input = struct('A', 1:3, 'B', 2);
+            input = struct('A', (1:3)', 'B', 2);
             h5tools.write(testCase.FILE, '/', 'UnequalStruct', input);
             output = h5tools.read(testCase.FILE, '/', 'UnequalStruct');
             testCase.verifyEqual(output, input);
-            %testCase.verifyThat(...
-            %    @() h5tools.write(testCase.FILE, '/', 'UnequalStruct', input),...
-            %    Throws("makeCompoundDataset:DifferentFieldSizes"));
         end
     end
 
     methods (Test, TestTags=["Table"])
         function testTable(testCase)
             input = table(...
-                rangeCol(1,4), {'a'; 'b'; 'c'; 'd'}, ["a", "b", "c", "d"]',...
-                'VariableNames', {'Numbers', 'Characters', 'Strings'});
+                rangeCol(1,4), {'a'; 'b'; 'c'; 'd'}, ["a", "b", "c", "d"]', uint8(1:4)',...
+                'VariableNames', {'Numbers', 'Characters', 'Strings', 'Integers'});
             h5tools.write(testCase.FILE, '/', 'Table', input);
             output = h5tools.read(testCase.FILE, '/', 'Table');
             testCase.verifyEqual(output, input);
@@ -253,6 +264,14 @@ classdef DatasetTest < matlab.unittest.TestCase
             input = test.EnumClass.GROUPTWO;
             h5tools.write(testCase.FILE, '/', 'EnumScalar', input);
             output = h5tools.read(testCase.FILE, '/', 'EnumScalar');
+            testCase.verifyEqual(output, input);
+        end
+
+        function EnumArray(testCase)
+            input = [test.EnumClass.GROUPONE, test.EnumClass.GROUPONE; ...
+                     test.EnumClass.GROUPTWO, test.EnumClass.GROUPFOUR];
+            h5tools.write(testCase.FILE, '/', 'EnumArray', input);
+            output = h5tools.read(testCase.FILE, '/', 'EnumArray');
             testCase.verifyEqual(output, input);
         end
 

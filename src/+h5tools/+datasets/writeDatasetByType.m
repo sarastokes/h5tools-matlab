@@ -10,6 +10,9 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 %
 % Notes:
 %   See README.md for limitations
+%
+% See also:
+%   h5tools.write
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
@@ -26,32 +29,27 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 
     if isnumeric(data)
         h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data);
-        %h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
         return 
     end
 
+    if ischar(data)
+        h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, data);
+        return 
+    end
+
+    if isstring(data)
+        h5tools.datasets.makeStringDataset(hdfName, pathName, dsetName, data);
+        return
+    end
+    
     if iscellstr(data) %#ok<ISCLSTR> 
         h5tools.datasets.makeStringDataset(hdfName, pathName, dsetName, string(data));
         h5tools.writeatt(hdfName, fullPath, 'Class', 'cellstr');
         return
     end
 
-    if ischar(data)
-        h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, data);
-        %h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
-        return 
-    end
-
-    if isstring(data)
-        h5tools.datasets.makeStringDataset(hdfName, pathName, dsetName, data);
-        % h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
-        return
-    end
-
     if islogical(data)
         h5tools.datasets.makeLogicalDataset(hdfName, pathName, dsetName, data);
-        %h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, double(data));
-        %h5tools.writeatt(hdfName, fullPath, 'Class', 'logical');
         return
     end
 
@@ -89,7 +87,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
     end
 
     if isenum(data)
-        h5tools.datasets.makeEnumDataset(hdfName, pathName, dsetName, data);
+        h5tools.datasets.makeEnumTypeDataset(hdfName, pathName, dsetName, data);
         return
     end
 
@@ -97,7 +95,6 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
     % to the dataset, a combination of the dataset and/or the dataset's 
     % attributes are used. These can serve as resources for users to write 
     % additional functions for any datatypes not currently covered.
-    
     switch class(data)
         case 'affine2d'
             h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data.T);
