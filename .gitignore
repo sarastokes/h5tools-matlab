@@ -17,12 +17,14 @@ dev/
 
 ## Testing folders and files
 test/coverage/
-test/FileTest.h5
+test/File.h5
 test/AttributeTest.h5
+test/AttributesTest.h5
 test/Dataset.h5
 test/Collection.h5
 test/GroupTest.h5
 test/HdfTypeTest.h5
+test/LinkTest.h5
 test/ValidatorTest.h5
 
 ## Misc

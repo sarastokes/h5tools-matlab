@@ -82,7 +82,7 @@
         \begin{enumerate}
             \item With MATLAB's library, you need to first create the dataset with \myfcn{h5create} (which requires some understanding of HDF5 dataspaces), then write it with \matfcn{h5write}. \myfcn{h5tools.write} takes care of dataspaces and dataset creation behind the scenes. 
             \item Support for more MATLAB data types. Text (\texttt{char} and \texttt{string}), enumerated types, and compound datatypes (\texttt{table}) are directly supported, in addition to the numeric types MATLAB's high-level library implements.  and \texttt{timetable}) are also directly supported, with some caveats described below. A few tricks are used to support additional types, by converting to an HDF5-compatible format and adding attributes to the dataset that guide h5tools in reading the data back into MATLAB (\texttt{logical}, \texttt{cellstr}, \texttt{struct}, \texttt{containers.Map}, \texttt{datetime}, \texttt{duration}).  
-            \item Working with multiple datasets at once is supported (e.g. writing 2 datasets or reading all the datasets within a group).
+            %\item Working with multiple datasets at once is supported (e.g. writing 2 datasets or reading all the datasets within a group).
             \item Writing soft links (a dataset that acts as a ``shortcut'' to a different group or dataset within the HDF5 file) is supported with \myfcn{h5tools.writelink}.
         \end{enumerate}
         $\quad$\\
@@ -93,10 +93,11 @@
             \item \underline{Persistence:} How the data is actually written to the HDF5 dataset.
             \item \underline{Postprocessing:} Any processing of the data that occurs after reading into MATLAB, to make the data compatible a specific MATLAB datatype.
             \item \underline{Implementation:} The functions used to implement writing and reading of the dataset. All data passes through \myfcn{h5tools.writeDatasetByType} for writing and \myfcn{h5tools.readDatasetByType} for reading. Any additional functions implementing specialized processing will be detailed here. 
+			\item \underline{Limitations:} Any caveats or limitations.
         \end{itemize}
 
         \subsection{Numeric}
-        \noindent MATLAB supports direct conversion of numeric datatypes to and from HDF5 files with \matfcn{h5read} and \matfcn{h5write}. The advantage of h5tools is a more user-friendly interface that automates dataset creation (\matfcn{h5create}) and provides capabilities for working with multiple datasets at once.
+        \noindent MATLAB supports direct conversion of numeric datatypes to and from HDF5 files with \matfcn{h5read} and \matfcn{h5write}. The advantage of h5tools is a more user-friendly interface that automates dataset creation (\matfcn{h5create}).
         \begin{itemize}
 	        \item \underline{Preprocessing:} As with all other datatypes, the dataset creation and dataspace creation is handled rather than requiring the use of \matfcn{h5create}. Writing is performed with \matfcn{h5read}.
 	        \item \underline{Persistence:} See \textbf{Table 1} for correspondence between MATLAB numeric types and HDF5 data types.
@@ -221,8 +222,6 @@
     \end{itemize}
 
 \end{document}
-
-
 
     
 %\noindent\begin{itemize}

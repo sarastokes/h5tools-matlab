@@ -91,15 +91,20 @@ classdef DatasetTest < matlab.unittest.TestCase
     end
 
     methods (Test, TestTags={'Boolean'})
-        function Logical(testCase)
-            input = true;
-            h5tools.write(testCase.FILE, '/', 'LogicalTrue', input);
-            output = h5tools.read(testCase.FILE, '/', 'LogicalTrue');
-            testCase.verifyEqual(output, input);
+        function LogicalScalar(testCase)
+            h5tools.datasets.makeLogicalDataset(testCase.FILE, '/', 'LogicalFalse', 0);
+            testCase.verifyFalse(h5tools.datasets.readEnumDataset(...
+                testCase.FILE, '/', 'LogicalFalse'));
 
-            input = false;
-            h5tools.write(testCase.FILE, '/', 'LogicalFalse', input);
-            output = h5tools.read(testCase.FILE, '/', 'LogicalFalse');
+            h5tools.datasets.makeLogicalDataset(testCase.FILE, '/', 'LogicalTrue', 1);
+            testCase.verifyFalse(h5tools.datasets.readEnumDataset(...
+                testCase.FILE, '/', 'LogicalTrue'));
+        end
+
+        function Logical2D(testCase)
+            input = [false, true, false; true, true, false];
+            h5tools.datasets.makeLogicalDataset(testCase.FILE, '/', 'Logical2D', input);
+            output = h5tools.datasets.readEnumDataset(testCase.FILE, '/', 'Logical2D');
             testCase.verifyEqual(output, input);
         end
     end

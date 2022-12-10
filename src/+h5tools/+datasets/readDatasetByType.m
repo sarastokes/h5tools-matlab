@@ -5,12 +5,15 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
 %   Reads dataset and assigns post-processing, if necessary
 %
 % Syntax:
-%   out = read(hdfName, pathName, dsetName)
+%   out = readDatasetByType(hdfName, pathName, dsetName)
+%
+% See also:
+%   h5tools.read, h5read
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
-    import h5tools.datatypes.DatatypeClasses
+    import h5tools.datatypes.Classes
 
     fullPath = h5tools.util.buildPath(pathName, dsetName);
     data = h5read(hdfName, fullPath); 
@@ -28,10 +31,10 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
     end
 
     % Get HDF5 and MATLAB classes
-    dataClass = DatatypeClasses.getByPath(hdfName, fullPath);
+    dataClass = Classes.getByPath(hdfName, fullPath);
 
     % Return string/char immediately, unless a placeholder
-    if dataClass == DatatypeClasses.STRING
+    if dataClass == Classes.STRING
         if isempty(matlabClass) && isstring(data) && isscalar(data) ... 
                 && ismember(data, ["containers.Map", "struct"])
             % Read as compound mapped to attributes
@@ -48,7 +51,7 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
     end
 
     % Handle compound together
-    if dataClass == DatatypeClasses.COMPOUND 
+    if dataClass == Classes.COMPOUND 
         out = h5tools.datasets.readCompoundDataset(...
             hdfName, pathName, dsetName);
         switch matlabClass
@@ -63,7 +66,12 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
         return
     end
 
-    % TODO: Handle enumerated types
+    % Handle enumerated types
+    if dataClass == Classes.ENUM 
+        out = h5tools.datasets.readEnumDataset(...
+            hdfName, pathName, dsetName);
+        return 
+    end
 
     % Miscellaneous MATLAB classes
     switch matlabClass 

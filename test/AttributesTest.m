@@ -93,7 +93,7 @@ classdef AttributesTest < matlab.unittest.TestCase
 
             % Read all attributes, return containers.Map
             map2 = h5tools.readatt(testCase.FILE, '/D1', 'all');
-            testCase.verifyEqual(map2.Count, uint64(5));
+            testCase.verifyEqual(map2.Count, uint64(4));
             testCase.verifyEqual(map2('A'), testCase.INPUT.A);
             testCase.verifyEqual(map2('B'), testCase.INPUT.B);
             testCase.verifyEqual(map2('C'), testCase.INPUT.C);

@@ -1,13 +1,13 @@
-classdef DatatypeClasses
-% DATATYPECLASSES
+classdef Classes
+% CLASSES
 %
 % Description:
 %   Creates a human-readable representation of the HDF5 class enumeration
 %
 % Static Methods:
-%   obj = DatatypeClasses.getByID(ID)
+%   obj = Classes.getByID(ID)
 %       Creates object from H5ML.id for dataset or datatype
-%   obj = DatatypeClasses.getByPath(hdfName, pathName)
+%   obj = Classes.getByPath(hdfName, pathName)
 %       Creates object from dataset path within the HDF5 file 
 
 % By Sara Patterson, 2022 (h5tools-matlab)
@@ -55,7 +55,7 @@ classdef DatatypeClasses
             typeID = H5D.get_type(dsetID);
             typeIDx = onCleanup(@()H5T.close(typeID));
 
-            obj = h5tools.datatypes.DatatypeClasses.getByID(typeID);
+            obj = h5tools.datatypes.Classes.getByID(typeID);
         end
 
         function obj = getByID(ID)
@@ -68,7 +68,7 @@ classdef DatatypeClasses
             %   ID          H5ML.id
             %       Datatype identifier
             % ------------------------------------------------------------- 
-            import h5tools.datatypes.DatatypeClasses
+            import h5tools.datatypes.Classes
             import h5tools.util.HdfTypes
 
             assert(HdfTypes.get(ID) == HdfTypes.DATATYPE,...
@@ -78,23 +78,23 @@ classdef DatatypeClasses
             
             switch dataClass
                 case H5ML.get_constant_value('H5T_INTEGER')
-                    obj = DatatypeClasses.INTEGER;
+                    obj = Classes.INTEGER;
                 case H5ML.get_constant_value('H5T_FLOAT')
-                    obj = DatatypeClasses.FLOAT;
+                    obj = Classes.FLOAT;
                 case H5ML.get_constant_value('H5T_STRING')
-                    obj = DatatypeClasses.STRING;
+                    obj = Classes.STRING;
                 case H5ML.get_constant_value('H5T_BITFIELD')
-                    obj = DatatypeClasses.BITFIELD;
+                    obj = Classes.BITFIELD;
                 case H5ML.get_constant_value('H5T_OPAQUE')
-                    obj = DatatypeClasses.OPAQUE;
+                    obj = Classes.OPAQUE;
                 case H5ML.get_constant_value('H5T_COMPOUND')
-                    obj = DatatypeClasses.COMPOUND;
+                    obj = Classes.COMPOUND;
                 case H5ML.get_constant_value('H5T_ENUM')
-                    obj = DatatypeClasses.ENUM;
+                    obj = Classes.ENUM;
                 case H5ML.get_constant_value('H5T_VLEN')
-                    obj = DatatypeClasses.VLEN;
+                    obj = Classes.VLEN;
                 case H5ML.get_constant_value('H5T_ARRAY')
-                    obj = DatatypeClasses.ARRAY;
+                    obj = Classes.ARRAY;
             end
         end
     end

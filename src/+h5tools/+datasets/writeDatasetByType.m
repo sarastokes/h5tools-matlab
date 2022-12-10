@@ -49,8 +49,9 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
     end
 
     if islogical(data)
-        h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, double(data));
-        h5tools.writeatt(hdfName, fullPath, 'Class', 'logical');
+        h5tools.datasets.makeLogicalDataset(hdfName, pathName, dsetName, data);
+        %h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, double(data));
+        %h5tools.writeatt(hdfName, fullPath, 'Class', 'logical');
         return
     end
 
