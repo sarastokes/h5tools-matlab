@@ -106,10 +106,10 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
 
     for i = 1:length(names)
         val = data.(names{i});
-        if isdatetime(val)
-            data.(names{i}) = string(data.(names{i}));
-            val = string(val);
-        elseif iscell(val) && ~isstring(val)
+        %if isdatetime(val)
+        %    data.(names{i}) = string(data.(names{i}));
+        %    val = string(val);
+        if iscell(val) && ~isstring(val)
             data.(names{i}) = [val{:}];
             val = val{1};
         elseif isstring(val) && numel(val) == 1
@@ -137,11 +137,11 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
     dsetID = H5D.create(fileID, fullPath, typeID, spaceID, 'H5P_DEFAULT');
     dsetIDx = onCleanup(@()H5D.close(dsetID));
 
-    for i = 1:numel(names)
-        if isdatetime(data.(names{i}))
-            data.(names{i}) = cellstr(data.(names{i}));
-        end
-    end
+    %for i = 1:numel(names)
+    %    if isdatetime(data.(names{i}))
+    %        data.(names{i}) = cellstr(data.(names{i}));
+    %    end
+    %end
 
     H5D.write(dsetID, typeID, spaceID, spaceID, 'H5P_DEFAULT', data);
 

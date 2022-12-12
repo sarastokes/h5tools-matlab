@@ -118,11 +118,11 @@ classdef DatasetTest < matlab.unittest.TestCase
             test.verifyDatesEqual(testCase, output, input);
         end
 
-        function DatetimeArray(testCase)
+        function DatetimeVector(testCase)
             input = datetime('now', 'Format', 'yyyyMMdd');
-            input = repmat(input, [2, 2]);
-            h5tools.write(testCase.FILE, '/', 'DatetimeArray', input);
-            output = h5tools.read(testCase.FILE, '/', 'DatetimeArray');
+            input = repmat(input, [2, 1]);
+            h5tools.write(testCase.FILE, '/', 'DatetimeColumn', input);
+            output = h5tools.read(testCase.FILE, '/', 'DatetimeColumn');
             testCase.verifyTrue(isdatetime(output));
             test.verifyDatesEqual(testCase, output, input);
         end
@@ -259,6 +259,22 @@ classdef DatasetTest < matlab.unittest.TestCase
             testCase.verifyEqual(output, input);
         end
 
+        function testTableIntegers(testCase)
+            input = table(...
+                int8(1:3)', int16(1:3)', int32(1:3)', int64(1:3)',...
+                'VariableNames', {'Int8', 'Int16', 'Int32', 'Int64'});
+            h5tools.write(testCase.FILE, '/', 'IntTable', input);
+            output = h5tools.read(testCase.FILE, '/', 'IntTable');
+            testCase.verifyEqual(output, input);
+
+            input = table(...
+                single(1:3)', uint16(1:3)', uint32(1:3)', uint64(1:3)',...
+                'VariableNames', {'Int8', 'Int16', 'Int32', 'Int64'});
+            h5tools.write(testCase.FILE, '/', 'IntTable2', input);
+            output = h5tools.read(testCase.FILE, '/', 'IntTable2');
+            testCase.verifyEqual(output, input);
+        end
+
         function testTimeTable(testCase)
             input = timetable(...
                 seconds(1:4)', {'a'; 'b'; 'c'; 'd'}, ["a", "b", "c", "d"]',...
@@ -351,6 +367,16 @@ classdef DatasetTest < matlab.unittest.TestCase
             h5tools.write(testCase.FILE, '/NewGroup', 'Dataset', magic(5));
             groupNames = h5tools.collectGroups(testCase.FILE);
             testCase.verifyEqual(nnz(endsWith(groupNames, 'NewGroup')), 1);
+        end
+    end
+
+    methods (Test, TestTags=["Dataset", "Deletion"])
+        function DeleteDataset(testCase)
+            % Create a dataset and then delete it
+            h5tools.write(testCase.FILE, '/', 'DatasetToDelete', magic(5));
+            testCase.verifyTrue(ismember("/DatasetToDelete", h5tools.collectDatasets(testCase.FILE)));
+            h5tools.deleteObject(testCase.FILE, '/DatasetToDelete');
+            testCase.verifyFalse(ismember("/DatasetToDelete", h5tools.collectDatasets(testCase.FILE)));
         end
     end
 end

@@ -86,10 +86,17 @@ h5.createGroup('Test.h5', '/', 'GroupTwo', '/GroupOne/Group1D');
 ```
 
 ### Creating links
-```h5tools.writelink``` creates a dataset that references another object (a group or a dataset) within the HDF5 file. The syntax mirrors that of ```h5tools.write``` and ```h5tools.writeatt```, only the HDF5 path of the object to reference is provided as the 4th argument instead of data. 
+```h5tools.writelink``` creates a soft link to another object (a group or a dataset) within the HDF5 file. The syntax mirrors that of ```h5tools.write``` and ```h5tools.writeatt```, only the HDF5 path of the object to reference is provided as the 4th argument instead of data. 
 ```matlab
-% Write a dataset named "LinkName" in the root group "/" that references "/GroupOne"
+% Write a softlink named "LinkName" in the root group "/" that references "/GroupOne"
 h5tools.writelink('Test.h5', '/', 'LinkName', '/GroupOne');
+```
+
+### Reading links
+```h5tools.readlink``` reads a soft link. The path within the HDF5 file of the linked group/dataset is returned and, optionally, the H5ML.id of the linked group/dataset.
+```matlab
+% Read the softlink created above
+[hdfPath, ID] = h5tools.readlink('Test.h5', '/', 'LinkName');
 ```
 
 ### Creating files

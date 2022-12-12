@@ -1,8 +1,8 @@
 # H5TOOLS-MATLAB Test Suite
 
 As of 12Dec2022, there are **43** files in the ```h5tools``` package. Code coverage is:
-- **83.81%** statement coverage (766 executable)
-- **94.00%** function coverage (50 executable)
+- **90.41%** statement coverage (762 executable)
+- **100%** function coverage (50 executable)
 
 The test suite contains the following:
 - ```AttributeTest``` - tests reading and writing attributes

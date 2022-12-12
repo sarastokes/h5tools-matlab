@@ -192,7 +192,7 @@ out = h5tools.read('Test.h5', '/GroupOne', 'MyDataset');
             \item \underline{Persistence:} See \texttt{string}. Two attributes are written to the dataset: \myatt{Class}{datetime} and \myatt{Format}{date format}.
             \item \underline{Postprocessing:} Conversion to \texttt{datetime} using the optional Format argument. 
             \item \underline{Implementation:} \myfcn{h5tools.datasets.makeDateDataset}
-            \item \underline{Limitations:} If providing an array of \texttt{datetime} values, they must have the same format. Also, the conversion with \matfcn{datestr} rounds the seconds, so if millisecond precision is important, this will be problematic. A future alternative would be to encode day, month, year, hours, seconds etc. as attributes instead to avoid rounding.  
+            \item \underline{Limitations:} Only scalar and vector \texttt{datetime} datasets are supported.
         \end{itemize}
         
 		\subsection{Enumerated types}
@@ -209,7 +209,7 @@ out = h5tools.read('Test.h5', '/GroupOne', 'MyDataset');
 		\noindent HDF5 has no boolean datatype so, following other successful HDF5 libraries like h5py, this is written as an enumerated type.
 		\begin{itemize}
 			\item \underline{Preprocessing:} Conversion to \texttt{uint8}.
-			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with two members (0=FALSE, 1=TRUE). The enumeration values are written as \hdftype{H5T\_STD\_I8LE}.
+			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with two members (0=FALSE, 1=TRUE). The enumeration values are written as \hdftype{H5T\_STD\_U8LE}.
 			\item \underline{Postprocessing:} If an enumerated type dataset is read in and has two enumerated types matching those above, the values it will be treated as \texttt{logical}. The enumerated values will be converted from \texttt{uint8} to \texttt{logical}. 
 			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeLogicalDataset}, \myfcn{h5tools.datasets.readEnumTypeDataset}.
 			\item \underline{Limitations:} N/A
@@ -306,16 +306,16 @@ h5tools.writeatt('Test.h5', '/', attStruct, 'C', 3);
         The options for reading attributes with \myfcn{h5tools.readatt}  are demonstrated below. 
 		\begin{lstlisting}[style=matlab-editor, basicstyle=\mlttfamily\footnotesize]
 % 1. Read a single attribute, return the value
-out = readatt('File.h5', '/GroupOne', 'Attr1')
+out = h5tools.readatt('File.h5', '/GroupOne', 'Attr1')
 
 % 2. Read two attributes, return the values as two outputs
-[out1, out2] = readatt('File.h5', '/GroupOne', 'Attr1', 'Attr2')
+[out1, out2] = h5tools.readatt('File.h5', '/GroupOne', 'Attr1', 'Attr2')
 
 % 3. Read two attributes, return the values in a containers.Map:
-out = readatt('File.h5', '/GroupOne', 'Attr1', 'Attr2')
+out = h5tools.readatt('File.h5', '/GroupOne', 'Attr1', 'Attr2')
 
 % 4. Read all attributes, return the values in a containers.Map
-out = readatt('File.h5', '/GroupOne', 'all')
+out = h5tools.readatt('File.h5', '/GroupOne', 'all')
 		\end{lstlisting}
 
 		\noindent The implementation for numeric datatypes, \texttt{char}, \texttt{string}, \texttt{logical} and enumerated types is largely identical to that described above for datasets. 
@@ -437,7 +437,11 @@ out = readatt('File.h5', '/GroupOne', 'all')
 
 % Add a soft link within group '/G1' that links to group '/G2'.
 h5tools.writelink('File.h5', '/G1', 'Link1', '/G2');
+
+% Read the link
+[pathName, ID] = h5tools.readLink('File.h5', '/G1', 'Link1');
     \end{lstlisting}
+    \myfcn{h5tools.readlink} returns the path within the HDF5 file of the linked dataset/group and the H5ML.id. If you return the H5ML.id, make sure to close it out later. 
 
 %     ██████╗ ██████╗  ██████╗ ██╗   ██╗██████╗ ███████╗
 %    ██╔════╝ ██╔══██╗██╔═══██╗██║   ██║██╔══██╗██╔════╝

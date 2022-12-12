@@ -1,4 +1,4 @@
-function writelink(hdfFile, linkPath, linkName, targetPath)
+function writelink(hdfName, linkPath, linkName, targetPath)
 % Write an HDF5 soft link 
 %
 % Description:
@@ -6,10 +6,10 @@ function writelink(hdfFile, linkPath, linkName, targetPath)
 %   dataset or group within the HDF5 file.
 %
 % Syntax:
-%   h5tools.writelink(hdfFile, linkPath, linkName, targetPath)
+%   h5tools.writelink(hdfName, linkPath, linkName, targetPath)
 %
 % Inputs:
-%   hdfFile             char or H5ML.id
+%   hdfName             char or H5ML.id
 %       The file name of an HDF5 file or the identifier
 %   linkPath
 %       The HDF5 path to the group where the link will be written
@@ -27,16 +27,16 @@ function writelink(hdfFile, linkPath, linkName, targetPath)
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
     arguments
-        hdfFile             {mustBeHdfFile(hdfFile)} 
-        linkPath            {mustBeHdfPath(hdfFile, linkPath)}
+        hdfName             {mustBeHdfFile(hdfName)} 
+        linkPath            {mustBeHdfPath(hdfName, linkPath)}
         linkName            char
-        targetPath          {mustBeHdfPath(hdfFile, linkPath)}
+        targetPath          {mustBeHdfPath(hdfName, targetPath)}
     end
 
     if isa(hdfName, 'H5ML.id')
         fileID = hdfName;
     else
-        fileID = h5tools.files.openFile(hdfFile, false);
+        fileID = h5tools.files.openFile(hdfName, false);
         fileIDx = onCleanup(@()H5F.close(fileID));
     end
 

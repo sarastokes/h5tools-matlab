@@ -9,7 +9,7 @@ classdef GroupTest < matlab.unittest.TestCase
             testFolder = fileparts(mfilename('fullpath'));
             testCase.FILE = fullfile(testFolder, 'GroupTest.h5');
             % Create the file, overwriting if it already exists
-            fileID = h5tools.createFile(testCase.FILE, true);
+            h5tools.createFile(testCase.FILE, true);
             
             % Test collect groups from fileID
             fileID = h5tools.files.openFile(testCase.FILE);
@@ -20,7 +20,7 @@ classdef GroupTest < matlab.unittest.TestCase
 
     % The order of test execution is not predictable so these must be 
     % tested all together
-    methods (Test)
+    methods (Test, TestTags=["Group"])
         function RootGroupIO(testCase)
             out = h5tools.collectGroups(testCase.FILE);
             testCase.verifyEmpty(out);
@@ -42,9 +42,30 @@ classdef GroupTest < matlab.unittest.TestCase
         end
 
         function DatasetToExistingGroup(testCase)
-            h5tools.createGroup(testCase.FILE, '/', 'GroupFour');
+            h5tools.createGroup(testCase.FILE, '/', 'GroupFive');
             % There should be no error here:
             h5tools.write(testCase.FILE, '/GroupFour', 'Dataset', eye(3));
+        end
+
+        function SplitPath(testCase)
+            h5tools.createGroup(testCase.FILE, '/', 'GroupSix', 'GroupSix/GroupSixA');
+            [parentPath, endPath] = h5tools.util.splitPath('/GroupSix/GroupSixA');
+            testCase.verifyEqual(parentPath, '/GroupSix');
+            testCase.verifyEqual(endPath, 'GroupSixA');
+        end
+    end
+
+    methods (Test, TestTags=["Deletion", "Group"])
+        function DeleteGroup(testCase)
+            % Create the group
+            h5tools.createGroup(testCase.FILE, '/', 'GroupFour');
+            out = h5tools.collectGroups(testCase.FILE);
+            testCase.verifyTrue(ismember("/GroupFour", out));
+
+            % Delete the group
+            h5tools.deleteObject(testCase.FILE, '/GroupFour');
+            out = h5tools.collectGroups(testCase.FILE);
+            testCase.verifyFalse(ismember("/GroupFour", out));
         end
     end
 end

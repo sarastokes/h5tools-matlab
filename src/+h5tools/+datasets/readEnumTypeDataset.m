@@ -42,11 +42,7 @@ function out = readEnumTypeDataset(hdfName, pathName, dsetName)
         % Process as logical
         out = arrayfun(@(x) find(memberNames == x), data);
         out = logical(out - 1);
-    elseif h5tools.hasAttribute(hdfName, fullPath, 'EnumClass')
-        % Process as MATLAB class enumeration
-        enumClass = readatt(hdfName, fullPath, 'EnumClass');
-        out = arrayfun(@(x) eval('%s.%s', enumClass, x), data);
-    else  % Enumeration that is not related to a MATLAB class
+    else  % Process as enumerated type
         enumSize = size(data);
         data = data(:);
         idx = strfind(data(1), ".");

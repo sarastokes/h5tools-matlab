@@ -12,12 +12,11 @@ classdef LinkTest < matlab.unittest.TestCase
 % -------------------------------------------------------------------------
 
     properties 
-        FILE
+        FILE = fullfile(fileparts(mfilename("fullpath")), 'LinkTest.h5')
     end
 
     methods (TestClassSetup)
         function createFile(testCase)
-            testCase.FILE = fullfile(fileparts(mfilename("fullpath")), 'LinkTest.h5');
             h5tools.createFile(testCase.FILE, true);
 
             % Add some misc groups and datasets for the links to use
@@ -35,6 +34,12 @@ classdef LinkTest < matlab.unittest.TestCase
             testCase.verifyNumElements(...
                 h5tools.collectSoftlinks(testCase.FILE), 1);
 
+            % Read the link
+            [path, objID] = h5tools.readlink(testCase.FILE, '/', 'LinkOne');
+            objIDx = onCleanup(@()H5D.close(objID));
+            testCase.verifyEqual(path, '/GroupTwo/DatasetTwoA');
+            testCase.verifyClass(objID, 'H5ML.id');
+
             % Test from file ID
             fileID = h5tools.files.openFile(testCase.FILE);
             fileIDx = onCleanup(@()H5F.close(fileID));
@@ -49,7 +54,7 @@ classdef LinkTest < matlab.unittest.TestCase
 
             testCase.verifyThat(...
                 @() h5tools.writelink(testCase.FILE, '/', 'LinkTwo', '/GroupThree'),...
-                Throws("writeLink:InvalidLinkTarget"));
+                Throws("HdfPath:InvalidPath"));
         end
     end
 end

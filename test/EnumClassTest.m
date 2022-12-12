@@ -5,12 +5,13 @@ classdef EnumClassTest < matlab.unittest.TestCase
     end
 
     methods (TestClassSetup)
-        function obj = createFile(testCase)
+        function createFile(testCase)
             testCase.FILE 
             % Create the file and add some basic components
             h5tools.createFile(testCase.FILE, true);
             h5tools.createGroup(testCase.FILE, '/', 'GroupOne', 'GroupTwo');
             h5tools.write(testCase.FILE, '/', 'DatasetOne', magic(5));
+            h5tools.write(testCase.FILE, '/', 'DatasetTwo', uint8(magic(5)));
             h5tools.writeatt(testCase.FILE, '/', 'AttOne', "test");
         end
     end
