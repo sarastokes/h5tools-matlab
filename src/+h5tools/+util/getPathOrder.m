@@ -1,16 +1,26 @@
 function out = getPathOrder(pathName)
-% GETPATHORDER
+% Get path distance from root group
 %
 % Description:
 %   Returns the order of one or more HDF5 path names where the root group
 %   has an order of 1.
 %
 % Syntax:
-%   out = getPathOrder(pathName)
+%   out = h5tools.util.getPathOrder(pathName)
 %
 % Inputs:
 %   pathName        string
 %       HDF5 path name(s) as a scalar string or string array
+%
+% Outputs:
+%   out             double
+%       Order of each provided path
+%
+% Examples:
+%   h5tools.util.getPathOrder('/G1/G1a');
+%       >> returns 2
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
     arguments

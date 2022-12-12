@@ -1,14 +1,33 @@
 function makeLogicalDataset(hdfName, pathName, dsetName, data)
-% MAKELOGICALDATASET
+% Write logical to an HDF5 dataset
 %
 % Description:
 %   Write logical as an enum type dataset with two values (true, false)
 %
 % Syntax:
-%   makeLogicalDataset(hdfName, pathName, dsetName, data)
+%   h5tools.dataset.makeLogicalDataset(hdfName, pathName, dsetName, data)
+%
+% Inputs:
+%   hdfName         char or H5ML.id
+%       HDF5 file name or identifier
+%   pathName        char
+%       HDF5 path to group where dataset will be written
+%   dsetName        char
+%       Name of the dataset
+%   data            logical
+%       Data to be written
+%
+% Outputs:
+%   N/A
+%
+% Examples:   
+%   % Write a dataset named 'D1' in group '/G1'
+%   input = [true, false, true];
+%   h5tools.datasets.makeStringDataset('Test.h5', '/G1', 'D1', input);
+%
 %
 % See also:
-%   h5tools.write, h5tools.datasets.writeDatasetByType
+%   h5tools.write, h5tools.datasets.readEnumTypeDataset
 % -------------------------------------------------------------------------
 
     arguments

@@ -4,6 +4,19 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 % Syntax:
 %   success = writeDatasetByType(hdfName, pathName, dsetName, data)
 %
+% Inputs:
+%   hdfName         char or H5ML.id
+%       HDF5 file name or identifier
+%   pathName        char
+%       HDF5 path to group where dataset will be written
+%   dsetName        char
+%       Name of the dataset
+%   data            struct or containers.Map
+%       Data to be written
+%
+% Outputs:
+%   N/A
+%
 % Supported data types:
 %   numeric, char, string, logical, table, timetable, datetime, duration
 %   cellstr, enum, struct, containers.Map, affine2d, imref2d, simtform2d
@@ -11,7 +24,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 % Notes:
 %   See README.md for limitations
 %
-% See also:
+% See Also:
 %   h5tools.write
 
 % By Sara Patterson, 2022 (h5tools-matlab)

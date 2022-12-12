@@ -19,7 +19,11 @@ function out = readAttributeByType(hdfName, pathName, attName)
 %   value   
 %       Attribute value
 %
-% See also:
+% Examples:
+%   % Read attribute of group '/G1' named 'A1' 
+%   out = h5tools.attributes.readAttributeByType('File.h5', '/G1', 'Att1')
+%
+% See Also:
 %   h5tools.readatt, h5readatt, h5tools.attributes.writeAttributeByType
 
 % By Sara Patterson, 2022 (h5tools-matlab)

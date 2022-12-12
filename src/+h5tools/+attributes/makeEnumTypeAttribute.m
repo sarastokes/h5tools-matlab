@@ -7,7 +7,6 @@ function makeEnumTypeAttribute(hdfName, pathName, attName, data)
 % Syntax:
 %   makeEnumTypeAttribute(hdfName, pathName, attName, data)
 %
-%
 % Inputs:
 %   hdfFile     char or H5ML.id
 %       HDF5 file name or identifier
@@ -18,7 +17,16 @@ function makeEnumTypeAttribute(hdfName, pathName, attName, data)
 %   data        enum
 %       Data to write to the attribute
 %
-% See also:
+% Outputs:
+%   N/A
+%
+% Examples:
+%   % Write attribute named 'A1' to group '/G1'
+%   input = struct('A', [1 2 3]', 'B', [4 5 6]'); 
+%   out = h5tools.attributes.makeEnumTypeAttribute(...
+%       'File.h5', '/G1', 'Att1', input)
+%
+% See Also:
 %   h5tools.writeatt, h5tools.readatt
 
 % By Sara Patterson, 2022 (h5tools-matlab)

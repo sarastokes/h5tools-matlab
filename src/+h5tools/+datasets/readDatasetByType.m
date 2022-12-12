@@ -2,7 +2,7 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
 % Reads HDF5 dataset with type-specific processing
 %
 % Description:
-%   Reads dataset and assigns post-processing, if necessary
+%   Reads dataset and handles post-processing, if necessary
 %
 % Syntax:
 %   out = h5tools.datasets.readDatasetByType(hdfName, pathName, dsetName)
@@ -19,7 +19,11 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
 %   data    
 %       Contents of the HDF5 dataset
 %
-% See also:
+% Examples:
+%   % Read a dataset named "DS1" within group "/G1"
+%   out = h5tools.datasets.readDatasetByType('Test.h5', '/G1', 'DSI');
+%
+% See Also:
 %   h5tools.read, h5read
 
 % By Sara Patterson, 2022 (h5tools-matlab)

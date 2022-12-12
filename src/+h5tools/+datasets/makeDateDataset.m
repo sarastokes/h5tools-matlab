@@ -1,5 +1,5 @@
 function makeDateDataset(hdfName, pathName, dsetName, data)
-% MAKEDATEDATASET
+% Write datetime to a dataset
 % 
 % Description:
 %   Saves datetime as text dataset with class and date format stored as 
@@ -17,8 +17,16 @@ function makeDateDataset(hdfName, pathName, dsetName, data)
 %       Name of the dataset
 %   data            datetime
 %
-% See also:
-%   h5tools.write, h5tools.datasets.writeDatasetByType
+% Outputs:
+%   N/A
+%
+% Examples:   
+%   % Write a dataset named 'D1' in group '/G1'
+%   input = datetime('now');
+%   h5tools.datasets.makeDateDataset('Test.h5', '/G1', 'D1', input);
+%
+% See Also:
+%   h5tools.write, h5tools.datasets.readDateDataset
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

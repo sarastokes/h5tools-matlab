@@ -19,6 +19,16 @@ function fileID = openFile(hdfName, readOnly)
 %   fileID          H5ML.id
 %       Identifier for the HDF5 file
 %
+% Examples:
+%   % Open file 'File.h5' as read only
+%   fileID = h5tools.files.openFile('File.h5');
+%
+%   % Open file 'File.h5' with write access
+%   fileID = h5tools.files.openFile('File.h5', true);
+%
+%   % Remember to close the file ID when done
+%   H5F.close(fileID)
+%
 % See Also:
 %   h5tools.createFile
 

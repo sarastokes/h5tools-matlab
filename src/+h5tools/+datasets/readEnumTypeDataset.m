@@ -1,15 +1,32 @@
-function out = readEnumDataset(hdfName, pathName, dsetName)
-% READENUMDATASET
+function out = readEnumTypeDataset(hdfName, pathName, dsetName)
+% Read enumerated type dataset
+%
+% Description:
+%   Read enumerated type dataset and convert to logical, MATLAB class 
+%   with a defined enumeration or string array
 %
 % Syntax:
-%   out = readEnumDataset(hdfName, pathName, dsetName)
+%   out = h5tools.datasets.readEnumTypeDataset(hdfName, pathName, dsetName)
 %
-% Todo:
-%   Remove reliance on h5info (see getEnumTypes for current progress on 
-%   implementing this with the low-level library)
+% Inputs:
+%   hdfName     char
+%       HDF5 file name
+%   pathName     char
+%       Path of the group where dataset was written
+%   dsetName     char
+%       Name of the dataset
 %
-% See also:
-%   h5tools.datasets.makeLogicalDataset, h5info
+% Output:
+%   out     enum, logical or string
+%       Contents of the enumerated type dataset
+%
+% Examples:
+%   % Read a dataset named "DS1" within group "/G1"
+%   out = h5tools.datasets.readEnumTypeDataset('Test.h5', '/G1', 'DSI');
+%
+% See Also:
+%   h5tools.datasets.makeEnumTypeDataset, h5info, 
+%   h5tools.datasets.makeLogicalDataset
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

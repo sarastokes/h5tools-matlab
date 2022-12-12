@@ -18,7 +18,15 @@ function writeAttributeByType(hdfName, pathName, attName, attValue)
 %   attValue
 %       Data to write for the attribute
 %
-% See also:
+% Outputs:
+%   N/A
+%
+% Examples:
+%   % Write an attribute called 'A1' to group '/G1'
+%   input = 'test';
+%   h5tools.attributes.writeAttributeByType('File.h5', '/G1', 'A1', input)
+%
+% See Also:
 %   h5tools.writeatt, h5writeatt, h5tools.attributes.readAttributeByType
 
 % By Sara Patterson, 2022 (h5tools-matlab)

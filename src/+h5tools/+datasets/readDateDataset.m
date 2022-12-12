@@ -15,7 +15,15 @@ function out = readDateDataset(hdfName, pathName, dsetName)
 %   dsetName        char
 %       Name of the dataset
 %
-% See also:
+% Outputs:
+%   out             datetime
+%       Contents of the dataset
+%
+% Examples:
+%   % Read a dataset named "DS1" within group "/G1"
+%   out = h5tools.datasets.readCompoundDataset('Test.h5', '/G1', 'DSI');
+%
+% See Also:
 %   h5tools.datasets.makeDateDataset
 
 % By Sara Patterson, 2022 (h5tools-matlab)

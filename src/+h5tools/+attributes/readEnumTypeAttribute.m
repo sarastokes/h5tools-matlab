@@ -1,25 +1,45 @@
 function out = readEnumTypeAttribute(hdfName, pathName, attName)
-% READENUMDATASET
+% Read enumerated type attribute
+%
+% Description:
+%   Read an enumerated type attribute and convert to logical, MATLAB class
+%   with a defined enumeration or string array
 %
 % Syntax:
-%   out = readEnumDataset(hdfName, pathName, dsetName)
+%   out = h5tools.attributes.readEnumTypeAttribute(hdfName, pathName, attName)
 %
-% Todo:
-%   Remove reliance on h5info (see getEnumTypes for current progress on 
-%   implementing this with the low-level library)
+% Input:
+%   hdfName             char
+%       HDF5 file name
+%   pathName            char
+%       HDF5 path of the group/dataset containing the HDF5 attribute
+%   attName             char
+%       Attribute name to read
 %
-% See also:
+% Output:
+%   out     enum, logical or string
+%       Contents of the enumerated type dataset
+%
+% Examples:
+%   % Read attribute of group '/G1' named 'A1' 
+%   out = h5tools.attributes.readAttributeByType('File.h5', '/G1', 'Att1')
+%
+% See Also:
 %   h5tools.datasets.writeEnumTypeAttribute, h5info, h5readatt
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
+    arguments
+        hdfName                 {mustBeHdfFile(hdfName)}
+        pathName    char        {mustBeHdfPath(hdfName, pathName)}
+        attName     char
+    end
 
     data = string(h5readatt(hdfName, pathName, attName));
 
-    
+    % Get attribute datatype information
     info = h5info(hdfName, pathName);
-    % Case insensitive search for attribute, then return datatype info
     idx = find(arrayfun(@(x)isequal(lower(x.Name),... 
         lower(attName)), info.Attributes));
     memberNames = arrayfun(@(x) string(x.Name),... 

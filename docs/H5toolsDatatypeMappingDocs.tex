@@ -71,39 +71,62 @@
 \newcommand\myatt[2]{\textcolor{darkgray}{\texttt{\textit{#1} = #2}}}
 
 \begin{document}
+    \noindent 
+    \begin{center}
+        {\LARGE\textbf{h5tools-matlab Documentation}}
+        \\\vspace{1.5ex}
+        {\large Sara Patterson - December 12, 2022}
+    \end{center}
+
+    \tableofcontents
+    \pagebreak 
 
 	\begin{center}
 		\textbf{\Huge h5tools-matlab}
 	\end{center}
 
-	\noindent The purpose of this documentation is to detail the implementation of h5tools. The main functions are demonstrated here and more information can be found in the documentation within within the code using \texttt{help} or \texttt{doc}. 
-    \section{Datasets}
+	\noindent The purpose of this documentation is to detail the implementation of reading and writing data with MATLAB and HDF5. 
+    The main functions are demonstrated here (and more succinctly in "docs/Examples.md"). Additional information on function inputs/outputs can be found in the documentation within within the code using \texttt{help} or \texttt{doc}. 
+
+    \section{Getting Started}
+    \noindent Clone h5tools-matlab from Github (\myurl{\url{https://github.com/sarastokes/h5tools-matlab}}) or download from MATLAB's file exchange. Make sure to add the "src" folder and all subfolders to your MATLAB path as follows, replacing the ``..'' with the location where h5tools-matlab is saved.
+    \begin{lstlisting}[style=matlab-editor, basicstyle=\mlttfamily\footnotesize]
+addpath(genpath('../h5tools-matlab/src/'));
+    \end{lstlisting}
+
+
+%    ██████╗  █████╗ ████████╗ █████╗ ███████╗███████╗████████╗███████╗
+%    ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔════╝
+%    ██║  ██║███████║   ██║   ███████║███████╗█████╗     ██║   ███████╗
+%    ██║  ██║██╔══██║   ██║   ██╔══██║╚════██║██╔══╝     ██║   ╚════██║
+%    ██████╔╝██║  ██║   ██║   ██║  ██║███████║███████╗   ██║   ███████║
+%    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚══════╝
+                                                                      
+    \section{Datasets}\label{sec:Datasets}
         \noindent The high-level functions for datasets are \myfcn{h5tools.write} and \myfcn{h5tools.read}. The implementation for these functions can be found in the "h5tools.datasets" package. The key difference between these functions and their corresponding MATLAB versions (\matfcn{h5read} and \matfcn{h5write}) are:
         \begin{enumerate}
             \item With MATLAB's library, you need to first create the dataset with \myfcn{h5create} (which requires some understanding of HDF5 dataspaces), then write it with \matfcn{h5write}. \myfcn{h5tools.write} takes care of dataspaces and dataset creation behind the scenes. 
-            \item Support for more MATLAB data types. Text (\texttt{char} and \texttt{string}), enumerated types, and compound datatypes (\texttt{table}) are directly supported, in addition to the numeric types MATLAB's high-level library implements.  and \texttt{timetable}) are also directly supported, with some caveats described below. A few tricks are used to support additional types, by converting to an HDF5-compatible format and adding attributes to the dataset that guide h5tools in reading the data back into MATLAB (\texttt{logical}, \texttt{cellstr}, \texttt{struct}, \texttt{containers.Map}, \texttt{datetime}, \texttt{duration}).  
-            %\item Working with multiple datasets at once is supported (e.g. writing 2 datasets or reading all the datasets within a group).
-            \item Writing soft links (a dataset that acts as a ``shortcut'' to a different group or dataset within the HDF5 file) is supported with \myfcn{h5tools.writelink}. See Links for more information
+            \item Support for more MATLAB data types. Text (\texttt{char} and \texttt{string}), enumerated types, and compound datatypes (\texttt{table}, \texttt{timetable} and \texttt{struct}/\texttt{containers.Map} where each field has the same number of elements) are directly supported, in addition to the numeric types supported by MATLAB's high-level functions. A few tricks are used to support additional types, by converting to an HDF5-compatible format and adding attributes to the dataset that guide h5tools in reading the data back into MATLAB (\texttt{logical}, \texttt{cellstr}, \texttt{struct}/\texttt{containers.Map} with unequal elements in each field, \texttt{datetime}, \texttt{duration}).  
         \end{enumerate}
         $\quad$\\
 		The syntax is identical for each datatype:
 		\begin{lstlisting}[style=matlab-editor, basicstyle=\mlttfamily\footnotesize]
-success = h5tools.write(hdfName, pathName, dsetName, data)
+h5tools.write(hdfName, pathName, dsetName, data);
+out = h5tools.read(hdfName, pathName, dsetName);
 		\end{lstlisting}
 		The \texttt{hdfName} is the HDF5 file name, \texttt{pathName} is the path within the HDF5 file where the dataset will be written, \texttt{dsetName} is the dataset name and \texttt{data} is the data to be written.
 		\begin{lstlisting}[style=matlab-editor, basicstyle=\mlttfamily\footnotesize]
 % Write a dataset named 'MyDatatset' to' GroupOne'
 h5tools.createFile('Test.h5');
-h5tools.createGroup('Test.h5', '/', 'GroupOne');
 h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
+out = h5tools.read('Test.h5', '/GroupOne', 'MyDataset');
 		\end{lstlisting}
 		$\quad$\\
         \noindent Be sure to check the implementation for the data type you intend to write. In describing each datatype's implementation, the following information is provided where relevant:
         \begin{itemize}
-            %\item \underline{HDF5 type:} the HDF5 datatype the dataset will be written as. If the MATLAB type has a corresponding HDF5 type, this will be noted with ``(direct)'' as the conversion to HDF5 is direct and requires no additional information for reading back into the intended MATLAB datatype. 
-            \item \underline{Preprocessing:} Any changes to the data's MATLAB type that occur before writing, to make the data compatible with an HDF5 datatype.
+            \item \underline{Preprocessing:} Any changes to the data's MATLAB type that occur before writing to make the data compatible with an HDF5 datatype.
             \item \underline{Persistence:} How the data is actually written to the HDF5 dataset.
-            \item \underline{Postprocessing:} Any processing of the data that occurs after reading into MATLAB, to make the data compatible a specific MATLAB datatype.
+            \item \underline{Postprocessing:} Any processing of the data that occurs after reading into MATLAB to make the data compatible a specific MATLAB datatype.
             \item \underline{Implementation:} The functions used to implement writing and reading of the dataset. All data passes through \myfcn{h5tools.writeDatasetByType} for writing and \myfcn{h5tools.readDatasetByType} for reading. Any additional functions implementing specialized processing will be detailed here. 
 			\item \underline{Limitations:} Any caveats or limitations.
         \end{itemize}
@@ -112,7 +135,23 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
         \noindent MATLAB supports direct conversion of numeric datatypes to and from HDF5 files with \matfcn{h5read} and \matfcn{h5write}. The advantage of h5tools is a more user-friendly interface that automates dataset creation (\matfcn{h5create}).
         \begin{itemize}
 	        \item \underline{Preprocessing:} As with all other datatypes, the dataset creation and dataspace creation is handled rather than requiring the use of \matfcn{h5create}. Writing is performed with \matfcn{h5read}.
-	        \item \underline{Persistence:} See \textbf{Table 1} for correspondence between MATLAB numeric types and HDF5 data types.
+	        \item \underline{Persistence:} See the table below for the correspondence between MATLAB numeric types and HDF5 data types.\\
+	        \begin{center}\begin{tabular}{| c | c | c |}
+                \hline
+                \textbf{MATLAB type} & \textbf{HDF5 Class} & \textbf{HDF5 Type}\\
+                \hline
+                \texttt{double} & \texttt{H5T\_FLOAT} & \texttt{H5T\_IEEE\_F64LE}\\
+                \texttt{single} & \texttt{H5T\_FLOAT} & \texttt{H5T\_IEEE\_F32LE}\\
+                \texttt{uint8} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U8LE}\\
+                \texttt{int8} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I8LE}\\
+                \texttt{uint16} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U16LE}\\
+                \texttt{int16} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I16LE}\\
+                \texttt{uint32} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U32LE}\\
+                \texttt{int32} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I32LE}\\
+                \texttt{uint64} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U64LE}\\
+                \texttt{int64} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I64LE}\\
+                \hline
+            \end{tabular}\end{center}
 	        \item \underline{Postprocessing:} N/A
 			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeMatrixDataset}, \matfcn{h5read}
 			\item \underline{Limitations:} There are also several features that MATLAB's built-in functions already handle well and are not currently supported in h5tools, such as reading subsets of numeric datasets, using filters and working with remote locations. 
@@ -159,17 +198,17 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 		\subsection{Enumerated types}
 		\noindent HDF5 offers enumerated type, which is an integer datatype restricted to a set of named values. For example, an enumerated type may contain three members (e.g. ``Red'', ``Green'', ``Blue'') and their corresponding values (0, 1, 2).
 		\begin{itemize}
-			\item \underline{Preprocessing:} The index of each enumerated type value within the full list of enumerated types is converted to \texttt{uint32}. The class name (including any namespaces) will be appended to each enumeration name (e.g. ``RED'' will be written as ``MyClassName.Red'').
-			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with the values of each member in the enumeration as \hdftype{H5T\_STD\_I32LE}. While enumerated types supported in HDF5, accompanying information is required to identify the class containing the enumeration when read back into MATLAB. This information is written as two attributes: \myatt{Class=enum} and \myatt{EnumClass}{MATLAB class} name containing enumeration (including namespaces, if applicable).
-			\item \underline{Postprocessing:} A string array of the enumeration members is read from the dataset through the datatype library (\texttt{H5T}), ordered by their enumeration value. If the associated class is not found on MATLAB's path, the data will be read back in as a string array using the format \texttt{x.y} where \texttt{x} is the class name in the attributes and \texttt{y} is the enumeration name. If the class is found on MATLAB's path, the string will be evaluated (\texttt{eval}). If the enumerated type was not written with h5tools and as no class name attribute, the string array will just contain the enumeration names. %with the class name in the attributes \texttt{char}.
-			\item \underline{Implementation:} \texttt{h5tools.datasets.makeEnumDataset}, \texttt{h5tools.datasets.readEnumTypeDataset}.
+			\item \underline{Preprocessing:} The index of each enumerated type value within the full list of enumerated types (obtained with \matfcn{metaclass}) is converted to \texttt{uint32}. The class name (including any namespaces) will be appended to each enumeration name (e.g. ``RED'' will be written as ``MyClassName.Red'').
+			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with the values of each member in the enumeration as \hdftype{H5T\_STD\_U32LE}. 
+			\item \underline{Postprocessing:} A string array of the enumeration members is read from the dataset through the datatype library (\texttt{H5T}), ordered by their enumeration value. If the associated class is not found on MATLAB's path, the data will be read back in as a string array using the format \texttt{x.y} where \texttt{x} is the class name in the attributes and \texttt{y} is the enumeration name. If the class is found on MATLAB's path, the string will be evaluated (\texttt{eval}). If the enumerated type was not written with h5tools and has no class name attribute, the string array will just contain the enumeration names. %with the class name in the attributes \texttt{char}.
+			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeEnumTypeDataset}, \myfcn{h5tools.datasets.readEnumTypeDataset}.
 			\item \underline{Limitations:} 
 		\end{itemize}
 		
 		\subsection{Logical}
 		\noindent HDF5 has no boolean datatype so, following other successful HDF5 libraries like h5py, this is written as an enumerated type.
 		\begin{itemize}
-			\item \underline{Preprocessing:} Conversion to \texttt{int8}.
+			\item \underline{Preprocessing:} Conversion to \texttt{uint8}.
 			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with two members (0=FALSE, 1=TRUE). The enumeration values are written as \hdftype{H5T\_STD\_I8LE}.
 			\item \underline{Postprocessing:} If an enumerated type dataset is read in and has two enumerated types matching those above, the values it will be treated as \texttt{logical}. The enumerated values will be converted from \texttt{uint8} to \texttt{logical}. 
 			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeLogicalDataset}, \myfcn{h5tools.datasets.readEnumTypeDataset}.
@@ -183,7 +222,7 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_COMPOUND}} with two attributes: \myatt{Class}{table}, \myatt{ColumnClasses}{[class1, class2,...]} of data in each column
 			\item \underline{Postprocessing:} 
 			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeCompoundDataset}, \\\myfcn{h5tools.datasets.readCompoundDataset}
-			\item \underline{Limitations:} Currently only numeric datatypes, string and char are supported.
+			\item \underline{Limitations:} Currently only numeric datatypes, string and char are supported within the table.
 		\end{itemize}
 		
         \subsection{Struct}
@@ -212,7 +251,7 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 			\item \underline{Preprocessing:} The time column is converted to \texttt{double} with \matfcn{seconds()}. 
 			\item \underline{Persistence:} Written as \hdftype{H5T\_COMPOUND} with two attributes: \myatt{Class}{timetable}, \myatt{ColumnClasses}{[class1, class2,...]} of data in each column. See \textbf{Table 1} and \texttt{string} and \texttt{char} for information on how individual columns are written.
 			\item \underline{Postprocessing:} The first column is converted back to \texttt{duration} with \matfcn{seconds}.
-			\item \underline{Implementation:} See \texttt{table}, \myfcn{h5tools.datasets.writeDatasetByType}. 
+			\item \underline{Implementation:} See \texttt{table}.%, \myfcn{h5tools.datasets.writeDatasetByType}. 
 			\item \underline{Limitations:} Same as \texttt{table}. In addition, a better way might exist for converting the \texttt{duration} column than always using \matfcn{seconds}.
 		\end{itemize}
 
@@ -222,12 +261,21 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 			\item \underline{Preprocessing:} All durations are converted to seconds, then to \texttt{double}
 			\item \underline{Persistence:} Written as \hdftype{H5T\_IEEE\_F64LE} with one attribute: \myatt{Class}{duration}.
 			\item \underline{Postprocessing:} Converted back to \texttt{duration} with \matfcn{seconds()}.
-			\item \underline{Implementation:} \myfcn{h5tools.datasets.writeDatasetByType}, \myfcn{h5tools.datasets.readDatasetByType}
+			\item \underline{Implementation:} \matfcn{h5write}%\myfcn{h5tools.datasets.writeDatasetByType}, \myfcn{h5tools.datasets.readDatasetByType}
 			\item \underline{Limitations:} N/A
 		\end{itemize}
 
         \subsection{Miscellaneous data types}
         \noindent Several specialized MATLAB datatypes from the Image Processing Toolbox are also included to demonstrate how the tricks above could be applied to write any other specialized datatype to an HDF5 file as well. See \myfcn{h5tools.datasets.writeDatasetByType} and \myfcn{h5tools.datasets.readDatasetByType} for implementation. See CONTRIBUTING.md for information about adding new types.
+
+    %  █████╗ ████████╗████████╗██████╗ ███████╗
+    % ██╔══██╗╚══██╔══╝╚══██╔══╝██╔══██╗██╔════╝
+    % ███████║   ██║      ██║   ██████╔╝███████╗
+    % ██╔══██║   ██║      ██║   ██╔══██╗╚════██║
+    % ██║  ██║   ██║      ██║   ██║  ██║███████║
+    % ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚══════╝
+                                              
+                                      
     \section{Attributes}
         \noindent The high-level functions for attributes are \myfcn{h5tools.writeatt} and \myfcn{h5tools.readatt}. Many of the classes supported by h5tools for datasets rely on attributes to ensure accurate conversion when reading in the data. Because attributes cannot have attributes, the additional datatypes available here are less extensive and some differ in their implementation. The advantages of \myfcn{h5tools.writeatt} and \myfcn{h5tools.readatt} are: 
 		\begin{enumerate}
@@ -235,6 +283,7 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 			\item The ability to work with one or more attributes at a time, or to read all the attributes of a dataset/group without knowing their names.
 		\end{enumerate}
 
+        The options for creating attributes with \myfcn{h5tools.writeatt} are demonstrated below. 
 		\begin{lstlisting}[style=matlab-editor, basicstyle=\mlttfamily\footnotesize]
 % Write a single attribute:
 h5tools.writeatt('Test.h5', '/', 'A', 1);
@@ -254,7 +303,7 @@ h5tools.writeatt('Test.h5', '/', attMap);
 h5tools.writeatt('Test.h5', '/', attMap, 'C', 3);
 h5tools.writeatt('Test.h5', '/', attStruct, 'C', 3);
 		\end{lstlisting}
-
+        The options for reading attributes with \myfcn{h5tools.readatt}  are demonstrated below. 
 		\begin{lstlisting}[style=matlab-editor, basicstyle=\mlttfamily\footnotesize]
 % 1. Read a single attribute, return the value
 out = readatt('File.h5', '/GroupOne', 'Attr1')
@@ -270,16 +319,54 @@ out = readatt('File.h5', '/GroupOne', 'all')
 		\end{lstlisting}
 
 		\noindent The implementation for numeric datatypes, \texttt{char}, \texttt{string}, \texttt{logical} and enumerated types is largely identical to that described above for datasets. 
+        All attributes pass through \myfcn{h5tools.attributes.writeAttributeByType} and \myfcn{h5tools.attributes.readAttributeByType}. Any additional functions are noted in the ``Implementation'' points below.
 		
 
         \subsection{Numeric}
         \noindent MATLAB supports direct conversion of numeric datatypes to and from HDF5 files with \matfcn{h5readatt} and \matfcn{h5writeatt}. The advantage of h5tools is a more user-friendly interface that enables working with multiple attributes as once, as discussed above.
         \begin{itemize}
 	        \item \underline{Preprocessing:} As with all other datatypes, the dataset creation and dataspace creation is handled rather than requiring the use of \matfcn{h5create}. Writing is performed with \matfcn{h5read}.
-	        \item \underline{Persistence:} See \textbf{Table 1} for correspondence between MATLAB numeric types and HDF5 data types.
+	        \item \underline{Persistence:} See the table below for the correspondence between MATLAB numeric types and HDF5 data types.\\
+	        \begin{center}\begin{tabular}{| c | c | c |}
+                \hline
+                \textbf{MATLAB type} & \textbf{HDF5 Class} & \textbf{HDF5 Type}\\
+                \hline
+                \texttt{double} & \texttt{H5T\_FLOAT} & \texttt{H5T\_IEEE\_F64LE}\\
+                \texttt{single} & \texttt{H5T\_FLOAT} & \texttt{H5T\_IEEE\_F32LE}\\
+                \texttt{uint8} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U8LE}\\
+                \texttt{int8} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I8LE}\\
+                \texttt{uint16} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U16LE}\\
+                \texttt{int16} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I16LE}\\
+                \texttt{uint32} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U32LE}\\
+                \texttt{int32} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I32LE}\\
+                \texttt{uint64} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U64LE}\\
+                \texttt{int64} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I64LE}\\
+                \hline
+            \end{tabular}\end{center}
 	        \item \underline{Postprocessing:} N/A
 			\item \underline{Implementation:} \matfcn{h5writeatt}, \matfcn{h5readatt}
-			\item \underline{Limitations:} For some reason, row vectors are being returned as columns (even though columns vectors are also returned as columns)
+			\item \underline{Limitations:} For some reason, \textcolor{red}{row vectors are being returned as columns} (even though columns vectors are also returned as columns)
+	    \end{itemize}
+
+        \subsection{Char}
+        \noindent Basically the same as \texttt{char} datasets
+        \begin{itemize}
+	        \item \underline{Preprocessing:} N/A
+	        \item \underline{Persistence:} Written as class \hdftype{H5T\_STRING} with character type \hdftype{H5T\_C\_S1} and set \hdftype{H5T\_CSET\_ASCII}.
+	        \item \underline{Postprocessing:} N/A
+			\item \underline{Implementation:} \matfcn{h5writeatt}, \matfcn{h5readatt}
+			\item \underline{Limitations:} 
+	    \end{itemize}
+
+
+        \subsection{String}
+        \noindent Basically the same as \texttt{string} datasets
+        \begin{itemize}
+	        \item \underline{Preprocessing:} N/A
+	        \item \underline{Persistence:} Written as class \hdftype{H5T\_STRING} with character type \hdftype{H5T\_C\_S1} and set \hdftype{H5T\_CSET\_UTF8}.
+	        \item \underline{Postprocessing:} N/A
+			\item \underline{Implementation:} \matfcn{h5writeatt}, \matfcn{h5readatt}
+			\item \underline{Limitations:} 
 	    \end{itemize}
 
 		\subsection{Logical}
@@ -292,6 +379,25 @@ out = readatt('File.h5', '/GroupOne', 'all')
 			\item \underline{Limitations:} N/A
 		\end{itemize}
         
+		\subsection{Enumerated types}
+		\noindent HDF5 offers enumerated type, which is an integer datatype restricted to a set of named values. For example, an enumerated type may contain three members (e.g. ``Red'', ``Green'', ``Blue'') and their corresponding values (0, 1, 2).
+		\begin{itemize}
+			\item \underline{Preprocessing:} The index of each enumerated type value within the full list of enumerated types  (obtained with \matfcn{metaclass}) is converted to \texttt{uint32}. The class name (including any namespaces) will be appended to each enumeration name (e.g. ``RED'' will be written as ``MyClassName.Red'').
+			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with the values of each member in the enumeration as \hdftype{H5T\_STD\_U32LE}. 
+			\item \underline{Postprocessing:} A string array of the enumeration members is read from the dataset through the datatype library (\texttt{H5T}), ordered by their enumeration value. If the associated class is not found on MATLAB's path, the data will be read back in as a string array using the format \texttt{x.y} where \texttt{x} is the class name in the attributes and \texttt{y} is the enumeration name. If the class is found on MATLAB's path, the string will be evaluated (\texttt{eval}). If the enumerated type was not written with h5tools and has no class name attribute, the string array will just contain the enumeration names. %with the class name in the attributes \texttt{char}.
+			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeEnumTypeAttribute},\\ \myfcn{h5tools.datasets.readEnumTypeAttribute}.
+			\item \underline{Limitations:} 
+		\end{itemize}
+
+        \subsection{Datetime}
+        \noindent Because attributes cannot be used to specify \texttt{datetime} information, as done for datasets, the process for \texttt{datetime} attributes is slightly different.
+        \begin{itemize}
+            \item \underline{Preprocessing:} Conversion to \texttt{string} and the format property is appended to each string
+			\item \underline{Persistence:} \hdftype{H5T\_STRING} with character type \hdftype{H5T\_C\_S1} and set \hdftype{H5T\_CSET\_UTF8}.
+			\item \underline{Postprocessing:} Conversion back to \texttt{datetime}.
+			\item \underline{Implementation:} \myfcn{h5tools.attributes.makeDatetimeAttribute}
+			\item \underline{Limitations:} The seconds are rounded when converting to \texttt{string}. 
+		\end{itemize}
 		
 		\subsection{Cellstr}
 		\noindent While \texttt{cellstr} is not supported, it is comparable to a \texttt{string} array and can be written as such.  
@@ -309,62 +415,71 @@ out = readatt('File.h5', '/GroupOne', 'all')
 			\item \underline{Preprocessing:} All durations are converted to seconds, then to \texttt{double}
 			\item \underline{Persistence:} Written as \hdftype{H5T\_IEEE\_F64LE}.
 			\item \underline{Postprocessing:} N/A
-			\item \underline{Implementation:} \myfcn{h5tools.datasets.writeAttributeByType}
+			\item \underline{Implementation:} 
 			\item \underline{Limitations:} \textcolor{red}{The data cannot be read back in as \texttt{duration} and will be returned as \texttt{double} instead.}
 		\end{itemize}
 
-    \section{Soft Links}
-    	\noindent Soft links are comparable to ``shortcuts'' within a file system. Currently, h5tools supports writing a dataset that is a soft link to another dataset or group within the HDF5 file (\myfcn{h5tools.writelink}). Arrays of soft links and soft link attributes are not currently supported, but will be added in the near future. 
+%    ██╗     ██╗███╗   ██╗██╗  ██╗███████╗    
+%    ██║     ██║████╗  ██║██║ ██╔╝██╔════╝    
+%    ██║     ██║██╔██╗ ██║█████╔╝ ███████╗    
+%    ██║     ██║██║╚██╗██║██╔═██╗ ╚════██║    
+%    ███████╗██║██║ ╚████║██║  ██╗███████║    
+%    ╚══════╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝    
+                                             
 
-	\section{Groups}
-		\noindent MATLAB's high-level functions create groups en route to creating datasets but does not offer direct control of group creation. The \myfcn{h5tools.createGroup} function fills this gap by providing a high-level option for creating one or more groups, as demonstrated below:
+    \section{Soft Links}\label{sec:links}
+    	\noindent Soft links are comparable to ``shortcuts'' within a file system. Currently, h5tools supports writing a dataset that is a soft link to another dataset or group within the HDF5 file (\myfcn{h5tools.writelink}). Arrays of soft links and soft link attributes are not supported.
+        
+        Soft links are created as demonstrated below. \texttt{hdfFile} is the HDF5 file name, \texttt{linkLocation} is the path for the group where the link will be written, \texttt{linkName} is the name of the link and \texttt{targetLocation} is the HDF5 path of the group/dataset that will be linked to.
+    \begin{lstlisting}[style=matlab-editor, basicstyle=\mlttfamily\footnotesize]
+% SYNTAX:
+% h5tools.writelink(hdfFile, linkLocation, linkName, targetLocation);
+
+% Add a soft link within group '/G1' that links to group '/G2'.
+h5tools.writelink('File.h5', '/G1', 'Link1', '/G2');
+    \end{lstlisting}
+
+%     ██████╗ ██████╗  ██████╗ ██╗   ██╗██████╗ ███████╗
+%    ██╔════╝ ██╔══██╗██╔═══██╗██║   ██║██╔══██╗██╔════╝
+%    ██║  ███╗██████╔╝██║   ██║██║   ██║██████╔╝███████╗
+%    ██║   ██║██╔══██╗██║   ██║██║   ██║██╔═══╝ ╚════██║
+%    ╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║     ███████║
+%     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝     ╚══════╝
+                                                       
+
+	\section{Groups}\label{sec:groups}
+		\noindent MATLAB's high-level functions create groups en route to creating datasets but does not offer direct control of group creation. The \myfcn{h5tools.createGroup} function fills this gap by providing a high-level option for creating one or more groups, as demonstrated below.
+
+        The first input (\texttt{hdfFile}) is the HDF5 file name and the second input (\texttt{hdfPath}) is the HDF path where the groups will be written. Additional inputs (\texttt{varargin}) are group names. Groups do not need to be within \texttt{hdfPath}, but their group names must be specified relative to this location within the file. 
 		\begin{lstlisting}[style=matlab-editor, basicstyle=\mlttfamily\footnotesize]
+% SYNTAX
+% h5tools.createGroup(hdfFile, hdfPath, varargin)
+
 % Create one group within the root group "/"
-h5.createGroup('Test.h5', '/', 'GroupOne);
+h5tools.createGroup('Test.h5', '/', 'GroupOne);
 
 % Create three groups within "/GroupOne"
-h5.createGroup('Test.h5', '/GroupOne', 'GroupOne1A', 'Group1B', 'Group1C');
+h5tools.createGroup('Test.h5', '/GroupOne', 'GroupOne1A', 'Group1B', 'Group1C');
 
 % Create two groups, one in the root group "/" and one in "/GroupOne"
-h5.createGroup('Test.h5', '/', 'GroupTwo', '/GroupOne/Group1D');
+h5tools.createGroup('Test.h5', '/', 'GroupTwo', '/GroupOne/Group1D');
 		\end{lstlisting}
 		
 
-    \section{Reference}
-    \noindent Mapping of numeric datatypes to HDF5:\\$\quad$\vspace{-1ex}\\
-    \begin{center}
-    \begin{tabular}{| c | c | c |}
-        \hline
-        \texttt{MATLAB type} & \textbf{HDF5 Class} & \textbf{HDF5 Type}\\
-        \hline
-        \texttt{double} & \texttt{H5T\_FLOAT} & \texttt{H5T\_IEEE\_F64LE}\\
-        \texttt{single} & \texttt{H5T\_FLOAT} & \texttt{H5T\_IEEE\_F32LE}\\
-        \texttt{uint8} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U8LE}\\
-        \texttt{int8} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I8LE}\\
-        \texttt{uint16} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U16LE}\\
-        \texttt{int16} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I16LE}\\
-        \texttt{uint32} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U32LE}\\
-        \texttt{int32} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I32LE}\\
-        \texttt{uint64} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_U64LE}\\
-        \texttt{int64} & \texttt{H5T\_INTEGER} & \texttt{H5T\_STD\_I64LE}\\
-        \hline
-    \end{tabular}
-    \end{center}
-
+    \section{Indexing}
+    \noindent Several functions are provided for indexing the contents of an HDF5 file. More details about each can be found in the documentation within each function.
+    \begin{enumerate}
+        \item \myfcn{h5tools.collectDatasets} - Return the full path names of all datasets in an HDF5 file. 
+        \item \myfcn{h5tools.collectGroups} - Return the full path names of all groups in an HDF5 file. 
+        \item \myfcn{h5tools.collectSoftlinks} - Return the full path names of all soft links in an HDF5 file. 
+        \item \myfcn{h5tools.getAttributeNames} - Return the names of all attributes of a specific group or dataset. 
+    \end{enumerate}
     \section{Resources}
     \begin{itemize}
         \item \href{https://www.mathworks.com/help/matlab/hdf5-files.html}{\myurl{MATLAB}}: See their documentation for the high-level functions as well as the low-level library.
         \item \href{https://docs.hdfgroup.org/hdf5/develop/}{\myurl{HDF5 API Reference}}: The official HDF5 documentation. 
-        \item \href{https://github.com/NeurodataWithoutBorders/matnwb}{\myurl{NeurodataWithoutBorders}}: nwb-matlab has HDF5 support for a number of data types. Although their HDF5 functions are specific to NWB, it's still a great resource for learning about HDF5 I/O. 
+        \item \href{https://github.com/NeurodataWithoutBorders/matnwb}{\myurl{NeurodataWithoutBorders}}: nwb-matlab has HDF5 support for a number of data types. Although their HDF5 functions are specific to NWB, it's still a great resource for learning about HDF5 I/O. They have support for object and region references, which is something I would like to add in the future. 
         \item \href{https://github.com/h5py/h5py}{\myurl{h5py}}: an excellent Python library for HDF5 -- if your project isn't tied to MATLAB, consider using this instead. For example, idea to make \texttt{logical} an enumerated type was borrowed from h5py. 
     \end{itemize}
 
 \end{document}
-
-    
-%\noindent\begin{itemize}
-%    \item \underline{Preprocessing:} 
-%    \item \underline{Persistence:} See \texttt{struct}.
-%    \item \underline{Postprocessing:} If necessary, conversion with \myfcn{struct2map}.
-%    \item \underline{Implementation:}
-%\end{itemize}

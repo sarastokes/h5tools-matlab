@@ -4,9 +4,11 @@ classdef HdfTypes
 % Description:
 %    A readable verion of the enumerated values returned by H5I.get_type
 %
-% Methods:
+% Static methods:
 %   obj = h5tools.files.HdfTypes.get(ID)
 %       Returns the HdfTypes value for a given H5ML.id
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
     enumeration

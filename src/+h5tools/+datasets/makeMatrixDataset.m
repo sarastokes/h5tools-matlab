@@ -1,11 +1,11 @@
 function makeMatrixDataset(hdfName, pathName, dsetName, data)
-% MAKEMATRIXDATASET
+% Write numeric data to an HDF5 dataset
 % 
 % Description:
-%   Chains h5create and h5write for use with simple matrices
+%   Chains h5create and h5write for use with numeric data
 %
 % Syntax:
-%   h5tools.makeMatrixDataset(hdfFile, pathName, dsetName, data)
+%   h5tools.datasets.makeMatrixDataset(hdfFile, pathName, dsetName, data)
 %
 % Inputs:
 %   hdfName     char
@@ -17,8 +17,16 @@ function makeMatrixDataset(hdfName, pathName, dsetName, data)
 %   data        numeric
 %       Data to write to the dataset
 %
-% See also:
-%   h5tools.write, h5tools.datasets.writeDatasetByType, h5write
+% Outputs:
+%   N/A
+%
+% Examples:   
+%   % Write a dataset named 'D1' in group '/G1'
+%   input = magic(5);
+%   h5tools.datasets.makeMatrixDataset('Test.h5', '/G1', 'D1', input);
+%
+% See Also:
+%   h5tools.write, h5tools.datasets.writeDatasetByType, h5write, h5create
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

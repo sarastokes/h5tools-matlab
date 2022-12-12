@@ -5,7 +5,7 @@ function [parentPath, objName] = splitPath(hdfPath)
 %   Split the last group/dataset from the full path and return both.
 %
 % Syntax:
-%   [parentPath, objName] = splitPath(hdfPath)
+%   [parentPath, objName] = h5tools.util.splitPath(hdfPath)
 %
 % Inputs:
 %   hdfPath         char

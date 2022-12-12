@@ -1,18 +1,36 @@
 function makeMapDataset(hdfName, pathName, dsetName, data)
-% MAKEMAPDATASET
+% Write a dataset as attributes
 %
 % Description:
 %   Write a dataset as attributes of a placeholder text dataset
 %
 % Syntax:
-%   h5tools.makeMapDataset(hdfName, pathName, dsetName, data)
+%   h5tools.datasets.makeMapDataset(hdfName, pathName, dsetName, data)
+%
+% Inputs:
+%   hdfName         char or H5ML.id
+%       HDF5 file name or identifier
+%   pathName        char
+%       HDF5 path to group where dataset will be written
+%   dsetName        char
+%       Name of the dataset
+%   data            struct or containers.Map
+%       Data to be written
+%
+% Outputs:
+%   N/A
+%
+% Examples:   
+%   % Write a dataset named 'D1' in group '/G1'
+%   input = struct('A', 1, 'B', 1:3);
+%   h5tools.datasets.makeMapDataset('Test.h5', '/G1', 'D1', input);
 %
 % Notes:
 %   Mapping a dataset to attributes is a last-ditch effort when compound 
 %   dataset did not work due to unequal numbers of elements in each field
 %
-% See also:
-%   h5tools.write, h5tools.datasets.writeDatasetByType
+% See Also:
+%   h5tools.write, h5tools.datasets.makeCompoundDataset
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

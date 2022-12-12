@@ -1,14 +1,33 @@
 function makeCompoundDataset(hdfName, pathName, dsetName, data)
-% MAKECOMPOUNDDATASET
+% Write struct, table or containers.Map as compound dataset
 %
 % Description:
-%   Adds table/struct to HDF5 file as compound
+%   Adds table/struct/containers.Map to HDF5 file as compound dataset
 %
 % Syntax:
-%   h5tools.makeCompoundDataset(hdfName, pathName, dsetName, data);
+%   h5tools.datasets.makeCompoundDataset(hdfName, pathName, dsetName, data);
 %
-% See also:
-%   h5tools.write, h5tools.datasets.writeDatasetByType
+% Inputs:
+%   hdfName         char or H5ML.id
+%       HDF5 file name or identifier
+%   pathName        char
+%       HDF5 path to group where dataset will be written
+%   dsetName        char
+%       Name of the dataset
+%   data            table, struct or containers.Map
+%       Data to be written (must have equal # of elements)
+%
+% Outputs:
+%   N/A
+%
+% Examples:   
+%   % Write a dataset named 'D1' in group '/G1'
+%   input = struct('A', 1:3, 'B', 4:6);
+%   h5tools.datasets.makeCompoundDataset('Test.h5', '/G1', 'D1', input);
+%
+% See Also:
+%   h5tools.write, h5tools.datasets.writeMapDataset, 
+%   h5tools.datasets.readCompoundDataset
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

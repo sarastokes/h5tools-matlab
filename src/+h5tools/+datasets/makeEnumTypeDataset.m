@@ -1,14 +1,33 @@
 function makeEnumTypeDataset(hdfName, pathName, dsetName, data)
-% MAKEENUMTYPEDATASET
+% Write an enumerated type dataset
 %
 % Description:
-%   Write enumerated type dataset
+%   Write a dataset with a enumerated type datatype
 %
 % Syntax:
-%   makeEnumTypeDataset(hdfName, pathName, dsetName, data)
+%   h5tools.datasets.makeEnumTypeDataset(hdfName, pathName, dsetName, data)
 %
-% See also:
-%   h5tools.write, h5tools.readEnumDataset
+% Inputs:
+%   hdfName         char or H5ML.id
+%       HDF5 file name or identifier
+%   pathName        char
+%       HDF5 path to group where dataset will be written
+%   dsetName        char
+%       Name of the dataset
+%   data            enum
+%       Data to be written
+%
+% Outputs:
+%   N/A
+%
+% Examples:   
+%   % Write a dataset named 'D1' in group '/G1'
+%   input = [test.EnumClass.GROUPONE, test.EnumClass.GROUPTWO];
+%   h5tools.datasets.makeEnumTypeDataset('Test.h5', '/G1', 'D1', input);
+%
+% See Also:
+%   h5tools.write, h5tools.readEnumTypeDataset
+%
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
