@@ -7,6 +7,16 @@ function makeMatrixDataset(hdfName, pathName, dsetName, data)
 % Syntax:
 %   h5tools.makeMatrixDataset(hdfFile, pathName, dsetName, data)
 %
+% Inputs:
+%   hdfName     char
+%       HDF5 file name
+%   pathName     char
+%       Path of the group where dataset was written
+%   dsetName     char
+%       Name of the dataset
+%   data        numeric
+%       Data to write to the dataset
+%
 % See also:
 %   h5tools.write, h5tools.datasets.writeDatasetByType, h5write
 

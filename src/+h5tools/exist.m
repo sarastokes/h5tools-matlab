@@ -33,7 +33,7 @@ function tf = exist(hdfName, pathName)
     if isa(hdfName, 'H5ML.id')
         fileID = hdfName;
     else
-        fileID = h5tools.openFile(hdfName, false);
+        fileID = h5tools.files.openFile(hdfName, false);
         fileIDx = onCleanup(@()H5F.close(fileID));
     end
 

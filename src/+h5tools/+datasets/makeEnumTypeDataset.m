@@ -29,14 +29,14 @@ function makeEnumTypeDataset(hdfName, pathName, dsetName, data)
 
     % File
     if ~isa(hdfName, 'H5ML.id')
-        fileID = h5tools.openFile(hdfName, false);
+        fileID = h5tools.files.openFile(hdfName, false);
         fileIDx = onCleanup(@()H5F.close(fileID));
     else
         fileID = hdfName;
     end
 
     % Datatype
-    typeID = H5T.enum_create('H5T_STD_I8LE');
+    typeID = H5T.enum_create('H5T_STD_I32LE');
     typeIDx = onCleanup(@()H5T.close(typeID));
     for i = 1:numel(memberNames)
         H5T.enum_insert(typeID, memberNames(i), uint8(i));
@@ -62,4 +62,4 @@ function makeEnumTypeDataset(hdfName, pathName, dsetName, data)
     dsetID = H5D.create(fileID, fullPath, typeID, spaceID, propList);
     dsetIDx = onCleanup(@()H5D.close(dsetID));
     
-    H5D.write(dsetID, typeID, spaceID, spaceID, 'H5P_DEFAULT', uint8(values));
+    H5D.write(dsetID, typeID, spaceID, spaceID, 'H5P_DEFAULT', uint32(values));

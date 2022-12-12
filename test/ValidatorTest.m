@@ -48,7 +48,7 @@ classdef ValidatorTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.Throws
 
             % Passing a file ID should not error
-            fileID = h5tools.openFile(testCase.HDF_FILE);
+            fileID = h5tools.files.openFile(testCase.HDF_FILE);
             fileIDx = @()onCleanup(H5G.close(groupID));
             mustBeHdfFile(fileID);
 

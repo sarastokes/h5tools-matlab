@@ -71,7 +71,7 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
         % TODO: Should they be equal
     end
 
-    fileID = h5tools.openFile(hdfName, false);
+    fileID = h5tools.files.openFile(hdfName, false);
     fileIDx = onCleanup(@()H5F.close(fileID));
 
     names = fieldnames(data);

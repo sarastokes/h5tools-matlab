@@ -31,7 +31,7 @@ function fileID = createFile(hdfName, overwrite)
 %   fileID = h5tools.createFile('File.h5');
 %
 % See also:
-%   h5tools.openFile, h5create
+%   h5tools.files.openFile, h5create
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

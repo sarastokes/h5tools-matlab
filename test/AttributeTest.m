@@ -22,7 +22,8 @@ classdef AttributeTest < matlab.unittest.TestCase
             h5tools.createFile(testCase.FILE, true);
 
             % Create two groups for map and struct input testing
-            h5tools.createGroup(testCase.FILE, '/', 'Map', 'Struct');
+            h5tools.createGroup(testCase.FILE, '/',... 
+                'Map', 'Struct', 'MapKV', 'StructKV');
             % Create a dataset for group vs dataset testing
             h5tools.write(testCase.FILE, '/', 'Dataset', magic(5));
         end
@@ -37,6 +38,15 @@ classdef AttributeTest < matlab.unittest.TestCase
             h5tools.writeatt(testCase.FILE, '/Map', map);
             out = h5tools.getAttributeNames(testCase.FILE, '/Map');
             testCase.verifyNumElements(out, 2);
+        end
+
+        function ContainerKVInput(testCase)
+            map = containers.Map();
+            map('A') = 1; map('B') = 'b';
+
+            h5tools.writeatt(testCase.FILE, '/MapKV', map, 'C', 1:3);
+            out = h5tools.getAttributeNames(testCase.FILE, '/MapKV');
+            testCase.verifyNumElements(out, 3);
         end
 
         function Struct(testCase)
@@ -97,18 +107,18 @@ classdef AttributeTest < matlab.unittest.TestCase
 
     methods (Test, TestTags = ["Logical"])
         function Logical(testCase)
-            h5tools.writeatt(testCase.FILE, '/', 'Logical', true);
-            testCase.verifyTrue(h5tools.readatt(testCase.FILE, '/', 'Logical'));
+            h5tools.writeatt(testCase.FILE, '/', 'LogicalTrue', true);
+            testCase.verifyTrue(h5tools.readatt(testCase.FILE, '/', 'LogicalTrue'));
 
-            h5tools.writeatt(testCase.FILE, '/', 'Logical', false);
-            testCase.verifyFalse(h5tools.readatt(testCase.FILE, '/', 'Logical'));
+            h5tools.writeatt(testCase.FILE, '/', 'LogicalFalse', false);
+            testCase.verifyFalse(h5tools.readatt(testCase.FILE, '/', 'LogicalFalse'));
         end
 
         function LogicalVector(testCase)
             input = [true, false, true, false];
             h5tools.writeatt(testCase.FILE, '/', 'LogicalArrayRow', input);
             output = h5tools.readatt(testCase.FILE, '/', 'LogicalArrayRow');
-            testCase.verifyEqual(output, input');
+            testCase.verifyEqual(output, input);
 
             h5tools.writeatt(testCase.FILE, '/', 'LogicalArrayCol', input');
             output = h5tools.readatt(testCase.FILE, '/', 'LogicalArrayCol');
@@ -133,10 +143,10 @@ classdef AttributeTest < matlab.unittest.TestCase
     end
 
     methods (Test, TestTags=["enum"])
-        function Enum(testCase)
+        function EnumScalar(testCase)
             input = test.EnumClass.GROUPONE;
-            h5tools.writeatt(testCase.FILE, '/', 'Enum', input);
-            output = h5tools.readatt(testCase.FILE, '/', 'Enum');
+            h5tools.writeatt(testCase.FILE, '/', 'EnumScalar', input);
+            output = h5tools.readatt(testCase.FILE, '/', 'EnumScalar');
             testCase.verifyEqual(output, input);
         end
 

@@ -27,16 +27,11 @@ function deleteAttribute(hdfName, pathName, name)
         name            char
     end
 
-    fileID = h5tools.openFile(hdfName, false);
+    fileID = h5tools.files.openFile(hdfName, false);
     fileIDx = onCleanup(@()H5F.close(fileID));
 
     fprintf('Deleting %s:%s attribute %s\n', hdfName, pathName, name);
-    try  % See if pathName refers to a group
-        rootID = H5G.open(fileID, pathName);
-        rootIDx = onCleanup(@()H5G.close(rootID));
-    catch % If not, it refers to a dataset
-        rootID = H5D.open(fileID, pathName);
-        rootIDx = onCleanup(@()H5D.close(rootID));
-    end
+    rootID = H5O.open(fileID, pathName, 'H5P_DEFAULT');
+    rootIDx = onCleanup(@()H5O.close(rootID));
 
     H5A.delete(rootID, name);

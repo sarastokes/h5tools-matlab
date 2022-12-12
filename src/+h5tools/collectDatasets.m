@@ -30,7 +30,7 @@ function datasetNames = collectDatasets(hdfName, sortFlag)
     end
 
     if ~isa(hdfName, 'H5ML.id')
-        rootID = h5tools.openFile(hdfName, true);
+        rootID = h5tools.files.openFile(hdfName, true);
         rootIDx = onCleanup(@()H5F.close(rootID));
     else
         rootID = hdfName;

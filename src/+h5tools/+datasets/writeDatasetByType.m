@@ -33,7 +33,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
     end
 
     if ischar(data)
-        h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, data);
+        h5tools.datasets.makeCharDataset(hdfName, pathName, dsetName, data);
         return 
     end
 
@@ -100,7 +100,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
             h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data.T);
             h5tools.writeatt(hdfName, fullPath, 'Class', class(data));        
         case 'imref2d'
-            h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, 'imref2d');
+            h5tools.datasets.makeCharDataset(hdfName, pathName, dsetName, 'imref2d');
             h5tools.writeatt(hdfName, fullPath, 'Class', class(data),...
                 'XWorldLimits', data.XWorldLimits,...
                 'YWorldLimits', data.YWorldLimits,...
@@ -112,7 +112,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
                 'YIntrinsicLimits', data.YIntrinsicLimits,...
                 'XIntrinsicLimits', data.XIntrinsicLimits);
         case 'simtform2d'
-            h5tools.datasets.makeTextDataset(hdfName, pathName, dsetName, 'simtform2d');
+            h5tools.datasets.makeCharDataset(hdfName, pathName, dsetName, 'simtform2d');
             h5tools.writeatt(hdfName, fullPath, 'Class', class(data),...
                 'Dimensionality', data.Dimensionality,...
                 'Scale', data.Scale,...

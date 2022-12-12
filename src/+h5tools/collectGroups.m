@@ -31,7 +31,7 @@ function groupNames = collectGroups(hdfName, sortFlag)
     if isa(hdfName, 'H5ML.id')
         rootID = hdfName;
     else
-        rootID = h5tools.openFile(hdfName, true);
+        rootID = h5tools.files.openFile(hdfName, true);
         rootIDx = onCleanup(@()H5F.close(rootID));
     end
 

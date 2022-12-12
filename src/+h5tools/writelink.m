@@ -36,11 +36,11 @@ function writelink(hdfFile, linkPath, linkName, targetPath)
     end
     % Check whether the link already exists
     if h5tools.exist(hdfFile, h5tools.util.buildPath(linkPath, linkName))
-        warning('writelink:LinkExists',...
+        error('writelink:DatasetExists',...
             'Skipped existing link at %s', h5tools.util.buildPath(linkPath, linkName));
         return
     end
-    fileID = h5tools.openFile(hdfFile, false);
+    fileID = h5tools.files.openFile(hdfFile, false);
     fileIDx = onCleanup(@()H5F.close(fileID));
 
     % Open the group where the link will be written

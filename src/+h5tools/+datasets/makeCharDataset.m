@@ -7,6 +7,16 @@ function makeTextDataset(hdfName, pathName, dsetName, txt)
 % Syntax:
 %   makeTextDataset(fileName, pathName, dsetName, txt)
 %
+% Inputs:
+%   hdfName     char
+%       HDF5 file name
+%   pathName    char
+%       Path of the group where dataset was written
+%   dsetName    char
+%       Name of the dataset
+%   txt         char
+%       Data to write to the dataset
+%
 % See also:
 %   h5tools.write, h5tools.datasets.writeDatasetByType
 
@@ -23,7 +33,7 @@ function makeTextDataset(hdfName, pathName, dsetName, txt)
     if isa(hdfName, 'H5ML.id')
         fileID = hdfName;
     else
-        fileID = h5tools.openFile(hdfName, false);
+        fileID = h5tools.files.openFile(hdfName, false);
         fileIDx = onCleanup(@()H5F.close(fileID));
     end
         

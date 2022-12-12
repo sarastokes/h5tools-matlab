@@ -24,7 +24,10 @@ function deleteObject(hdfName, pathName)
 %   Deleting an HDF5 object only removes the link, the data still exists
 %   and the file size is not reduced. Space can only be recovered with
 %   h5repack in the HDF5 library
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
+
 
     arguments
         hdfName             {mustBeHdfFile(hdfName)} 
@@ -44,13 +47,8 @@ function deleteObject(hdfName, pathName)
     if pathName == '/'
         parentID = fileID;
     else
-        try    % Try to treat pathName as a group
-            parentID = H5G.open(fileID, pathName);
-            parentIDx = onCleanup(@()H5G.close(parentID));
-        catch  % Otherwise handle it as a dataset
-            parentID = H5D.open(fileID, pathName);
-            parentIDx = onCleanup(@()H5G.close(parentID));
-        end
+        parentID = H5O.open(fileID, pathName);
+        parentIDx = onCleanup(H5O.close(parentID));
     end
 
     H5L.delete(parentID, objName, 'H5P_DEFAULT');

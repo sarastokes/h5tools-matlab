@@ -30,7 +30,18 @@ function out = readEnumDataset(hdfName, pathName, dsetName)
         enumClass = readatt(hdfName, fullPath, 'EnumClass');
         out = arrayfun(@(x) eval('%s.%s', enumClass, x), data);
     else  % Enumeration that is not related to a MATLAB class
-        out = data;
+        enumSize = size(data);
+        data = data(:);
+        idx = strfind(data(1), ".");
+        charData1 = char(data(1));
+        % Check whether it's a class on MATLAB path
+        if ~isempty(idx) && exist(charData1(1:idx(end)), 'class') == 8
+            % Convert to MATLAB enum class
+            for i = 1:numel(data)
+                out = cat(1, out, eval(sprintf("%s", data(i))));
+            end
+            out = reshape(out, enumSize);
+        else % Return as a string array instead
+            out = reshape(data, enumSize);
+        end
     end
-
-    

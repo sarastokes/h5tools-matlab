@@ -1,11 +1,11 @@
 function out = readAttributeByType(hdfName, pathName, attName)
-% READATTRIBUTEBYTYPE
+% Read a single HDF5 attribute
 %
 % Description:
-%   Read a single HDF5 attribute
+%   Read a single HDF5 attribute and perform datatype-specific processing
 %
 % Syntax:
-%   out = readAttributeByType(hdfName, pathName, attName)
+%   out = h5tools.attributes.readAttributeByType(hdfName, pathName, attName)
 %
 % Input:
 %   hdfName             char
@@ -18,51 +18,35 @@ function out = readAttributeByType(hdfName, pathName, attName)
 % See also:
 %   h5tools.readatt
 %
-% History:
-%   22Aug2022 - SSP
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
+
     arguments 
         hdfName         char    {mustBeHdfFile(hdfName)} 
         pathName        char    {mustBeHdfPath(hdfName, pathName)}
         attName         char 
     end
 
+    import h5tools.datatypes.Classes
+
     % Begin with h5readatt and post-process as needed
     data = h5readatt(hdfName, pathName, attName);
 
-    if isa(data, 'int32')
-        out = logical(data);
+    dataType = Classes.getByPath(hdfName, pathName, attName);
+
+    if dataType == Classes.ENUM 
+        out = h5tools.attributes.readEnumTypeAttribute(hdfName, pathName, attName);
+        return
+    end
+    
+    % Check for datetime
+    if isstring(data) && all(contains(data, " (Format="))
+        txt = extractBefore(data, " (Format=");
+        fmt = extractBetween(data, "(Format=", ")");
+        out = arrayfun(@(x,y) datetime(x, "format", y), txt, fmt);
         return
     end
 
-    if isstring(data) && numel(data) == 1
-        idx = strfind(data, '.');
-        if ~isempty(idx) 
-            iData = char(data);
-            if exist(iData(1:idx(end)), 'class') == 8
-                try
-                    out = eval(data);
-                    return
-                catch ME 
-                    if ~ismember(ME.identifier, {'MATLAB:undefinedVarOrClass', 'MATLAB:subscripting:classHasNoPropertyOrMethod'})
-                        rethrow(ME);
-                    end
-                end
-            end
-        end
-    end
-    
-    if ischar(data)
-        % Was it a datetime
-        try
-            out = datetime(data);
-            return 
-        catch ME
-            if ~strcmp(ME.identifier, 'MATLAB:datetime:UnrecognizedDateStringSuggestLocale')
-                rethrow(ME);
-            end
-        end
-    end
-
-    % Otherwise return 
+    % Otherwise return as is
     out = data;

@@ -36,10 +36,20 @@ classdef LinkTest < matlab.unittest.TestCase
                 h5tools.collectSoftlinks(testCase.FILE), 1);
 
             % Test from file ID
-            fileID = h5tools.openFile(testCase.FILE);
+            fileID = h5tools.files.openFile(testCase.FILE);
             fileIDx = onCleanup(@()H5F.close(fileID));
             testCase.verifyNumElements(...
                 h5tools.collectSoftlinks(fileID), 1);
+        end
+    end
+
+    methods (Test, TestTags=["Error"])
+        function InvalidTarget(testCase)
+            import matlab.unittest.constraints.Throws
+
+            testCase.verifyThat(...
+                @() h5tools.writelink(testCase.FILE, '/', 'LinkTwo', '/GroupThree'),...
+                Throws("writeLink:InvalidLinkTarget"));
         end
     end
 end

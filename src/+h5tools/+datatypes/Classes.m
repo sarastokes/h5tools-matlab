@@ -26,7 +26,7 @@ classdef Classes
     end
 
     methods (Static)
-        function obj = getByPath(hdfName, pathName)
+        function obj = getByPath(hdfName, pathName, attName)
             % GETBYID
             % 
             % Description:
@@ -35,7 +35,16 @@ classdef Classes
             % Inputs:
             %   ID          H5ML.id
             %       Datatype identifier
+            % 
+            % Examples:
+            %   % Get a dataset's type
+            %   obj = getByPath('File.h5', '/Dset1')
+            %
+            %   % Get an attribute's type
+            %   obj = getByPath('File.h5', '/Dset1', 'Att1');
             % -------------------------------------------------------------
+
+            import h5tools.files.HdfTypes
 
             if isa(hdfName, 'H5ML.id')
                 fileID = hdfName;
@@ -44,15 +53,33 @@ classdef Classes
                 fileIDx = onCleanup(@()H5F.close(fileID));
             end
 
-            try
-                dsetID = H5D.open(fileID, pathName);
-                dsetIDx = onCleanup(@()H5D.close(dsetID));
-            catch  % TODO: Find exact error message...
-                error("getByPath:DatasetPathError",...
-                    "Could not open dataset at path %s", pathName);
+            if nargin < 3
+                try % Dataset
+                    objID = H5D.open(fileID, pathName);
+                    objIDx = onCleanup(@()H5D.close(objID));
+                    typeID = H5D.get_type(objID);
+                catch  % TODO: Find exact error message...
+                    error("getByPath:DatasetPathError",...
+                        "Could not open dataset at path %s", pathName);
+                end
+            else  
+                %try % Attribute
+                if strcmp(pathName, '/')
+                    objID = H5A.open(fileID, attName);
+                    objIDx = onCleanup(@()H5A.close(objID));
+                else
+                    parentID = H5O.open(fileID, pathName, 'H5P_DEFAULT');
+                    parentIDx = onCleanup(@() H5O.close(parentID));
+                    objID = H5A.open(parentID, attName);
+                    objIDx = onCleanup(@()H5A.close(objID));
+                end
+                typeID = H5A.get_type(objID);
+                %catch
+                    %error("getByPath:PathOrAttError",...
+                %        "Could not open attribute %s at path %s", attName, pathName);
+                %end
             end
 
-            typeID = H5D.get_type(dsetID);
             typeIDx = onCleanup(@()H5T.close(typeID));
 
             obj = h5tools.datatypes.Classes.getByID(typeID);
@@ -69,7 +96,7 @@ classdef Classes
             %       Datatype identifier
             % ------------------------------------------------------------- 
             import h5tools.datatypes.Classes
-            import h5tools.util.HdfTypes
+            import h5tools.files.HdfTypes
 
             assert(HdfTypes.get(ID) == HdfTypes.DATATYPE,...
                 'Input H5ML.id must be a datatype identifier');

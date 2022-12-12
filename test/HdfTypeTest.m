@@ -17,9 +17,9 @@ classdef HdfTypeTest < matlab.unittest.TestCase
 
     methods (Test)
         function TypeFromID(testCase)
-            import h5tools.util.HdfTypes
+            import h5tools.files.HdfTypes
             
-            fileID = h5tools.openFile(testCase.FILE);
+            fileID = h5tools.files.openFile(testCase.FILE);
             fileIDx = @()onCleanup(H5F.close(fileID));
             testCase.verifyEqual(HdfTypes.get(fileID), HdfTypes.FILE);
 

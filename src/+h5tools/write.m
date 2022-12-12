@@ -1,11 +1,11 @@
-function write(hdfName, pathName, dsetName, data)
-% WRITE
+function success = write(hdfName, pathName, dsetName, data)
+% Write data to a HDF5 dataset
 %
 % Description:
-%   Write one or more HDF5 datasets
+%   Write an HDF5 dataset at the specified path 
 %
 % Syntax:
-%   h5tools.write(hdfName, pathName, dsetName, data)
+%   success = h5tools.write(hdfName, pathName, dsetName, data)
 %
 % See also:
 %   h5tools.datasets.writeDatasetByType
@@ -27,4 +27,5 @@ function write(hdfName, pathName, dsetName, data)
         h5tools.createGroup(hdfName, parent, newGroup);
     end
 
-    h5tools.datasets.writeDatasetByType(hdfName, pathName, dsetName, data);
+    success = h5tools.datasets.writeDatasetByType(...
+        hdfName, pathName, dsetName, data);

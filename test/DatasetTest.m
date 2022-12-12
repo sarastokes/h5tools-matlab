@@ -93,28 +93,38 @@ classdef DatasetTest < matlab.unittest.TestCase
     methods (Test, TestTags={'Boolean'})
         function LogicalScalar(testCase)
             h5tools.datasets.makeLogicalDataset(testCase.FILE, '/', 'LogicalFalse', 0);
-            testCase.verifyFalse(h5tools.datasets.readEnumDataset(...
+            testCase.verifyFalse(h5tools.datasets.readEnumTypeDataset(...
                 testCase.FILE, '/', 'LogicalFalse'));
 
             h5tools.datasets.makeLogicalDataset(testCase.FILE, '/', 'LogicalTrue', 1);
-            testCase.verifyTrue(h5tools.datasets.readEnumDataset(...
+            testCase.verifyTrue(h5tools.datasets.readEnumTypeDataset(...
                 testCase.FILE, '/', 'LogicalTrue'));
         end
 
         function Logical2D(testCase)
             input = [false, true, false; true, true, false];
             h5tools.datasets.makeLogicalDataset(testCase.FILE, '/', 'Logical2D', input);
-            output = h5tools.datasets.readEnumDataset(testCase.FILE, '/', 'Logical2D');
+            output = h5tools.datasets.readEnumTypeDataset(testCase.FILE, '/', 'Logical2D');
             testCase.verifyEqual(output, input);
         end
     end
 
     methods (Test, TestTags=["Datetime"])
-        function Datetime(testCase)
+        function DatetimeScalar(testCase)
             input = datetime('now', 'Format', 'yyyyMMdd');
             h5tools.write(testCase.FILE, '/', 'Datetime', input);
             output = h5tools.read(testCase.FILE, '/', 'Datetime');
             testCase.verifyTrue(isdatetime(output));
+            test.verifyDatesEqual(testCase, output, input);
+        end
+
+        function DatetimeArray(testCase)
+            input = datetime('now', 'Format', 'yyyyMMdd');
+            input = repmat(input, [2, 2]);
+            h5tools.write(testCase.FILE, '/', 'DatetimeArray', input);
+            output = h5tools.read(testCase.FILE, '/', 'DatetimeArray');
+            testCase.verifyTrue(isdatetime(output));
+            test.verifyDatesEqual(testCase, output, input);
         end
     end
 
@@ -269,7 +279,7 @@ classdef DatasetTest < matlab.unittest.TestCase
 
         function EnumArray(testCase)
             input = [test.EnumClass.GROUPONE, test.EnumClass.GROUPONE; ...
-                     test.EnumClass.GROUPTWO, test.EnumClass.GROUPFOUR];
+                     test.EnumClass.GROUPTWO, test.EnumClass.GROUPTHREE];
             h5tools.write(testCase.FILE, '/', 'EnumArray', input);
             output = h5tools.read(testCase.FILE, '/', 'EnumArray');
             testCase.verifyEqual(output, input);
@@ -280,7 +290,7 @@ classdef DatasetTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.IssuesWarnings
 
             % fakeEnum = 'NotAnEnum.GROUPONE';
-            h5tools.datasets.makeTextDataset(testCase.FILE, '/', 'EnumOffPath', 'GROUPONE');
+            h5tools.datasets.makeCharDataset(testCase.FILE, '/', 'EnumOffPath', 'GROUPONE');
             h5tools.writeatt(testCase.FILE, '/EnumOffPath', 'Class', 'enum',... 
                 'EnumClass', 'NotAnEnum');
             testCase.verifyThat(...
@@ -293,7 +303,7 @@ classdef DatasetTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.IssuesWarnings
             
             % fakeEnum = 'EnumClass.GROUPFOUR';
-            h5tools.datasets.makeTextDataset(testCase.FILE, '/', 'EnumBadType', 'GROUPFOUR');
+            h5tools.datasets.makeCharDataset(testCase.FILE, '/', 'EnumBadType', 'GROUPFOUR');
             h5tools.writeatt(testCase.FILE, '/EnumBadType', 'Class', 'enum',... 
                 'EnumClass', class(test.EnumClass.GROUPONE));
             testCase.verifyThat(...

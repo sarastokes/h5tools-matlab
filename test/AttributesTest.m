@@ -72,7 +72,7 @@ classdef AttributesTest < matlab.unittest.TestCase
         function Dataset(testCase)
             % Test accessing just the attribute names
             attNames = h5tools.getAttributeNames(testCase.FILE, '/D1');
-            testCase.verifyNumElements(attNames, 5);
+            testCase.verifyNumElements(attNames, 4);
             testCase.verifyEmpty(setdiff(attNames, ["A","B","C","D", "Class"]));
             % Dataset has one extra, the MATLAB Class ("Class")
 

@@ -53,12 +53,12 @@ function writeatt(hdfName, pathName, varargin)
     if isa(varargin{1}, 'containers.Map')
         attMap = varargin{1};
         if nargin > 3
-            attMap = addMaps(attMap, kv2map(varargin{:}));
+            attMap = addMaps(attMap, kv2map(varargin{2:end}));
         end
     elseif isstruct(varargin{1})
         attMap = struct2map(varargin{1});
         if nargin > 3
-            attMap = addMaps(attMap, kv2map(varargin{:}));
+            attMap = addMaps(attMap, kv2map(varargin{2:end}));
         end
     else
         attMap = kv2map(varargin{:});

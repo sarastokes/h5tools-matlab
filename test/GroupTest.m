@@ -12,7 +12,7 @@ classdef GroupTest < matlab.unittest.TestCase
             fileID = h5tools.createFile(testCase.FILE, true);
             
             % Test collect groups from fileID
-            fileID = h5tools.openFile(testCase.FILE);
+            fileID = h5tools.files.openFile(testCase.FILE);
             fileIDx = onCleanup(@()H5F.close(fileID));
             testCase.verifyEmpty(h5tools.collectGroups(fileID), 1);
         end

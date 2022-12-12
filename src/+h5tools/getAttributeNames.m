@@ -34,14 +34,8 @@ function names = getAttributeNames(hdfName, pathName)
         fileIDx = onCleanup(@()H5F.close(fileID));
     end
     
-    % Are the attributes associated with a dataset or a group
-    try
-        rootID = H5G.open(fileID, pathName);
-        rootIDx = onCleanup(@()H5G.close(rootID));
-    catch
-        rootID = H5D.open(fileID, pathName);
-        rootIDx = onCleanup(@()H5D.close(rootID));
-    end
+    rootID = H5O.open(fileID, pathName, 'H5P_DEFAULT');
+    rootIDx = onCleanup(@()H5O.close(rootID));
 
     names = string.empty();
     [~, ~, names] = H5A.iterate(rootID, 'H5_INDEX_NAME',...

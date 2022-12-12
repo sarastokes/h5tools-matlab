@@ -1,17 +1,35 @@
 function out = readDatasetByType(hdfName, pathName, dsetName)
-% READDATASETBYTYPE
+% Reads HDF5 dataset with type-specific processing
 %
 % Description:
 %   Reads dataset and assigns post-processing, if necessary
 %
 % Syntax:
-%   out = readDatasetByType(hdfName, pathName, dsetName)
+%   out = h5tools.datasets.readDatasetByType(hdfName, pathName, dsetName)
+%
+% Inputs:
+%   hdfName     char
+%       HDF5 file name
+%   pathName     char
+%       Path of the group where dataset was written
+%   dsetName     char
+%       Name of the dataset
+%
+% Outputs:
+%   data    
+%       Contents of the HDF5 dataset
 %
 % See also:
 %   h5tools.read, h5read
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
+
+    arguments
+        hdfName         char        {mustBeHdfFile(hdfName)}
+        pathName        char        {mustBeHdfPath(hdfName, pathName)}
+        dsetName        char
+    end
 
     import h5tools.datatypes.Classes
 
@@ -68,7 +86,7 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
 
     % Handle enumerated types
     if dataClass == Classes.ENUM 
-        out = h5tools.datasets.readEnumDataset(...
+        out = h5tools.datasets.readEnumTypeDataset(...
             hdfName, pathName, dsetName);
         return 
     end

@@ -5,7 +5,7 @@ classdef HdfTypes
 %    A readable verion of the enumerated values returned by H5I.get_type
 %
 % Methods:
-%   obj = HdfTypes.get(ID)
+%   obj = h5tools.files.HdfTypes.get(ID)
 %       Returns the HdfTypes value for a given H5ML.id
 % -------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ classdef HdfTypes
                 ID      {mustBeA(ID, 'H5ML.id')}
             end
 
-            import h5tools.util.HdfTypes
+            import h5tools.files.HdfTypes
 
             objType = H5I.get_type(ID);
             switch objType 

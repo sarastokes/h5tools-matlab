@@ -136,12 +136,9 @@ See the documentation for full information on how to use these. All take the HDF
 - ```tf = h5tools.exist(hdfFile, hdfPath)``` - returns whether or not ```hdfPath``` exists within the HDF5 file
 - ```attNames = h5tools.getAttributeNames(hdfFile, hdfPath)``` - returns the attribute names of the group/dataset at ```hdfPath```
 - ```tf = h5tools.hasAttribute(hdfFile, hdfPath, attName)``` - returns whether or not the group/dataset at ```hdfPath``` has the attribute ```attName```.
-- ```fileID = h5tools.openFile(hdfFile, readOnly)``` - if you need to work with the low-level library, this function will return the file identifier. If the 2nd input is true (default), it will be opened as read-only. To modify the file, set to false. 
+- ```fileID = h5tools.files.openFile(hdfFile, readOnly)``` - if you need to work with the low-level library, this function will return the file identifier. If the 2nd input is true (default), it will be opened as read-only. To modify the file, set to false. 
 
-The ```h5tools.util``` package contains some small functions for working with HDF5 paths (```getPathEnd```, ```buildPath```). In addition, ```h5tools.util.HdfTypes``` mimics the enumeration used for object types in the low-level library (but does not require using ```H5ML.get_constant_value()``` to interpret) and can parse ```H5ML.id``` inputs.
-
-### References
-For more information on working with HDF5 in MATLAB, see their [documentation](https://www.mathworks.com/help/matlab/hdf5-files.html) which provides information on the high-level functions and low-level HDF5 Package Library.
+The ```h5tools.util``` package contains some small functions for working with HDF5 paths (```getPathEnd```, ```buildPath```). In addition, ```h5tools.files.HdfTypes``` mimics the enumeration used for object types in the low-level library (but does not require using ```H5ML.get_constant_value()``` to interpret) and can parse ```H5ML.id``` inputs.
 
 ### Citation
 If you use this package, please cite the Github repository, for now. This package was developed to support a data management system for adaptive optics imaging of the eye ([AOData](https://github.com/sarastokes/AOData)). A paper is soon to be submitted and a citation will be added here once the paper is up on a preprint server. Please return here to find the citation if you use h5tools-matlab in your own work. 

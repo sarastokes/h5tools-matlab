@@ -41,7 +41,7 @@ classdef SearchTest < matlab.unittest.TestCase
             testCase.verifyEqual(out, "/Group1/Dataset");
 
             % Test with fileID input
-            fileID = h5tools.openFile(testCase.FILE);
+            fileID = h5tools.files.openFile(testCase.FILE);
             fileIDx = onCleanup(@()H5F.close(fileID));
             testCase.verifyNumElements(...
                 h5tools.collectDatasets(fileID), 1);
