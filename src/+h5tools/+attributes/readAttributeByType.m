@@ -15,9 +15,12 @@ function out = readAttributeByType(hdfName, pathName, attName)
 %   attName             char
 %       Attribute name to read
 %
-% See also:
-%   h5tools.readatt
+% Output:
+%   value   
+%       Attribute value
 %
+% See also:
+%   h5tools.readatt, h5readatt, h5tools.attributes.writeAttributeByType
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
@@ -41,7 +44,7 @@ function out = readAttributeByType(hdfName, pathName, attName)
     end
     
     % Check for datetime
-    if isstring(data) && all(contains(data, " (Format="))
+    if isstring(data) && all(contains(data(:), " (Format="))
         txt = extractBefore(data, " (Format=");
         fmt = extractBetween(data, "(Format=", ")");
         out = arrayfun(@(x,y) datetime(x, "format", y), txt, fmt);

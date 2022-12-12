@@ -29,7 +29,7 @@ function makeLogicalDataset(hdfName, pathName, dsetName, data)
     end
 
     % Datatype
-    typeID = H5T.enum_create('H5T_STD_I8LE');
+    typeID = H5T.enum_create('H5T_STD_U8LE');
     typeIDx = onCleanup(@()H5T.close(typeID));
     H5T.enum_insert(typeID, 'FALSE', 0);
     H5T.enum_insert(typeID, 'TRUE', 1);

@@ -169,7 +169,7 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 		\subsection{Logical}
 		\noindent HDF5 has no boolean datatype so, following other successful HDF5 libraries like h5py, this is written as an enumerated type.
 		\begin{itemize}
-			\item \underline{Preprocessing:} Conversion to \texttt{uint8}.
+			\item \underline{Preprocessing:} Conversion to \texttt{int8}.
 			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with two members (0=FALSE, 1=TRUE). The enumeration values are written as \hdftype{H5T\_STD\_I8LE}.
 			\item \underline{Postprocessing:} If an enumerated type dataset is read in and has two enumerated types matching those above, the values it will be treated as \texttt{logical}. The enumerated values will be converted from \texttt{uint8} to \texttt{logical}. 
 			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeLogicalDataset}, \myfcn{h5tools.datasets.readEnumTypeDataset}.
@@ -210,8 +210,8 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 		\noindent
 		\begin{itemize}
 			\item \underline{Preprocessing:} The time column is converted to \texttt{double} with \matfcn{seconds()}. 
-			\item \underline{Persistence:} Written as \hdftype{H5T\_COMPOUND} with two attributes: \myatt{Class}{timetable}, \myatt{ColumnClasses}{[class1, class2,...]} of data in each column
-			\item \underline{Postprocessing:}
+			\item \underline{Persistence:} Written as \hdftype{H5T\_COMPOUND} with two attributes: \myatt{Class}{timetable}, \myatt{ColumnClasses}{[class1, class2,...]} of data in each column. See \textbf{Table 1} and \texttt{string} and \texttt{char} for information on how individual columns are written.
+			\item \underline{Postprocessing:} The first column is converted back to \texttt{duration} with \matfcn{seconds}.
 			\item \underline{Implementation:} See \texttt{table}, \myfcn{h5tools.datasets.writeDatasetByType}. 
 			\item \underline{Limitations:} Same as \texttt{table}. In addition, a better way might exist for converting the \texttt{duration} column than always using \matfcn{seconds}.
 		\end{itemize}
@@ -225,6 +225,9 @@ h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 			\item \underline{Implementation:} \myfcn{h5tools.datasets.writeDatasetByType}, \myfcn{h5tools.datasets.readDatasetByType}
 			\item \underline{Limitations:} N/A
 		\end{itemize}
+
+        \subsection{Miscellaneous data types}
+        \noindent Several specialized MATLAB datatypes from the Image Processing Toolbox are also included to demonstrate how the tricks above could be applied to write any other specialized datatype to an HDF5 file as well. See \myfcn{h5tools.datasets.writeDatasetByType} and \myfcn{h5tools.datasets.readDatasetByType} for implementation. See CONTRIBUTING.md for information about adding new types.
     \section{Attributes}
         \noindent The high-level functions for attributes are \myfcn{h5tools.writeatt} and \myfcn{h5tools.readatt}. Many of the classes supported by h5tools for datasets rely on attributes to ensure accurate conversion when reading in the data. Because attributes cannot have attributes, the additional datatypes available here are less extensive and some differ in their implementation. The advantages of \myfcn{h5tools.writeatt} and \myfcn{h5tools.readatt} are: 
 		\begin{enumerate}
@@ -282,7 +285,7 @@ out = readatt('File.h5', '/GroupOne', 'all')
 		\subsection{Logical}
 		\noindent HDF5 has no boolean datatype so, following other successful HDF5 libraries like h5py, this is written as an enumerated type.
 		\begin{itemize}
-			\item \underline{Preprocessing:} Conversion to \texttt{uint8}.
+			\item \underline{Preprocessing:} Conversion to \texttt{int8}.
 			\item \underline{Persistence:} written as \myurl{\texttt{H5T\_ENUM}} with two members (0=FALSE, 1=TRUE), where the member values are \hdftype{H5T\_STD\_I8LE}. 
 			\item \underline{Postprocessing:} If an enumerated type dataset is read in and has two enumerated types matching those above, the values it will be treated as \texttt{logical}. The enumerated values will be converted from \texttt{uint8} to \texttt{logical}. 
 			\item \underline{Implementation:} \myfcn{h5tools.datasets.makeLogicalAttribute},\\ \myfcn{h5tools.datasets.readEnumTypeAttribute}.

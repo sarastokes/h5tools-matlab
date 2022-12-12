@@ -1,11 +1,16 @@
 function deleteH5toolsTestFiles()
-% DELETEH5TOOLSTESTFILES
+% Deletes test suite .h5 files
 %
 % Description:
-%   Deletes all the files created by the test suite 
+%   Deletes all the HDF5 files created by the test suite 
 %
 % Syntax:
 %   test.deleteH5ToolsTestFiles()
+%
+% See Also:
+%   runH5toolsTestSuite
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
     % Suppress warnings for when the file doesn't exist
@@ -18,7 +23,7 @@ function deleteH5toolsTestFiles()
     delete(fullfile(testPath, 'Dataset.h5'));
     delete(fullfile(testPath, 'File.h5'));
     delete(fullfile(testPath, 'GroupTest.h5'));
-    delete(fullfile(testPath, 'HdfTypeTest.h5'));
+    delete(fullfile(testPath, 'EnumClassTest.h5'));
     delete(fullfile(testPath, 'LinkTest.h5'));
     delete(fullfile(testPath, 'ValidatorTest.h5'));
 

@@ -1,5 +1,5 @@
 function fileID = createFile(hdfName, overwrite)
-% CREATEFILE
+% Create a new HDF5 file
 %
 % Description:
 %   Create an HDF5 file with optional overwriting of existing file

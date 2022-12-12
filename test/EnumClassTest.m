@@ -1,12 +1,12 @@
-classdef HdfTypeTest < matlab.unittest.TestCase 
+classdef EnumClassTest < matlab.unittest.TestCase 
 
     properties
-        FILE
+        FILE = fullfile(fileparts(mfilename("fullpath")), "EnumClassTest.h5")
     end
 
     methods (TestClassSetup)
         function obj = createFile(testCase)
-            testCase.FILE = fullfile(fileparts(mfilename("fullpath")), "HdfTypeTest.h5");
+            testCase.FILE 
             % Create the file and add some basic components
             h5tools.createFile(testCase.FILE, true);
             h5tools.createGroup(testCase.FILE, '/', 'GroupOne', 'GroupTwo');

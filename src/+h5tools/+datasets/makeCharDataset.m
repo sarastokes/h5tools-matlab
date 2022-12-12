@@ -1,11 +1,11 @@
-function makeTextDataset(hdfName, pathName, dsetName, txt) 
-% MAKETEXTDATASET
+function makeCharDataset(hdfName, pathName, dsetName, txt) 
+% Create & write char to an HDF5 dataset
 %
 % Description:
 %   Create and write an HDF5 dataset for char
 %
 % Syntax:
-%   makeTextDataset(fileName, pathName, dsetName, txt)
+%   makeCharDataset(fileName, pathName, dsetName, txt)
 %
 % Inputs:
 %   hdfName     char
@@ -18,7 +18,8 @@ function makeTextDataset(hdfName, pathName, dsetName, txt)
 %       Data to write to the dataset
 %
 % See also:
-%   h5tools.write, h5tools.datasets.writeDatasetByType
+%   h5tools.write, h5tools.datasets.writeDatasetByType, 
+%   h5tools.datasets.makeStringDataset
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------

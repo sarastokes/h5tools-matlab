@@ -1,8 +1,8 @@
 function createGroup(hdfName, pathName, varargin)
-% CREATEGROUP
+% Create new group(s) in HDF5 file
 % 
 % Description:
-%   Create one or more groups at a specific location
+%   Create one or more new groups
 %
 % Syntax:
 %   groupID = h5tools.createGroup(fileName, pathName, varargin)

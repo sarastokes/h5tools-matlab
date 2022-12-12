@@ -21,7 +21,7 @@ function makeLogicalAttribute(hdfName, pathName, attName, data)
     objIDx = onCleanup(@()H5O.close(objID));
 
     % Datatype
-    typeID = H5T.enum_create('H5T_STD_I32LE');
+    typeID = H5T.enum_create('H5T_STD_U8LE');
     typeIDx = onCleanup(@()H5T.close(typeID));
     H5T.enum_insert(typeID, 'FALSE', 0);
     H5T.enum_insert(typeID, 'TRUE', 1);
@@ -31,4 +31,4 @@ function makeLogicalAttribute(hdfName, pathName, attName, data)
 
     attID = H5A.create(objID, attName, typeID, spaceID, 'H5P_DEFAULT');
     attIDx = onCleanup(@()H5A.close(attID));
-    H5A.write(attID, typeID, uint32(data));
+    H5A.write(attID, typeID, uint8(data));

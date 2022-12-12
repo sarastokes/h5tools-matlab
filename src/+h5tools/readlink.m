@@ -8,7 +8,7 @@ function [data, path, ID] = readlink(hdfName, pathName, linkName)
 % Syntax:
 %   [data, path, ID] = h5tools.readlink(hdfName, pathName, linkName)
 %
-% See also:
+% See Also:
 %   h5tools.writelink, h5tools.getAllSoftlinks
 
 % By Sara Patterson, 2022 (h5tools-matlab)

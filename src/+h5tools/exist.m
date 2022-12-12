@@ -1,8 +1,8 @@
 function tf = exist(hdfName, pathName)
-% EXISTS
+% Check whether group or dataset exists
 % 
 % Description:
-%   Check if group or dataset exists in file
+%   Check if group or dataset exists in the HDF5 file
 %
 % Syntax:
 %   tf = exist(hdfName, hdfName)

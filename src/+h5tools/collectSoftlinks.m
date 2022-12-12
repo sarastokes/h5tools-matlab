@@ -1,11 +1,11 @@
 function linkNames = collectSoftlinks(hdfName, sortFlag)
-% COLLECTALLSOFTLINKS
+% Get all soft links in file
 %
 % Description:
 %   Returns all soft links in an HDF5 file
 %
 % Syntax:
-%   linkNames = h5tools.collectAllSoftlinks(hdfName, sortFlag)
+%   linkNames = h5tools.collectSoftlinks(hdfName, sortFlag)
 %
 % Inputs:
 %   hdfName         HDF file name or H5ML.id
@@ -16,6 +16,13 @@ function linkNames = collectSoftlinks(hdfName, sortFlag)
 % Outputs:
 %   linkNames       string array
 %       The full hdfPaths and names of all softlinks
+%
+% Examples:
+%   % Return all link names
+%   linkNames = h5tools.collectSoftlinks('File.h5');
+%
+%   % Return the link names sorted alphabetically
+%   linkNames = h5tools.collectSoftlinks('File.h5', true);
 %
 % See also:
 %   h5tools.collectDatasets, h5tools.collectGroups, h5tools.getAttributeNames

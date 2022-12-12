@@ -8,7 +8,7 @@ function out = read(hdfName, pathName, dsetName)
 %   datetime, char, numeric, logical, table, timetable, string, duration
 %   cellstr, enum, containers.Map, affine2d, imref2d, simtform2d
 %
-% See also:
+% See Also:
 %   h5read, h5tools.datasets.readDatasetByType
 
 % By Sara Patterson, 2022 (h5tools-matlab)

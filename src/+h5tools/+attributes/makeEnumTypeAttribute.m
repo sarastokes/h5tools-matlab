@@ -43,7 +43,7 @@ function makeEnumTypeAttribute(hdfName, pathName, attName, data)
     objID = H5O.open(fileID, pathName, 'H5P_DEFAULT');
     objIDx = onCleanup(@()H5O.close(objID));
 
-    typeID = H5T.enum_create('H5T_STD_I32LE');
+    typeID = H5T.enum_create('H5T_STD_U32LE');
     typeIDx = onCleanup(@()H5T.close(typeID));
     for i = 1:numel(memberNames)
         H5T.enum_insert(typeID, [matlabClass + "." + memberNames(i)], uint32(i));

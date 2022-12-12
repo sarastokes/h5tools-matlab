@@ -1,8 +1,9 @@
 function writelink(hdfFile, linkPath, linkName, targetPath)
-% WRITELINK 
+% Write an HDF5 soft link 
 %
 % Description:
-%   Creates a soft link within HDF5 group
+%   Creates a soft link dataset within HDF5 group linking to another 
+%   dataset or group within the HDF5 file.
 %
 % Syntax:
 %   h5tools.writelink(hdfFile, linkPath, linkName, targetPath)
@@ -11,37 +12,33 @@ function writelink(hdfFile, linkPath, linkName, targetPath)
 %   hdfFile             char or H5ML.id
 %       The file name of an HDF5 file or the identifier
 %   linkPath
-%       The HDF5 path where the link will be written
+%       The HDF5 path to the group where the link will be written
 %   linkName
 %       The name of the link
 %   targetPath          char
-%       The HDF5 path to link to
+%       The HDF5 path of the group or dataset that is the link target
 %
-% See also:
-%   h5tools.collectSoftlinks
+% Outputs:
+%   N/A
+%
+% See Also:
+%   h5tools.collectSoftlinks, h5tools.readlink
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
     arguments
-        hdfFile             {mustBeFile(hdfFile)} 
-        linkPath            char
+        hdfFile             {mustBeHdfFile(hdfFile)} 
+        linkPath            {mustBeHdfPath(hdfFile, linkPath)}
         linkName            char
-        targetPath          char
+        targetPath          {mustBeHdfPath(hdfFile, linkPath)}
     end
 
-    % Check whether the target path exists
-    if ~h5tools.exist(hdfFile, targetPath)
-        error('writeLink:InvalidLinkTarget',...
-            'Target path %s does not exist', targetPath);
+    if isa(hdfName, 'H5ML.id')
+        fileID = hdfName;
+    else
+        fileID = h5tools.files.openFile(hdfFile, false);
+        fileIDx = onCleanup(@()H5F.close(fileID));
     end
-    % Check whether the link already exists
-    if h5tools.exist(hdfFile, h5tools.util.buildPath(linkPath, linkName))
-        error('writelink:DatasetExists',...
-            'Skipped existing link at %s', h5tools.util.buildPath(linkPath, linkName));
-        return
-    end
-    fileID = h5tools.files.openFile(hdfFile, false);
-    fileIDx = onCleanup(@()H5F.close(fileID));
 
     % Open the group where the link will be written
     linkID = H5G.open(fileID, linkPath);

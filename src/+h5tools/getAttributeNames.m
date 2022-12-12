@@ -1,5 +1,5 @@
 function names = getAttributeNames(hdfName, pathName)
-% GETALLATTRIBUTENAMES
+% Get names of all attributes
 %
 % Description:
 %   Return all attribute names for an HDF5 dataset or group
@@ -16,6 +16,10 @@ function names = getAttributeNames(hdfName, pathName)
 % Outputs:
 %   names           string
 %       The names of all attributes contained by the object
+%
+% Examples:
+%   % Get all attributes for group "/G1"
+%   names = h5tools.getAttributeNames('File.h5', '/G1');
 %
 % See also:
 %   h5tools.hasAttribute, h5tools.readatt

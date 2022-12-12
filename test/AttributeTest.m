@@ -84,6 +84,15 @@ classdef AttributeTest < matlab.unittest.TestCase
                 Throws('MATLAB:imagesci:hdf5lib:libraryError'));
         end
     end
+    
+    methods (Test, TestTags=["Numeric"])
+        function DoubleArray(testCase)
+            input = magic(5);
+            h5tools.writeatt(testCase.FILE, '/', 'DoubleArray', input);
+            output = h5tools.readatt(testCase.FILE, '/', 'DoubleArray');
+            testCase.verifyEqual(output, input);
+        end
+    end
 
     methods (Test, TestTags=["String"])
         function ScalarString(testCase)
@@ -164,6 +173,30 @@ classdef AttributeTest < matlab.unittest.TestCase
             h5tools.writeatt(testCase.FILE, '/', 'DatetimeScalar', input);
             output = h5tools.readatt(testCase.FILE, '/', 'DatetimeScalar');
             testCase.verifyEqual(output, input);
+        end
+    end
+
+    methods (Test, TestTags=["duration", "unreadable"])
+        function Duration(testCase)
+            input = seconds(magic(5))';
+            testCase.verifyWarning(...
+                @() h5tools.writeatt(testCase.FILE, '/', 'Duration', input),...
+                "writeAttributeByType:Duration");
+            output = h5tools.readatt(testCase.FILE, '/', 'Duration');
+            testCase.verifyClass(output, "double");
+            testCase.verifyEqual(seconds(output), input);
+        end
+    end
+
+    methods (Test, TestTags=["cellstr", "unreadable"])
+        function Cellstr(testCase)
+            input = {'abc', 'def'; 'ghi', 'klm'};
+            testCase.verifyWarning(...
+                @() h5tools.writeatt(testCase.FILE, '/', 'Cellstr', input),...
+                "writeAttributeByType:Cellstr");
+            output = h5tools.readatt(testCase.FILE, '/', 'Cellstr');
+            testCase.verifyClass(output, "string");
+            testCase.verifyEqual(cellstr(output), input);
         end
     end
 

@@ -1,5 +1,5 @@
 function datasetNames = collectDatasets(hdfName, sortFlag)
-% COLLECTDATASETS
+% Return full HDF5 paths of all datasets in file
 %
 % Description:
 %   Collect all the dataset names (full paths) in an HDF file
@@ -17,6 +17,13 @@ function datasetNames = collectDatasets(hdfName, sortFlag)
 %   datasetNames    string
 %       A string array containing the full paths of all 
 %       datasets within the HDF5 file
+%
+% Examples:
+%   % Return all dataset names
+%   datasetNames = h5tools.collectDatasets('File.h5');
+%
+%   % Return the dataset names sorted alphabetically
+%   datasetNames = h5tools.collectDatasets('File.h5', true);
 %
 % See also:
 %   h5tools.collectGroups, h5tools.collectSoftlinks, h5tools.getAttributeNames

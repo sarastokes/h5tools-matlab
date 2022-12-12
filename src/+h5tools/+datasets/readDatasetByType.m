@@ -53,18 +53,22 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
 
     % Return string/char immediately, unless a placeholder
     if dataClass == Classes.STRING
-        if isempty(matlabClass) && isstring(data) && isscalar(data) ... 
-                && ismember(data, ["containers.Map", "struct"])
-            % Read as compound mapped to attributes
-            out = h5tools.readatt(hdfName, fullPath, 'all');
-            if isequal(data, "struct")
-                out = map2struct(out);
+        if isempty(matlabClass) && isstring(data)  
+            if isscalar(data) && ismember(data, ["containers.Map", "struct"])
+                % Read as compound mapped to attributes
+                out = h5tools.readatt(hdfName, fullPath, 'all');
+                if isequal(data, "struct")
+                    out = map2struct(out);
+                end
+                return
+            elseif isscalar(data) && isequal(data, "datetime")
+                out = h5tools.datasets.readDateDataset(hdfName, pathName, dsetName);
+                return
+            % The remaining placeholders are equal to the className
+            elseif ~isequal(data, matlabClass)  
+                out = data;
+                return
             end
-            return
-        % The remaining placeholders are equal to the className
-        elseif isempty(matlabClass) && ~isequal(data, matlabClass)  
-            out = data;
-            return
         end
     end
 
@@ -91,6 +95,12 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
         return 
     end
 
+    % Return any other standard types that weren't caught before
+    if isempty(matlabClass)
+        out = data;
+        return
+    end
+    
     % Miscellaneous MATLAB classes
     switch matlabClass 
         case 'datetime'

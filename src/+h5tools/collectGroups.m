@@ -1,11 +1,11 @@
 function groupNames = collectGroups(hdfName, sortFlag)
-% COLLECTGROUPS
+% Returns full HDF5 paths for all groups
 %
 % Description:
-%   Collect all the group names in an HDF5 file
+%   Get the full HDF5 paths of all groups in an HDF5 file
 %
 % Syntax:
-%   groupNames = collectGroups(hdfName, sortFlag)
+%   groupNames = h5tools.collectGroups(hdfName, sortFlag)
 %
 % Inputs:
 %   hdfName         char or H5ML.id
@@ -16,6 +16,13 @@ function groupNames = collectGroups(hdfName, sortFlag)
 % Outputs:
 %   groupNames      string array
 %       Full paths of all groups in the HDF5 file
+%
+% Examples:
+%   % Return all group names
+%   groupNames = h5tools.collectGroups('File.h5');
+%
+%   % Return the group names sorted alphabetically
+%   groupNames = h5tools.collectGroups('File.h5', true);
 %
 % See also:
 %   h5tools.collectDatasets, h5tools.collectSoftlinks, h5tools.getAttributeNames

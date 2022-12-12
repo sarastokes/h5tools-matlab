@@ -9,12 +9,13 @@ function makeDateDataset(hdfName, pathName, dsetName, data)
 %   makeDateDataset(hdfFile, pathName, data)
 %
 % Inputs:
-%   hdfName     char
+%   hdfName         char
 %       HDF5 file name
-%   pathName     char
+%   pathName        char
 %       Path of the group where dataset was written
-%   dsetName     char
+%   dsetName        char
 %       Name of the dataset
+%   data            datetime
 %
 % See also:
 %   h5tools.write, h5tools.datasets.writeDatasetByType
@@ -29,13 +30,16 @@ function makeDateDataset(hdfName, pathName, dsetName, data)
         data                datetime
     end
 
-    % Limitation: Seconds is rounded (better than MATLAB's floor w/ datesr)
-    data.Second = round(data.Second);
-    
-    input = string(datestr(data));
-    input = reshape(input, size(data));
-    h5tools.datasets.makeStringDataset(hdfName, pathName,... 
-        dsetName, input); %#ok<DATST> 
-    h5tools.writeatt(hdfName, h5tools.util.buildPath(pathName, dsetName),...
-        'Class', 'datetime', 'Format', data.Format);
-end
+    fullPath = h5tools.util.buildPath(pathName, dsetName);
+
+    h5tools.datasets.makeStringDataset(hdfName, pathName,...
+        dsetName, "datetime");
+    assignin('base','datedata', data);
+    h5tools.writeatt(hdfName, fullPath,...
+        'Year', data.Year,...
+        'Month', data.Month,...
+        'Day', data.Day,...
+        'Hour', data.Hour,...
+        'Minute', data.Minute,...
+        'Second', data.Second,...
+        'TimeZone', data.TimeZone);

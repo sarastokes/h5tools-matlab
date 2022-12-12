@@ -1,8 +1,8 @@
 function writeatt(hdfName, pathName, varargin)
-% WRITEATT
+% Write HDF5 attributes
 %
 % Description:
-%   Writes one or more attributes to a group/dataset
+%   Writes one or more attributes to an HDF5 group/dataset
 %
 % Syntax:
 %   h5tools.writeatt(hdfFile, hdfPath, varargin)
@@ -14,6 +14,10 @@ function writeatt(hdfName, pathName, varargin)
 %       Path of the dataset/group where attributes will be written
 %   varargin    see below
 %
+% Outputs:
+%   N/A
+%
+% Examples:
 % Attributes can be specified in the following ways:
 %   1. A list of one or more key/value pairs
 %       h5tools.writeatt(hdfFile, hdfPath, 'A', 1)
@@ -28,7 +32,7 @@ function writeatt(hdfName, pathName, varargin)
 %       h5tools.writeatt(hdfFile, hdfPath, attMap, 'C', 3, 'D', 4) 
 %       h5tools.writeatt(hdfFile, hdfPath, attStruct, 'C', 3, 'D', 4)
 %
-% See also:
+% See Also:
 %   h5tools.readatt, h5readatt
 
 % By Sara Patterson, 2022 (h5tools-matlab)

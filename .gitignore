@@ -22,10 +22,11 @@ test/AttributeTest.h5
 test/AttributesTest.h5
 test/Dataset.h5
 test/Collection.h5
+test/EnumClassTest.h5
 test/GroupTest.h5
-test/HdfTypeTest.h5
 test/LinkTest.h5
 test/ValidatorTest.h5
+test/Test.h5
 
 ## Misc
 *.DS_Store

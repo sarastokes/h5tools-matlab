@@ -36,7 +36,7 @@ function makeEnumTypeDataset(hdfName, pathName, dsetName, data)
     end
 
     % Datatype
-    typeID = H5T.enum_create('H5T_STD_I32LE');
+    typeID = H5T.enum_create('H5T_STD_U32LE');
     typeIDx = onCleanup(@()H5T.close(typeID));
     for i = 1:numel(memberNames)
         H5T.enum_insert(typeID, memberNames(i), uint8(i));

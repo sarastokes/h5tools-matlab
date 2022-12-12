@@ -16,6 +16,11 @@ function results = runH5toolsTestSuite(options)
 %       Whether to keep HDF5 files produced by the test suite
 %   Debug               logical (default = false)
 %       Whether to stop on failures
+%
+% See Also:
+%   test.deleteH5toolsTestFiles
+
+% By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
     arguments

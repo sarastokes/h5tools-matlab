@@ -1,8 +1,8 @@
 function varargout = readatt(hdfName, pathName, varargin)
-% READATT
+% Read HDF5 attributes
 %
 % Description:
-%   Read an HDF5 attribute
+%   Read one, multiple or all attributes of a dataset or group
 %
 % Syntax:
 %   out = readatt(hdfName, pathName, varargin)
@@ -47,7 +47,7 @@ function varargout = readatt(hdfName, pathName, varargin)
 %   % 4. Read all attributes, return as containers.Map
 %   out = readatt('File.h5', '/GroupOne', 'all')
 %
-% See also:
+% See Also:
 %   h5tools.writeatt, h5readatt, h5tools.getAllAttributeNames
 
 % By Sara Patterson, 2022 (h5tools-matlab)

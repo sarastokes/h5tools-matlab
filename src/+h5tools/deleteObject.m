@@ -1,8 +1,8 @@
 function deleteObject(hdfName, pathName)
-% DELETEOBJECT
+% Delete a group or dataset
 %
 % Description:
-%   Delete a group or dataset
+%   Delete a group or dataset within the HDF5 file (see Warning below)
 %
 % Syntax:
 %   h5tools.deleteObject(fileID, pathName)
@@ -24,6 +24,9 @@ function deleteObject(hdfName, pathName)
 %   Deleting an HDF5 object only removes the link, the data still exists
 %   and the file size is not reduced. Space can only be recovered with
 %   h5repack in the HDF5 library
+%
+% See also:
+%   h5tools.deleteAttribute
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
@@ -34,8 +37,7 @@ function deleteObject(hdfName, pathName)
         pathName    char    {mustBeHdfPath(hdfName, pathName)}
     end
     
-    objName = h5tools.util.getPathEnd(pathName);
-    pathName = h5tools.util.getPathParent(pathName);
+    [pathName, objName] = h5tools.util.splitPath(pathName);
     
     if ~isa(hdfName, 'H5ML.id')
         fileID = aod.h5.HDF5.openFile(hdfName, false);

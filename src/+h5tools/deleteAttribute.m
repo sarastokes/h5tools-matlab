@@ -1,5 +1,5 @@
 function deleteAttribute(hdfName, pathName, name)
-% DELETEATTRIBUTE
+% Delete an attribute
 %
 % Description:
 %   Delete an attribute
