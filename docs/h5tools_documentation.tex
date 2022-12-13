@@ -127,7 +127,7 @@ out = h5tools.read('Test.h5', '/GroupOne', 'MyDataset');
             \item \underline{Preprocessing:} Any changes to the data's MATLAB type that occur before writing to make the data compatible with an HDF5 datatype.
             \item \underline{Persistence:} How the data is actually written to the HDF5 dataset.
             \item \underline{Postprocessing:} Any processing of the data that occurs after reading into MATLAB to make the data compatible a specific MATLAB datatype.
-            \item \underline{Implementation:} The functions used to implement writing and reading of the dataset. All data passes through \myfcn{h5tools.writeDatasetByType} for writing and \myfcn{h5tools.readDatasetByType} for reading. Any additional functions implementing specialized processing will be detailed here. 
+            \item \underline{Implementation:} The functions used to implement writing and reading of the dataset. All data passes through \myfcn{h5tools.write} for writing and \myfcn{h5tools.read} for reading. Any additional functions implementing specialized processing will be detailed here. 
 			\item \underline{Limitations:} Any caveats or limitations.
         \end{itemize}
 
@@ -251,7 +251,7 @@ out = h5tools.read('Test.h5', '/GroupOne', 'MyDataset');
 			\item \underline{Preprocessing:} The time column is converted to \texttt{double} with \matfcn{seconds()}. 
 			\item \underline{Persistence:} Written as \hdftype{H5T\_COMPOUND} with two attributes: \myatt{Class}{timetable}, \myatt{ColumnClasses}{[class1, class2,...]} of data in each column. See \textbf{Table 1} and \texttt{string} and \texttt{char} for information on how individual columns are written.
 			\item \underline{Postprocessing:} The first column is converted back to \texttt{duration} with \matfcn{seconds}.
-			\item \underline{Implementation:} See \texttt{table}.%, \myfcn{h5tools.datasets.writeDatasetByType}. 
+			\item \underline{Implementation:} See \texttt{table}.%, \myfcn{h5tools.datasets.write}. 
 			\item \underline{Limitations:} Same as \texttt{table}. In addition, a better way might exist for converting the \texttt{duration} column than always using \matfcn{seconds}.
 		\end{itemize}
 
@@ -261,12 +261,12 @@ out = h5tools.read('Test.h5', '/GroupOne', 'MyDataset');
 			\item \underline{Preprocessing:} All durations are converted to seconds, then to \texttt{double}
 			\item \underline{Persistence:} Written as \hdftype{H5T\_IEEE\_F64LE} with one attribute: \myatt{Class}{duration}.
 			\item \underline{Postprocessing:} Converted back to \texttt{duration} with \matfcn{seconds()}.
-			\item \underline{Implementation:} \matfcn{h5write}%\myfcn{h5tools.datasets.writeDatasetByType}, \myfcn{h5tools.datasets.readDatasetByType}
+			\item \underline{Implementation:} \matfcn{h5write}%\myfcn{h5tools.datasets.write}, \myfcn{h5tools.datasets.read}
 			\item \underline{Limitations:} N/A
 		\end{itemize}
 
         \subsection{Miscellaneous data types}
-        \noindent Several specialized MATLAB datatypes from the Image Processing Toolbox are also included to demonstrate how the tricks above could be applied to write any other specialized datatype to an HDF5 file as well. See \myfcn{h5tools.datasets.writeDatasetByType} and \myfcn{h5tools.datasets.readDatasetByType} for implementation. See CONTRIBUTING.md for information about adding new types.
+        \noindent Several specialized MATLAB datatypes from the Image Processing Toolbox are also included to demonstrate how the tricks above could be applied to write any other specialized datatype to an HDF5 file as well. See \myfcn{h5tools.datasets.write} and \myfcn{h5tools.datasets.read} for implementation. See CONTRIBUTING.md for information about adding new types.
 
     %  █████╗ ████████╗████████╗██████╗ ███████╗
     % ██╔══██╗╚══██╔══╝╚══██╔══╝██╔══██╗██╔════╝

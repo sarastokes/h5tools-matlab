@@ -40,7 +40,7 @@ function deleteObject(hdfName, pathName)
     [pathName, objName] = h5tools.util.splitPath(pathName);
     
     if ~isa(hdfName, 'H5ML.id')
-        fileID = aod.h5.HDF5.openFile(hdfName, false);
+        fileID = h5tools.files.openFile(hdfName, false);
         fileIDx = onCleanup(@()H5F.close(fileID));
     else
         fileID = hdfName;
