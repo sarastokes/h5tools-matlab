@@ -42,6 +42,9 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
     
     if h5tools.hasAttribute(hdfName, fullPath, 'Class')
         matlabClass = h5tools.readatt(hdfName, fullPath, 'Class');
+        if ismember(string(matlabClass), ["string", "char", "double", "single", "uint8", "uint16", "uint32", "uint64", "int64", "int32", "int16", "int8"])
+            matlabClass = [];
+        end
     else % Numeric types, string, char
         matlabClass = [];
     end 

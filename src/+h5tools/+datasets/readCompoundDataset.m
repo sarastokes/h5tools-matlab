@@ -41,10 +41,20 @@ function out = readCompoundDataset(hdfName, pathName, dsetName)
         colClasses = colClasses(2:end);
     end
     for i = 1:numel(colClasses)
-        if strcmp(colClasses{i}, 'string')  
-            % TODO: This seems too hard, am I missing something here                      
-            colName = out.Properties.VariableNames{i};
-            out.(colName) = string(out.(colName));
+        colName = out.Properties.VariableNames{i};
+        switch colClasses{i}
+            case 'string'                     
+                out.(colName) = string(out.(colName));
+            case 'datetime'
+                try
+                    out.(colName) = datetime(uncell(out.(colName)));
+                catch ME
+                    if startsWith(ME.message, 'Could not recognize')
+                        out.(colName) = string(out.(colName));
+                    else
+                        rethrow(ME);
+                    end
+                end
         end
     end
 
