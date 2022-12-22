@@ -67,7 +67,6 @@ function varargout = readatt(hdfName, pathName, varargin)
     end
 
     inputs = convertCharsToStrings(varargin)';
-    assignin('base', 'inputs', inputs);
 
     % Process multiple attribute inputs
     if numel(inputs) > 1

@@ -91,6 +91,15 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
                 out = table2timetable(out);
             case 'containers.Map'
                 out = struct2map(table2struct(data));
+            case 'table'
+                if h5tools.hasAttribute(hdfName, fullPath, 'RowNames')
+                    out.Properties.RowNames = ...
+                        h5tools.readatt(hdfName, fullPath, 'RowNames');
+                end
+                if h5tools.hasAttribute(hdfName, fullPath, 'VariableUnits');
+                    out.Properties.VariableUnits = ... 
+                        h5tools.readatt(hdfName, fullPath, 'VariableUnits');
+                end
         end
         return
     end
@@ -111,8 +120,10 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
     % Miscellaneous MATLAB classes
     switch matlabClass 
         case 'datetime'
-            dateFormat = h5readatt(hdfName, fullPath, 'Format');
-            out = datetime(data, 'Format', dateFormat);
+            % dateFormat = h5readatt(hdfName, fullPath, 'Format');
+            % out = datetime(data, 'Format', dateFormat);
+            out = h5tools.datasets.readDateDataset(...
+                hdfName, pathName, dsetName);
         case 'logical'
             out = logical(data);
         case 'duration'

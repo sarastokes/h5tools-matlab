@@ -41,15 +41,18 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
 
     fullPath = h5tools.util.buildPath(pathName, dsetName);
 
-    % Record original class and column classes
+    % Record original class, column classes and row names
     dataClass = class(data);
     if istimetable(data)
         data = timetable2table(data);
         data.Time = seconds(data.Time);
     end
+
     columnClass = [];
     colsToFix = [];
     if istable(data) || istimetable(data)
+        rowNames = data.Properties.RowNames;
+        units = data.Properties.VariableUnits;
         for i = 1:size(data, 2)
             if i == 1 && strcmp(dataClass, 'timetable') %#ok<STISA> 
                 columnClass = 'duration';
@@ -75,7 +78,7 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
         end
         nDims = height(data);
         data = table2struct(data);
-    else
+    else 
         f = fieldnames(data);
         nElements = zeros(1, numel(f));
         for i = 1:numel(f)
@@ -87,7 +90,9 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
                 'All fields in the structure must have the same number of elements');
         end
         nDims = max(nElements);
-        % TODO: Should they be equal
+        
+        % Struct will not have units, row names
+        units = []; rowNames = [];
     end
 
     fileID = h5tools.files.openFile(hdfName, false);
@@ -148,6 +153,13 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
     % Write original class and column classes attributes
     h5tools.writeatt(hdfName, fullPath, 'Class', dataClass,...
         'ColumnClass', columnClass);
+    % If it was a table and had units, add as attribute
+    if ~isempty(units)
+        h5tools.writeatt(hdfName, fullPath, 'VariableUnits', units);
+    end
+    if ~isempty(rowNames)
+        h5tools.writeatt(hdfName, fullPath, 'RowNames', rowNames);
+    end
 end
 
 function typeID = getDataType(var)

@@ -41,5 +41,4 @@ function out = readDateDataset(hdfName, pathName, dsetName)
     
     value = [map('Year'), map('Month'), map('Day'),...
         map('Hour'), map('Minute'), map('Second')];
-    assignin('base', 'value', value)
     out = datetime(value);

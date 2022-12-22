@@ -105,7 +105,7 @@ addpath(genpath('../h5tools-matlab/src/'));
     \section{Datasets}\label{sec:Datasets}
         \noindent The high-level functions for datasets are \myfcn{h5tools.write} and \myfcn{h5tools.read}. The implementation for these functions can be found in the "h5tools.datasets" package. The key difference between these functions and their corresponding MATLAB versions (\matfcn{h5read} and \matfcn{h5write}) are:
         \begin{enumerate}
-            \item With MATLAB's library, you need to first create the dataset with \myfcn{h5create} (which requires some understanding of HDF5 dataspaces), then write it with \matfcn{h5write}. \myfcn{h5tools.write} takes care of dataspaces and dataset creation behind the scenes. 
+            \item With MATLAB's library, you need to first create the dataset with \myfcn{h5create} (which requires some understanding of HDF5 dataspaces), then write it with \matfcn{h5write}. \myfcn{h5tools.write} takes care of dataspaces and dataset creation behind the scenes (optional arguments to \myfcn{h5tools.write} will be passed to \matfcn{h5create}). 
             \item Support for more MATLAB data types. Text (\texttt{char} and \texttt{string}), enumerated types, and compound datatypes (\texttt{table}, \texttt{timetable} and \texttt{struct}/\texttt{containers.Map} where each field has the same number of elements) are directly supported, in addition to the numeric types supported by MATLAB's high-level functions. A few tricks are used to support additional types, by converting to an HDF5-compatible format and adding attributes to the dataset that guide h5tools in reading the data back into MATLAB (\texttt{logical}, \texttt{cellstr}, \texttt{struct}/\texttt{containers.Map} with unequal elements in each field, \texttt{datetime}, \texttt{duration}).  
         \end{enumerate}
         $\quad$\\
@@ -120,6 +120,9 @@ out = h5tools.read(hdfName, pathName, dsetName);
 h5tools.createFile('Test.h5');
 h5tools.write('Test.h5', '/GroupOne', 'MyDatatset', magic(5));
 out = h5tools.read('Test.h5', '/GroupOne', 'MyDataset');
+
+% Write a dataset with optional arguments to h5create
+h5tools.write('Test.h5', '/GroupOne', 'MyDataset2', magic(5), 'MaxSize', [Inf 5]);
 		\end{lstlisting}
 		$\quad$\\
         \noindent Be sure to check the implementation for the data type you intend to write. In describing each datatype's implementation, the following information is provided where relevant:

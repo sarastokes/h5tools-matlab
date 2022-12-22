@@ -275,6 +275,16 @@ classdef DatasetTest < matlab.unittest.TestCase
             testCase.verifyEqual(output, input);
         end
 
+        function testTableMetadata(testCase)
+            input = table((1:3)', (4:6)',...
+                'RowNames', {'A', 'B', 'C'});
+            input.Properties.VariableUnits = {'pA', 'mV'};
+            h5tools.write(testCase.FILE, '/', 'TableWithMetadata', input);
+            output = h5tools.read(testCase.FILE, '/', 'TableWithMetadata');
+            testCase.verifyEqual(input, output);
+            assignin('base', 'tablemetadata', output);
+        end
+
         function testTimeTable(testCase)
             input = timetable(...
                 seconds(1:4)', {'a'; 'b'; 'c'; 'd'}, ["a", "b", "c", "d"]',...
@@ -367,6 +377,20 @@ classdef DatasetTest < matlab.unittest.TestCase
             h5tools.write(testCase.FILE, '/NewGroup', 'Dataset', magic(5));
             groupNames = h5tools.collectGroups(testCase.FILE);
             testCase.verifyEqual(nnz(endsWith(groupNames, 'NewGroup')), 1);
+        end
+    end
+
+    methods (Test, TestTags=["Dataset", "Numeric", "Append"])
+        function AppendToDataset(testCase)
+            % Two datasets [N x 10]
+            data1 = randn(3, 10); data2 = randn(2, 10);
+            % Write the first dataset
+            h5tools.write(testCase.FILE, '/', 'DatasetToAppend', data1,...
+                [Inf, size(data1,2)], 'ChunkSize', [1, size(data1, 2)]);
+            % Append the second dataset
+            h5tools.write(testCase.FILE, '/', 'DatasetToAppend', data2);
+            output = h5tools.read(testCase.FILE, '/', 'DatasetToAppend');
+            testCase.verifyEqual(output, [data1; data2]);
         end
     end
 

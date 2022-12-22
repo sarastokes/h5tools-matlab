@@ -29,6 +29,7 @@ function out = readCompoundDataset(hdfName, pathName, dsetName)
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
+
     fullPath = h5tools.util.buildPath(pathName, dsetName);
 
     data = h5read(hdfName, fullPath);
@@ -57,4 +58,3 @@ function out = readCompoundDataset(hdfName, pathName, dsetName)
                 end
         end
     end
-

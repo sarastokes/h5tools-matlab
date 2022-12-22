@@ -1,4 +1,4 @@
-function success = writeDatasetByType(hdfName, pathName, dsetName, data)
+function success = writeDatasetByType(hdfName, pathName, dsetName, data, varargin)
 % WRITEDATASETBYTYPE
 %
 % Syntax:
@@ -37,11 +37,15 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
         data
     end
 
+    arguments (Repeating)
+        varargin
+    end
+
     fullPath = h5tools.util.buildPath(pathName, dsetName);
     success = true;
 
     if isnumeric(data)
-        h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data);
+        h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data, varargin{:});
         return 
     end
 
@@ -89,11 +93,12 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data)
 
     if isdatetime(data)
         h5tools.datasets.makeDateDataset(hdfName, pathName, dsetName, data);
+        h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
         return
     end
 
     if isduration(data)
-        h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, seconds(data));
+        h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, seconds(data), varargin{:});
         h5tools.writeatt(hdfName, fullPath, 'Class', class(data),...
             'Units', 'seconds');
         return

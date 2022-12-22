@@ -1,11 +1,11 @@
-function success = write(hdfName, pathName, dsetName, data)
+function success = write(hdfName, pathName, dsetName, data, varargin)
 % Write data to a HDF5 dataset
 %
 % Description:
 %   Write an HDF5 dataset at the specified path 
 %
 % Syntax:
-%   success = h5tools.write(hdfName, pathName, dsetName, data)
+%   success = h5tools.write(hdfName, pathName, dsetName, data, varargin)
 %
 % Inputs:
 %   hdfName         char or H5ML.id
@@ -16,6 +16,8 @@ function success = write(hdfName, pathName, dsetName, data)
 %       Name of the dataset
 %   data 
 %       Data to be written
+%   varargin
+%       Optional inputs to h5create
 %
 % Outputs:
 %   success     logical
@@ -30,13 +32,6 @@ function success = write(hdfName, pathName, dsetName, data)
 
 % By Sara Patterson, 2022 (h5tools-matlab)
 % -------------------------------------------------------------------------
-
-    arguments
-        hdfName                 {mustBeFile(hdfName)}
-        pathName        char 
-        dsetName        char
-        data 
-    end
     
     % Create the group, if it doesn't exist
     if ~h5tools.exist(hdfName, pathName)
@@ -46,4 +41,4 @@ function success = write(hdfName, pathName, dsetName, data)
     end
 
     success = h5tools.datasets.writeDatasetByType(...
-        hdfName, pathName, dsetName, data);
+        hdfName, pathName, dsetName, data, varargin{:});
