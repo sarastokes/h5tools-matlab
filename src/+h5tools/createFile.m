@@ -41,6 +41,11 @@ function fileID = createFile(hdfName, overwrite)
         overwrite       logical                             = false
     end
 
+    if ~endsWith(hdfName, '.h5')
+        error('createFile:InvalidExtension',... 
+            'File name must end with ".h5"');
+    end
+
     if overwrite
         fileID = H5F.create(hdfName, 'H5F_ACC_TRUNC',...
             H5P.create('H5P_FILE_CREATE'), H5P.create('H5P_FILE_ACCESS'));
