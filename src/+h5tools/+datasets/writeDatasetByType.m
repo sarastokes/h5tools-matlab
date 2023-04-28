@@ -27,7 +27,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data, varargi
 % See Also:
 %   h5tools.write
 
-% By Sara Patterson, 2022 (h5tools-matlab)
+% By Sara Patterson, 2023 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
     arguments
@@ -46,16 +46,19 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data, varargi
 
     if isnumeric(data)
         h5tools.datasets.makeMatrixDataset(hdfName, pathName, dsetName, data, varargin{:});
+        h5tools.writeatt(hdfName, fullPath, 'Class', class(data));
         return 
     end
 
     if ischar(data)
         h5tools.datasets.makeCharDataset(hdfName, pathName, dsetName, data);
+        h5tools.writeatt(hdfName, fullPath, 'Class', 'char');
         return 
     end
 
     if isstring(data)
         h5tools.datasets.makeStringDataset(hdfName, pathName, dsetName, data);
+        h5tools.writeatt(hdfName, fullPath, 'Class', 'string');
         return
     end
     
@@ -67,6 +70,7 @@ function success = writeDatasetByType(hdfName, pathName, dsetName, data, varargi
 
     if islogical(data)
         h5tools.datasets.makeLogicalDataset(hdfName, pathName, dsetName, data);
+        h5tools.writeatt(hdfName, fullPath, 'Class', 'logical');
         return
     end
 

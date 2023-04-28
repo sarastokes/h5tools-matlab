@@ -1,5 +1,11 @@
 # CHANGELOG
 
+### v1.1.3
+- Appending MATLAB class even for numeric datatypes supported by MATLAB's built-in ``h5read``
+
+### v1.1.2
+- Conversion of table properties (row names, units) to string to avoid cellstr attribute warning in ``h5tools.datasets.writeCompoundDataset``
+
 ### v1.1.1
 - Support for optional arguments to ```h5create``` for numeric datasets 
 - Improved datetime strategy for more precise seconds. 
