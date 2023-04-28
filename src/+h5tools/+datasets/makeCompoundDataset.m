@@ -51,8 +51,8 @@ function makeCompoundDataset(hdfName, pathName, dsetName, data)
     columnClass = [];
     colsToFix = [];
     if istable(data) || istimetable(data)
-        rowNames = data.Properties.RowNames;
-        units = data.Properties.VariableUnits;
+        rowNames = string(data.Properties.RowNames);
+        units = string(data.Properties.VariableUnits);
         for i = 1:size(data, 2)
             if i == 1 && strcmp(dataClass, 'timetable') %#ok<STISA> 
                 columnClass = 'duration';
