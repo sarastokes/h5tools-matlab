@@ -28,7 +28,7 @@ function deleteObject(hdfName, pathName)
 % See also:
 %   h5tools.deleteAttribute
 
-% By Sara Patterson, 2022 (h5tools-matlab)
+% By Sara Patterson, 2023 (h5tools-matlab)
 % -------------------------------------------------------------------------
 
 
@@ -46,11 +46,16 @@ function deleteObject(hdfName, pathName)
         fileID = hdfName;
     end
 
-    if pathName == '/'
+    if strcmp(pathName, '/')
         parentID = fileID;
     else
-        parentID = H5O.open(fileID, pathName);
-        parentIDx = onCleanup(H5O.close(parentID));
+        try
+            parentID = H5O.open(fileID, pathName);
+            parentIDx = onCleanup(@()H5O.close(parentID));
+        catch
+            parentID = H5G.open(fileID, pathName);
+            parentIDx = onCleanup(@()H5G.close(parentID));
+        end
     end
 
     H5L.delete(parentID, objName, 'H5P_DEFAULT');

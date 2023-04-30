@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### v1.1.4
+- Fixed bugs in `h5tools.deleteObject`
+
 ### v1.1.3
 - Appending MATLAB class even for numeric datatypes supported by MATLAB's built-in ``h5read``
 
