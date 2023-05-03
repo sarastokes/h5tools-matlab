@@ -481,6 +481,13 @@ h5tools.createGroup('Test.h5', '/', 'GroupTwo', '/GroupOne/Group1D');
         \item \myfcn{h5tools.collectSoftlinks} - Return the full path names of all soft links in an HDF5 file. 
         \item \myfcn{h5tools.getAttributeNames} - Return the names of all attributes of a specific group or dataset. 
     \end{enumerate}
+
+    \section{Miscellaneous}
+    \noindent Other HDF5 library wrappers
+    \begin{enumerate}
+        \item \myfcn{h5tools.move} - Moves a group or dataset to a new location. Useful for renaming.
+    \end{enumerate}
+
     \section{Resources}
     \begin{itemize}
         \item \href{https://www.mathworks.com/help/matlab/hdf5-files.html}{\myurl{MATLAB}}: See their documentation for the high-level functions as well as the low-level library.

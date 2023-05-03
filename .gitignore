@@ -25,6 +25,7 @@ test/Collection.h5
 test/EnumClassTest.h5
 test/GroupTest.h5
 test/LinkTest.h5
+test/MoveTest.h5
 test/ValidatorTest.h5
 test/Test.h5
 

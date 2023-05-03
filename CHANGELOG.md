@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### v1.1.5
+- Added `h5tools.move` wrapper for `H5L.move`
+
 ### v1.1.4
 - Fixed bugs in `h5tools.deleteObject`
 

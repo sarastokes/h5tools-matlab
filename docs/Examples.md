@@ -116,7 +116,8 @@ H5F.close(fileID);
 > Warning: some functions have optional outputs for returning the associated ```H5ML.id```, which is used for working with the low-level library. Don't request these outputs unless you intend to use them, as you will be responsible for closing them once you're finished (as shown above). A few of the functions may throw errors if the identifiers involved are open in the base workspace. 
 
 ## Support functions
-See the documentation for full information on how to use these. All take the HDF5 file name as the first input. Many will also accept the file's ```H5ML.id``` instead, in case you're using the low-level library.
+See the documentation within the code (use `help` or `doc`) for full information on how to use these. All take the HDF5 file name as the first input. Many will also accept the file's ```H5ML.id``` instead, in case you're using the low-level library.
+- ```h5tools.move``` - moves a group/dataset to a new location, useful for renaming (simplified wrapper for `H5L.move`)
 - ```dsetNames = h5tools.collectAllDatasets(hdfFile)``` - returns the full paths of all datasets within an HDF5 file
 - ```groupNames = h5tools.collectAllGroups(hdfFile)``` - returns the full paths of all groups within an HDF5 file.
 - ```linkNames = h5tools.collectAllSoftLinks(hdfFile)``` - returns the full paths of all soft links in the HDF5 file.
