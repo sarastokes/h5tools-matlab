@@ -33,7 +33,7 @@ function move(hdfName, sourcePath, destPath)
 
     if ~isa(hdfName, 'H5ML.id')
         fileID = h5tools.files.openFile(hdfName, false);
-        onCleanup(@() H5F.close(fileID));
+        fileIDx = onCleanup(@() H5F.close(fileID));
     else
         fileID = hdfName;
     end
@@ -42,7 +42,9 @@ function move(hdfName, sourcePath, destPath)
     [destPath, destName] = h5tools.util.splitPath(destPath);
 
     sourceID = H5G.open(fileID, sourcePath);
+    sourceIDx = onCleanup(@() H5G.close(sourceID));
     destID = H5G.open(fileID, destPath);
+    destIDx = onCleanup(@() H5G.close(destID));
 
     H5L.move(sourceID, sourceName, destID, destName, 'H5P_DEFAULT', 'H5P_DEFAULT');
 
