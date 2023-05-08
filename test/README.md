@@ -12,6 +12,7 @@ The test suite contains the following:
 - ```GroupTest``` - tests operations at the group level
 - ```FileTest``` - tests operations at the file level
 - ```LinkTest``` - tests interface for working with soft links
+- ```MoveTest``` - tests moving/renaming HDF5 groups
 - ```SearchTest``` - tests the functions for searching HDF5 files
 - ```ValidatorTest``` - tests validation functions
 

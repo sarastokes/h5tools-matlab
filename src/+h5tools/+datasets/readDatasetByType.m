@@ -96,7 +96,7 @@ function out = readDatasetByType(hdfName, pathName, dsetName)
                     out.Properties.RowNames = ...
                         h5tools.readatt(hdfName, fullPath, 'RowNames');
                 end
-                if h5tools.hasAttribute(hdfName, fullPath, 'VariableUnits');
+                if h5tools.hasAttribute(hdfName, fullPath, 'VariableUnits')
                     out.Properties.VariableUnits = ... 
                         h5tools.readatt(hdfName, fullPath, 'VariableUnits');
                 end

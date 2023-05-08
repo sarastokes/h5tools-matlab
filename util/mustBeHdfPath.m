@@ -21,6 +21,6 @@ function mustBeHdfPath(hdfFile, hdfPath)
     
     if ~h5tools.exist(hdfFile, hdfPath)
         eid = "HdfPath:InvalidPath";
-        msg = sprintf('Path %s does not exist in %s', hdfPath, hdfFile);
+        msg = "HDF5 path does not exist in file";
         throwAsCaller(MException(eid, msg));
     end

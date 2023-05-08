@@ -20,11 +20,15 @@ function deleteH5toolsTestFiles()
     delete(fullfile(testPath, 'AttributeTest.h5'));
     delete(fullfile(testPath, 'AttributesTest.h5'));
     delete(fullfile(testPath, 'Collection.h5'));
+    delete(fullfile(testPath, 'CopyTest1.h5'));
+    delete(fullfile(testPath, 'CopyTest2.h5'));
     delete(fullfile(testPath, 'Dataset.h5'));
     delete(fullfile(testPath, 'File.h5'));
     delete(fullfile(testPath, 'GroupTest.h5'));
     delete(fullfile(testPath, 'EnumClassTest.h5'));
     delete(fullfile(testPath, 'LinkTest.h5'));
+    delete(fullfile(testPath, 'MoveTest.h5'));
+    delete(fullfile(testPath, 'Test.h5'));
     delete(fullfile(testPath, 'ValidatorTest.h5'));
 
     % Restore the normal warning settings

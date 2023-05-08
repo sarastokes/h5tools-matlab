@@ -9,7 +9,6 @@ classdef FileTest < matlab.unittest.TestCase
         function setupFiles(testCase)
             testCase.FOLDER = fileparts(mfilename('fullpath'));
             testCase.FILE = fullfile(testCase.FOLDER, 'File.h5');
-            disp(testCase.FILE)
             if exist(testCase.FILE, 'file')
                 delete(testCase.FILE);
             end
@@ -17,6 +16,21 @@ classdef FileTest < matlab.unittest.TestCase
     end
 
     methods (Test)
+        function copyFile(testCase)
+            h5tools.createFile('CopyTest1.h5', true);
+
+            % Test copying
+            h5tools.files.copyFile('CopyTest1.h5', 'CopyTest2');
+            testCase.verifyTrue(exist('CopyTest2.h5', 'file') > 0);
+
+            testCase.verifyError(...
+                @() h5tools.files.copyFile('CopyTest1.h5', 'CopyTest2.h5'),...
+                "copyFile:FileExists");
+            testCase.verifyError(...
+                @() h5tools.files.copyFile('CopyTest1.h5', 'CopyTest2.m'),...
+                "copyFile:InvalidExtension");
+        end
+
         function makeFile(testCase)
             import matlab.unittest.constraints.Throws
 

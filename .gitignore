@@ -20,6 +20,8 @@ test/coverage/
 test/File.h5
 test/AttributeTest.h5
 test/AttributesTest.h5
+test/CopyTest1.h5
+test/CopyTest2.h5
 test/Dataset.h5
 test/Collection.h5
 test/EnumClassTest.h5
