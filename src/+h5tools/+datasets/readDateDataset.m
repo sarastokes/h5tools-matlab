@@ -31,7 +31,7 @@ function out = readDateDataset(hdfName, pathName, dsetName)
 
     arguments
         hdfName                     {mustBeHdfFile(hdfName)}
-        pathName        char        {mustBeHdfPath(hdfName, pathName)}
+        pathName        char        %{mustBeHdfPath(hdfName, pathName)}
         dsetName        char 
     end
 

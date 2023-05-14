@@ -32,7 +32,7 @@ function makeDatetimeAttribute(hdfName, pathName, attName, data)
 % -------------------------------------------------------------------------
     arguments
         hdfName     char        {mustBeHdfFile(hdfName)}
-        pathName    char        {mustBeHdfPath(hdfName, pathName)}
+        pathName    char        %{mustBeHdfPath(hdfName, pathName)}
         attName     char    
         data        datetime 
     end

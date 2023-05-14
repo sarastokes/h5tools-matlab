@@ -38,7 +38,7 @@ function fileID = createFile(hdfName, overwrite)
 
     arguments
         hdfName         char        
-        overwrite       logical                             = false
+        overwrite       logical     = false
     end
 
     if ~endsWith(hdfName, '.h5')

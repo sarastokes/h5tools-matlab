@@ -32,7 +32,7 @@ function makeLogicalAttribute(hdfName, pathName, attName, data)
 % -------------------------------------------------------------------------
     arguments
         hdfName             {mustBeHdfFile(hdfName)}
-        pathName    char    {mustBeHdfPath(hdfName, pathName)}
+        pathName    char    %{mustBeHdfPath(hdfName, pathName)}
         attName     char    
         data        logical 
     end

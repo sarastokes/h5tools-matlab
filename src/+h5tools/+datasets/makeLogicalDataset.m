@@ -32,7 +32,7 @@ function makeLogicalDataset(hdfName, pathName, dsetName, data)
 
     arguments
         hdfName                 {mustBeHdfFile(hdfName)}
-        pathName    char        {mustBeHdfPath(hdfName, pathName)}
+        pathName    char        %{mustBeHdfPath(hdfName, pathName)}
         dsetName    char
         data        logical 
     end

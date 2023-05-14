@@ -34,7 +34,7 @@ function makeEnumTypeAttribute(hdfName, pathName, attName, data)
 
     arguments
         hdfName             {mustBeHdfFile(hdfName)}
-        pathName    char    {mustBeHdfPath(hdfName, pathName)}
+        pathName    char    %{mustBeHdfPath(hdfName, pathName)}
         attName     char
         data                {mustBeEnum(data)}
     end
