@@ -31,7 +31,7 @@ function out = readAttributeByType(hdfName, pathName, attName)
 
     arguments 
         hdfName         char    {mustBeHdfFile(hdfName)} 
-        pathName        char    {mustBeHdfPath(hdfName, pathName)}
+        pathName        char    %{mustBeHdfPath(hdfName, pathName)}
         attName         char 
     end
 

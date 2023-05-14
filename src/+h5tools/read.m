@@ -16,10 +16,8 @@ function out = read(hdfName, pathName, dsetName)
     
     arguments
         hdfName         char        {mustBeFile(hdfName)}
-        pathName        char        {mustBeHdfPath(hdfName, pathName)}
+        pathName        char        %{mustBeHdfPath(hdfName, pathName)}
         dsetName        string
     end
 
     out = h5tools.datasets.readDatasetByType(hdfName, pathName, dsetName);
-
-

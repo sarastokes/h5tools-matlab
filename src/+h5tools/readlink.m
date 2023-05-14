@@ -30,7 +30,7 @@ function [linkPath, ID] = readlink(hdfName, pathName, linkName)
 
     arguments
         hdfName         char        {mustBeHdfFile(hdfName)}
-        pathName        char        {mustBeHdfPath(hdfName, pathName)}
+        pathName        char        %{mustBeHdfPath(hdfName, pathName)}
         linkName        char 
     end
 

@@ -32,7 +32,7 @@ function createGroup(hdfName, pathName, varargin)
 
     arguments
         hdfName                 {mustBeHdfFile(hdfName)}
-        pathName        char    {mustBeHdfPath(hdfName, pathName)}
+        pathName        char    %{mustBeHdfPath(hdfName, pathName)}
     end
     
     arguments (Repeating)

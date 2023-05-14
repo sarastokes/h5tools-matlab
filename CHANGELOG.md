@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### v1.1.7
+- Removed time-consuming `mustBeHdfPath` validation
+
 ### v1.1.6
 - Added `h5tools.files.copyFile`, a wrapper for `copyfile` tailored to HDF5 files
 
